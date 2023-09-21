@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Ganbk",
+    "slug": "Ganbk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/GanbkImage.png",
+    "scheme": "ganbk",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/GanbkImage.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.mohamedabdallah.Ganbk"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./src/assets/GanbkImage.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "975552a8-be0f-42d7-aa48-c91755a6c6c6"
+      }
+    }
+  }
+}
