@@ -96,29 +96,32 @@ export default function RootLayout() {
               },
               headerBackVisible: (I18nManager.isRTL)?true:false
             }} />
-            <Stack.Screen name="Setting" options={{
+            <Stack.Screen name="Confirm" options={{
               headerLeft: () => {
                 if (i18n.t('lang') === 'en') {
                   return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                    <Image source={require('../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                    <Image source={require('../src/assets/arrow-left.png')} tintColor={(colorScheme == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
                   </TouchableOpacity>
                 }
               },
               headerRight: () => {
                 if (i18n.t('lang') === 'ar') {
                   return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                    <Image source={require('../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                    <Image source={require('../src/assets/arrow-left.png')} tintColor={(colorScheme == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                   </TouchableOpacity>
                 }
               },
               headerTitle: () => {
                 return <View style={{ width: "85%", marginLeft: 23 }}>
                   <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                    {i18n.t('Settings')}
+                    {i18n.t('Confirm')}
                   </Text>
                 </View>
               },
               headerBackVisible: (I18nManager.isRTL)?true:false
+            }} />
+            <Stack.Screen name="Setting" options={{
+              headerShown:false
             }} />
             <Stack.Screen name="Language" options={{
               headerLeft: () => {

@@ -1,5 +1,6 @@
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { useEffect, useState } from "react";
+
 
 const StackLayout = () => {
     const [appIsReady, setAppIsReady] = useState(false);

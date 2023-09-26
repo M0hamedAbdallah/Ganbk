@@ -8,6 +8,8 @@ import { router } from "expo-router";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
+import { db } from "../../firebase/config/firebase-config";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function setteing() {
     const colorScheme = useColorScheme();
@@ -25,8 +27,20 @@ function setteing() {
         const { idToken } = await GoogleSignin.signIn();
         const googleCredential = GoogleAuthProvider.credential(idToken);
         const userInfo = signInWithCredential(auth, googleCredential);
-        await userInfo.then((user) => {
-            console.log(user);
+        await userInfo.then(async (user) => {
+            const UserRef = doc(db, "Users", user.user.uid);
+            const docSnap = await getDoc(UserRef);
+            if(docSnap.data() == undefined){
+                await setDoc(UserRef, {
+                    firstName: user["_tokenResponse"].firstName,
+                    email: user.user.email,
+                    phone: '',
+                    BirthDate: '',
+                    Love: [],
+                    MyAds: [],
+                    date: Date.now()
+                });
+            }
         })
             .catch((err) => {
                 console.log(err);
@@ -69,7 +83,7 @@ function setteing() {
                     </View>
                 </View>
 
-                <TouchableOpacity style={[styles.itemContainer,{flexDirection: direction.direction}]} onPress={async () => {
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} onPress={async () => {
                     await onGoogleButtonPress();
                 }} lightColor="#eee" darkColor="#404040">
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
@@ -78,7 +92,7 @@ function setteing() {
                             style={{ width: 30, height: 30 }} />
 
                     </View>
-                    <View style={{ width: '70%', height: '100%', justifyContent: "center", backgroundColor: 'transparent' ,alignItems:direction.start}} >
+                    <View style={{ width: '70%', height: '100%', justifyContent: "center", backgroundColor: 'transparent', alignItems: direction.start }} >
 
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
                             {Languages.Google}
@@ -87,29 +101,29 @@ function setteing() {
                 </TouchableOpacity>
 
 
-                <TouchableOpacity style={[styles.itemContainer,{flexDirection: direction.direction}]} lightColor="#eee" darkColor="#404040">
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040">
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
                         <Image
                             source={require("../../src/assets/facebook.png")}
                             style={{ width: 30, height: 30 }} />
 
                     </View>
-                    <View style={{ width: '70%', height: '100%', justifyContent: "center", backgroundColor: 'transparent' ,alignItems:direction.start}} >
+                    <View style={{ width: '70%', height: '100%', justifyContent: "center", backgroundColor: 'transparent', alignItems: direction.start }} >
 
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                        {Languages.Facebook}
+                            {Languages.Facebook}
                         </Text>
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.itemContainer,{flexDirection: direction.direction}]} lightColor="#eee" darkColor="#404040">
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040">
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
                         <Image
                             source={require("../../src/assets/phone.png")}
                             style={{ width: 30, height: 30 }} />
 
                     </View>
-                    <View style={{ width: '70%', height: '100%', justifyContent: "center", backgroundColor: 'transparent' ,alignItems:direction.start}} >
+                    <View style={{ width: '70%', height: '100%', justifyContent: "center", backgroundColor: 'transparent', alignItems: direction.start }} >
 
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
                             {Languages.Phone}
@@ -161,7 +175,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 5,
-        marginTop:20
+        marginTop: 20
     },
 })
 

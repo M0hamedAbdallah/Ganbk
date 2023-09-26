@@ -1,7 +1,7 @@
 import Checkbox from 'expo-checkbox';
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ImageEdit } from "../../components/Themed";
-import { Platform, Image, StyleSheet, useColorScheme, Animated, KeyboardAvoidingView, TextInput, SafeAreaView, ke, Alert, View as V, TouchableOpacity as T, I18nManager } from 'react-native';
+import { Platform, Image, StyleSheet, useColorScheme, Animated, KeyboardAvoidingView, TextInput, SafeAreaView, ke, Alert, View as V, TouchableOpacity as T, I18nManager, Pressable } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, router } from 'expo-router';
 import MultipleSelectList from '../../src/components/MultipleSelectList.js';
@@ -10,6 +10,9 @@ import lang from '../../src/lang/words';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { EventRegister } from 'react-native-event-listeners';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from "@react-native-community/datetimepicker";
+
 
 export default function DuplexForSale({ id, from }) {
     const color = useColorScheme();
@@ -33,6 +36,8 @@ export default function DuplexForSale({ id, from }) {
     const [Furnished, setFurnished] = useState(0);
     const [PaymentOption, setPaymentOption] = useState(0);
     const [DeliveryTerm, setDeliveryTerm] = useState(0);
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
     const [theProblem, setTheProblem] = useState({
         Photo: false,
         Price: false,
@@ -291,6 +296,10 @@ export default function DuplexForSale({ id, from }) {
         }
     },)
 
+    useEffect(() => {
+        setTheProblem(theProblem);
+    }, [theProblem]);
+
     const getTextInputProps = (v) => {
         const isRTL = isTextRTL(v) || ((v === '' && Languages.lang === 'ar') ? true : false);
         return {
@@ -317,6 +326,241 @@ export default function DuplexForSale({ id, from }) {
                 </Text>
             );
         }
+    }
+
+    const Check = async () => {
+        let theValue = true;
+        if (images.length == 0) {
+            theProblem.Photo = true;
+            theValue = false;
+        } else {
+            theProblem.Photo = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Price === '') {
+            theProblem.Price = true;
+            theValue = false;
+        } else {
+            theProblem.Price = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (type == 0) {
+            theProblem.Type = true;
+            theValue = false;
+        } else {
+            theProblem.Type = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (downPayment == 0) {
+            theProblem.Downpayment = true;
+            theValue = false;
+        } else {
+            theProblem.Downpayment = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Area == 0) {
+            theProblem.Area = true;
+            theValue = false;
+        } else {
+            theProblem.Area = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (amenities.length == 0) {
+            theProblem.Amenities = true;
+            theValue = false;
+        } else {
+            theProblem.Amenities = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (bedrooms == "") {
+            theProblem.Bedrooms = true;
+            theValue = false;
+        } else {
+            theProblem.Bedrooms = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (bathrooms == "") {
+            theProblem.Bathrooms = true;
+            theValue = false;
+        } else {
+            theProblem.Bathrooms = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (level == "") {
+            theProblem.Level = true;
+            theValue = false;
+        } else {
+            theProblem.Level = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Furnished == 0) {
+            theProblem.Furnished = true;
+            theValue = false;
+        } else {
+            theProblem.Furnished = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (PaymentOption == 0) {
+            theProblem.PaymentOption = true;
+            theValue = false;
+        } else {
+            theProblem.PaymentOption = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (DeliveryDate == '') {
+            theProblem.DeliveryDate = true;
+            theValue = false;
+        } else {
+            theProblem.DeliveryDate = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (DeliveryTerm == 0) {
+            theProblem.DeliveryTerm = true;
+            theValue = false;
+        } else {
+            theProblem.DeliveryTerm = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Location == '') {
+            theProblem.Location = true;
+            theValue = false;
+        } else {
+            theProblem.Location = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Adtitle == '') {
+            theProblem.Adtitle = true;
+            theValue = false;
+        } else {
+            theProblem.Adtitle = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Describewhatyouareselling == '') {
+            theProblem.Describewhatyouareselling = true;
+            theValue = false
+        }
+        else {
+            theProblem.Describewhatyouareselling = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (theValue) {
+            const TypeVar = TypeFunction();
+            const FurnishedVar = FurnishedFunction();
+            const PaymentOptionVar = PaymentOptionFunction();
+            const DeliveryTermVar = DeliveryTermFunction();
+            const data = {
+                Photo: images,
+                Price: Price,
+                Negotiable: isChecked,
+                Type: TypeVar,
+                DownPayment: downPayment,
+                Area: Area,
+                Amenities: amenities,
+                Bedrooms: bedrooms,
+                Bathrooms: bathrooms,
+                Level: level,
+                Furnished: FurnishedVar,
+                PaymentOption: PaymentOptionVar,
+                DeliveryDate: DeliveryDate,
+                DeliveryTerm: DeliveryTermVar,
+                Location: Location,
+                Adtitle: Adtitle,
+                Describewhatyouareselling: Describewhatyouareselling,
+                date: new Date().getDate(),
+                month: new Date().getMonth() + 1,
+                year: new Date().getFullYear(),
+                hours: new Date().getHours(),
+                min: new Date().getMinutes(),
+                sec: new Date().getSeconds(),
+            }
+            await AsyncStorage.setItem("@Data", JSON.stringify(data));
+            router.push('/Confirm');
+        }
+
+        setvalueImage(valueImage);
+        setvalueImage(!valueImage);
+    }
+
+    const TypeFunction = () => {
+        if (type == 1) { return 'APARTMENT' }
+        if (type == 2) { return 'DUPLEX' }
+        if (type == 3) { return 'PENTHOUSE' }
+        if (type == 4) { return 'STUDIO' }
+    }
+
+    const FurnishedFunction = () => {
+        if (Furnished == 1) { return 'NO' }
+        if (Furnished == 2) { return 'YES' }
+    }
+
+    const PaymentOptionFunction = () => {
+        if (PaymentOption == 1) { return 'CASH' }
+        if (PaymentOption == 2) { return 'CASHORINSTALLMENT' }
+        if (PaymentOption == 3) { return 'INSTALLMENT' }
+    }
+
+    const DeliveryTermFunction = () => {
+        if (DeliveryTerm == 1) { return 'FINISHED' }
+        if (DeliveryTerm == 2) { return 'NOTFINISHED' }
+        if (DeliveryTerm == 3) { return 'CORESHELL' }
+        if (DeliveryTerm == 4) { return 'SEMIFINISHED' }
+    }
+
+    const toggleDatepicker = () => {
+        setShowPicker(!showPicker)
+    }
+
+    const onChange = ({ type }, selectedDate) => {
+        if (type == 'set') {
+            const currentDate = selectedDate;
+            setDate(currentDate);
+            if(Platform.OS === 'android'){
+                toggleDatepicker();
+                setDeliveryDate(formatDate(currentDate));
+            }
+        } else {
+            toggleDatepicker();
+        }
+    }
+
+    const formatDate = (rawDate) => {
+        let date = new Date(rawDate);
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day =   date.getDate();
+        return (day+'/'+month+'/'+year);
     }
 
     return (
@@ -418,7 +662,7 @@ export default function DuplexForSale({ id, from }) {
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Languages.price}
+                                        {Languages.price}*
                                     </Text>
                                 </View>
 
@@ -462,11 +706,11 @@ export default function DuplexForSale({ id, from }) {
                                     <Text style={styles.paragraph}>{Languages.Negotiable}</Text>
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Type)?15:0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Type) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Languages.Type}
+                                        {Languages.Type}*
                                     </Text>
                                 </View>
                                 <View style={{ width: '90%', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
@@ -554,7 +798,7 @@ export default function DuplexForSale({ id, from }) {
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Languages.Area}
+                                        {Languages.Area}*
                                     </Text>
                                 </View>
                                 <View style={{ width: "90%", borderRadius: 6 }}>
@@ -629,7 +873,7 @@ export default function DuplexForSale({ id, from }) {
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Languages.Bedrooms}
+                                        {Languages.Bedrooms}*
                                     </Text>
                                 </View>
                                 <View style={{ width: "90%" }}>
@@ -727,7 +971,7 @@ export default function DuplexForSale({ id, from }) {
                                 }
                             </View>
 
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Furnished)?15:0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Furnished) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -764,7 +1008,7 @@ export default function DuplexForSale({ id, from }) {
                                     }
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption)?15:0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -808,44 +1052,57 @@ export default function DuplexForSale({ id, from }) {
                                     }
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.DeliveryDate)?15:0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.DeliveryDate) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
                                         {Languages.DeliveryDate}
                                     </Text>
                                 </View>
-                                <View style={{ width: "90%", borderRadius: 6 }}>
-                                    <TextInput style={{
-                                        width: "100%",
-                                        height: 45,
-                                        paddingLeft: 10,
-                                        paddingRight: 10,
-                                        borderColor: 'gray',
-                                        borderRadius: 5,
-                                        borderWidth: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: (color == 'dark') ? 'white' : 'black'
-                                    }}
-                                        value={DeliveryDate}
-                                        onChangeText={setDeliveryDate}
-                                        {...getTextInputProps(DeliveryDate)}
-                                    />
-                                    {
-                                        (theProblem.DeliveryDate) ?
-                                            (
-                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
-                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
-                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
-                                                        لم تقم بملئ هذا الحقل
-                                                    </Text>
-                                                </View>
-                                            ) : null
-                                    }
-                                </View>
+                                {!showPicker && (<Pressable
+                                        onPress={toggleDatepicker}
+                                        style={{width:"90%"}}
+                                >
+                                    <View style={{ width: "100%", borderRadius: 6 }}>
+                                        <TextInput style={{
+                                            width: "100%",
+                                            height: 45,
+                                            paddingLeft: 10,
+                                            paddingRight: 10,
+                                            borderColor: 'gray',
+                                            borderRadius: 5,
+                                            borderWidth: 1,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: (color == 'dark') ? 'white' : 'black'
+                                        }}
+                                            value={DeliveryDate}
+                                            onChangeText={setDeliveryDate}
+                                            {...getTextInputProps(DeliveryDate)}
+                                            editable={false}
+                                        />
+                                        {
+                                            (theProblem.DeliveryDate) ?
+                                                (
+                                                    <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                        <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                        <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                            لم تقم بملئ هذا الحقل
+                                                        </Text>
+                                                    </View>
+                                                ) : null
+                                        }
+
+                                    </View>
+                                </Pressable>)}
+                                {showPicker && (<DateTimePicker
+                                    mode='date'
+                                    display='spinner'
+                                    value={date}
+                                    onChange={onChange}
+                                />)}
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginBottom: (theProblem.DeliveryTerm)?15:0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginBottom: (theProblem.DeliveryTerm) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -884,7 +1141,7 @@ export default function DuplexForSale({ id, from }) {
                                         </TouchableOpacity>
                                     </ScrollView>
                                     {
-                                        (theProblem.Price) ?
+                                        (theProblem.DeliveryTerm) ?
                                             (
                                                 <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5, marginBottom: 10, transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
                                                     <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
@@ -896,7 +1153,7 @@ export default function DuplexForSale({ id, from }) {
                                     }
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 90, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Location)?15:0 }}>
+                            <View style={{ width: "100%", height: 90, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Location) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -1004,7 +1261,7 @@ export default function DuplexForSale({ id, from }) {
                     </View>
                     <View style={{ width: '100%', height: "10%", justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 0, }}>
                         <TouchableOpacity style={styles.ButtonContainer} onPress={() => {
-                            // router.push('/Support')
+                            Check();
                         }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: "white" }}>
                                 {Languages.next}

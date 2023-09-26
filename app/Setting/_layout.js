@@ -1,13 +1,12 @@
 import { Stack, router } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { I18nManager, Image , TouchableOpacity, useColorScheme  ,View} from "react-native";
-import { Text } from "../../components/Themed";
 import WordsContext from "../../src/lang/wordsContext";
-
+import { Text } from "../../components/Themed";
+import { useColorScheme, I18nManager, View, Image, TouchableOpacity } from 'react-native';
 const StackLayout = () => {
+    const [appIsReady, setAppIsReady] = useState(false);
     const Languages = useContext(WordsContext);
     const colorScheme = useColorScheme();
-    const [appIsReady, setAppIsReady] = useState(false);
     useEffect(() => {
         setAppIsReady(true);
     })
@@ -35,13 +34,13 @@ const StackLayout = () => {
                 headerTitle: () => {
                     return <View style={{ width: "85%", marginLeft: 23 }}>
                         <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                            {Languages.Profile}
+                            {Languages.Settings}
                         </Text>
                     </View>
                 },
-                headerBackVisible: (I18nManager.isRTL)?true:false
+                headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
-            <Stack.Screen name="EditProfile" options={{
+            <Stack.Screen name="SingOut" options={{
                 headerLeft: () => {
                     if (Languages.lang === 'en') {
                         return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
@@ -59,11 +58,11 @@ const StackLayout = () => {
                 headerTitle: () => {
                     return <View style={{ width: "85%", marginLeft: 23 }}>
                         <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                            {Languages.EditProfile}
+                            {Languages.Manageaccount}
                         </Text>
                     </View>
                 },
-                headerBackVisible: (I18nManager.isRTL)?true:false
+                headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
         </Stack>
     )

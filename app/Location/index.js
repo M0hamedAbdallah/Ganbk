@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ImageEdit } from "../../components/Themed";
-// import * as  Location from 'expo-location';
+import * as  Location from 'expo-location';
 import WordsContext from '../../src/lang/wordsContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
@@ -16,6 +16,7 @@ export default function location() {
     const [load, setLoad] = useState(false);
     const [backLocation, setBacklocation] = useState([]);
     const [memoryLocation, setMemoryLocation] = useState([]);
+    const [TheLocationSelected, setTheLocationSelected] = useState([]);
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
     const LocationAr = [
@@ -75,7 +76,7 @@ export default function location() {
         // { name: "Suez", val: "Suez, Egypt" }
     ]
     useEffect(() => {
-        
+
     }, []);
 
 
@@ -161,6 +162,8 @@ export default function location() {
                         console.log(snapshot.docs[0].data().ar[value]);
                         setlocation(snapshot.docs[0].data().ar[value]);
                         setMemoryLocation(snapshot.docs[0].data().ar[value]);
+                        setBacklocation([...backLocation, ...[snapshot.docs[0].data().ar[value]]]);
+                        setTheLocationSelected([...TheLocationSelected, ...[[{ name: value }]]]);
                     }
                 }
                 if (Languages.lang === 'en') {
@@ -168,6 +171,8 @@ export default function location() {
                         console.log(snapshot.docs[0].data().en.value);
                         console.log(snapshot.docs[0].data().en[value]);
                         setMemoryLocation(snapshot.docs[0].data().en[value]);
+                        setBacklocation([...backLocation, ...[snapshot.docs[0].data().ar[value]]]);
+                        setTheLocationSelected([...TheLocationSelected, ...[[{ name: value }]]]);
                     }
                 }
             } catch (error) {
@@ -186,13 +191,20 @@ export default function location() {
             (<TouchableOpacity style={{ width: '100%', alignItems: 'center', height: 30, marginTop: 5, marginBottom: 5, justifyContent: 'center', flexDirection: direction.direction }} key={key} onPress={() => {
                 if (value.val.length != 0) {
                     setBacklocation([...backLocation, ...[location]]);
+                    setTheLocationSelected([...TheLocationSelected, ...[[{ name: value.name }]]]);
                     setlocation(value.val);
                 } else {
                     if (val[0] == undefined) {
-                        const subregion =  ((backLocation.pop())[0]).name || "" ;
-                        const region = ((backLocation.pop())[0]).name || "";
-                        const place = value.name ;
-                        EventRegister.emit('Location', (region + ' , ' + subregion + ' , ' + place).toString());
+                        let theloc = '';
+                        for (let index = 0; index < TheLocationSelected.length; index++) {
+                            if(index == 0){
+                                theloc = ((TheLocationSelected[index])[0]).name + theloc;
+                            }else{
+                                theloc = theloc+ ' , ' + ((TheLocationSelected[index])[0]).name ;
+                            }
+                        }
+                        const place = value.name;
+                        EventRegister.emit('Location', (theloc+' , '+place).toString());
                         const list = setTimeout(() => {
                             setLoad(false);
                             router.back();
@@ -201,10 +213,16 @@ export default function location() {
                             clearTimeout(list)
                         }
                     } else {
-                        const subregion =  ((backLocation.pop())[0]).name || "";
-                        const region = ((backLocation.pop())[0]).name || "";
-                        const place = value.name ;
-                        EventRegister.emit('Loc', (region + ' , ' + subregion + ' , ' + place).toString());
+                        let theloc = '';
+                        for (let index = 0; index < TheLocationSelected.length; index++) {
+                            if(index == 0){
+                                theloc = ((TheLocationSelected[index])[0]).name + theloc;
+                            }else{
+                                theloc = theloc+ ' , ' + ((TheLocationSelected[index])[0]).name ;
+                            }
+                        }
+                        const place = value.name;
+                        EventRegister.emit('Loc', (theloc+' , '+place).toString());
                         const list = setTimeout(() => {
                             setLoad(false);
                             router.back();
@@ -239,19 +257,16 @@ export default function location() {
     }
 
     const Back = () => {
-        console.log(location);
-        console.log(backLocation);
         try {
             if (backLocation.length > 0) {
+                TheLocationSelected.pop();
                 setlocation(backLocation.pop());
             } else {
                 setlocation([]);
             }
         } catch (err) {
-            console.log(err);
+            console.log(err + 'ghahfsda');
         }
-        console.log(location);
-        console.log(backLocation);
     }
 
     if (location.length == 0) {

@@ -55,7 +55,7 @@ export default function Account() {
             )
         } else {
             return (
-                <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <View style={{ flexDirection: "column", alignItems: "center" ,maxWidth:"50%"}}>
                     <Text style={{ fontWeight: "900", fontSize: 20 }}>
                         {user.displayName}
                     </Text>
