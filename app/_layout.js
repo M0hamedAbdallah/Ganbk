@@ -94,7 +94,7 @@ export default function RootLayout() {
                   </Text>
                 </View>
               },
-              headerBackVisible: (I18nManager.isRTL)?true:false
+              headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
             <Stack.Screen name="Confirm" options={{
               headerLeft: () => {
@@ -118,14 +118,14 @@ export default function RootLayout() {
                   </Text>
                 </View>
               },
-              headerBackVisible: (I18nManager.isRTL)?true:false
+              headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
             <Stack.Screen name="Setting" options={{
-              headerShown:false
+              headerShown: false
             }} />
             <Stack.Screen name="Language" options={{
               headerLeft: () => {
-                if (i18n.t('lang') === 'en' ) {
+                if (i18n.t('lang') === 'en') {
                   return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
                     <Image source={require('../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
                   </TouchableOpacity>
@@ -145,7 +145,7 @@ export default function RootLayout() {
                   </Text>
                 </View>
               },
-              headerBackVisible: (I18nManager.isRTL)?true:false
+              headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
             <Stack.Screen name="Details" options={{ headerShown: false }} />
             <Stack.Screen name="Profile" options={{ headerShown: false }} />
@@ -171,7 +171,7 @@ export default function RootLayout() {
                   </Text>
                 </View>
               },
-              headerBackVisible: (I18nManager.isRTL)?true:false
+              headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
             <Stack.Screen name="LoadingScreen" options={{ headerShown: false }} />
             <Stack.Screen name="Location" options={{
@@ -196,7 +196,7 @@ export default function RootLayout() {
                   </Text>
                 </View>
               },
-              headerBackVisible: (I18nManager.isRTL)?true:false
+              headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
             <Stack.Screen name="Search" options={{
               headerLeft: () => {
@@ -220,8 +220,10 @@ export default function RootLayout() {
                   </Text>
                 </View>
               },
-              headerBackVisible: (I18nManager.isRTL)?true:false
+              headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
+            <Stack.Screen name="Data" options={{ headerShown:false }} />
+            <Stack.Screen name="ChatUser" options={{ headerShown:false }} />
           </Stack>
         </DirectionContext.Provider>
       </WordsContext.Provider>

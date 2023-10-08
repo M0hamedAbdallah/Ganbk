@@ -5,11 +5,11 @@ import { StyleSheet, Image, TouchableOpacity, TextInput, useColorScheme, Pressab
 import auth from "../../firebase/config/firebase-config";
 import { Redirect, router } from "expo-router";
 import * as Google from '@react-native-google-signin/google-signin'
-import { signOut, onAuthStateChanged, updateProfile } from "firebase/auth";
+import { signOut, onAuthStateChanged, updateProfile, updatePhoneNumber } from "firebase/auth";
 import WordsContext from "../../src/lang/wordsContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config/firebase-config";
-import DateTimePicker from "@react-native-community/datetimepicker";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 
 
 export default function index() {
@@ -55,6 +55,23 @@ export default function index() {
             displayName: Name,
             phoneNumber: Phone
         })
+        // await updatePhoneNumber(auth,{})
+        // FirebaseAuth.instance.verifyPhoneNumber(
+        //     phoneNumber: phoneNumber,
+        //     timeout: const Duration(minutes: 2),
+        //     verificationCompleted: (credential) async {
+        //       await (await FirebaseAuth.instance.currentUser()).updatePhoneNumber(credential);
+        //       // either this occurs or the user needs to manually enter the SMS code
+        //     },
+        //     verificationFailed: null,
+        //     codeSent: (verificationId, [forceResendingToken]) async {
+        //       String smsCode;
+        //       // get the SMS code from the user somehow (probably using a text field)
+        //       final AuthCredential credential =
+        //         PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: smsCode);
+        //       await (await FirebaseAuth.instance.currentUser()).updatePhoneNumber(credential);
+        //     },
+        //     codeAutoRetrievalTimeout: null);
         router.replace('/Home');
         router.back();
     }

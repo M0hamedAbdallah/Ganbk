@@ -1,7 +1,6 @@
 
 import { Link, Tabs, router } from 'expo-router';
 import { Pressable, useColorScheme, Image } from 'react-native';
-import * as Localization from 'expo-localization';
 import Colors from '../../constants/Colors';
 import { useContext, useEffect, useState } from 'react';
 import WordsContext from '../../src/lang/wordsContext'
@@ -25,20 +24,21 @@ export default function TabLayout() {
   if (!appIsReady) {
     return null;
   }
-  if ((direction.lang == 'en' )) {
+  if ((direction.lang == 'en')) {
     return (
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           tabBarLabelStyle: { fontWeight: "bold", fontSize: 10 },
-          tabBarStyle: { height: 60, paddingBottom: 10 ,position:"relative",bottom:0}
+          tabBarStyle: { height: 60, paddingBottom: 10, position: "relative", bottom: 0 }
         }}>
         <Tabs.Screen
           name="Home"
           options={{
             title: Languages.home,
             tabBarIcon: ({ color }) => <Image source={require('../../src/assets/home.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
+            headerShown: false,
+
           }}
         />
         <Tabs.Screen
@@ -85,7 +85,7 @@ export default function TabLayout() {
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           tabBarLabelStyle: { fontWeight: "bold", fontSize: 10 },
-          tabBarStyle: { height: 60, paddingBottom: 10 ,position:"relative",bottom:0}
+          tabBarStyle: { height: 60, paddingBottom: 10, position: "relative", bottom: 0 }
         }}>
         <Tabs.Screen
           name="Account"

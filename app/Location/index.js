@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ImageEdit } from "../../components/Themed";
-import * as  Location from 'expo-location';
+// import * as  Location from 'expo-location';
 import WordsContext from '../../src/lang/wordsContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
@@ -195,6 +195,7 @@ export default function location() {
                     setlocation(value.val);
                 } else {
                     if (val[0] == undefined) {
+                        setLoad(true);
                         let theloc = '';
                         for (let index = 0; index < TheLocationSelected.length; index++) {
                             if(index == 0){
@@ -214,6 +215,7 @@ export default function location() {
                         }
                     } else {
                         let theloc = '';
+                        setLoad(true);
                         for (let index = 0; index < TheLocationSelected.length; index++) {
                             if(index == 0){
                                 theloc = ((TheLocationSelected[index])[0]).name + theloc;

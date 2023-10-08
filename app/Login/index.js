@@ -30,10 +30,11 @@ function setteing() {
         await userInfo.then(async (user) => {
             const UserRef = doc(db, "Users", user.user.uid);
             const docSnap = await getDoc(UserRef);
-            if(docSnap.data() == undefined){
+            if (docSnap.data() == undefined) {
                 await setDoc(UserRef, {
                     firstName: user["_tokenResponse"].firstName,
                     email: user.user.email,
+                    ImageUser: user.user.photoURL,
                     phone: '',
                     BirthDate: '',
                     Love: [],

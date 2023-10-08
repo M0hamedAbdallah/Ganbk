@@ -72,66 +72,98 @@ export default function Search() {
         } else {
             setvalue2(0)
         }
-        
+
         return Promise.all(uploadTasks);
     }
+
 
     const AdToAdmin = async () => {
         const UserRef = doc(db, "DuplexForSaleAdmin", '0');
         const docSnap = await getDoc(UserRef);
-        console.log(docSnap.data().number)
+        console.log(docSnap.data().number);
         console.log(arr)
         if (docSnap.data() != undefined) {
-            const num = (docSnap.data().number + 1);
-            const UserRef2 = doc(db, "DuplexForSaleAdmin", num.toString());
-            await setDoc(UserRef2, {
-                uid: user.uid,
-                phone: Phone,
-                Photo: arr,
-                Price: Data.Price,
-                Negotiable: Data.Negotiable,
-                Type: Data.Type,
-                DownPayment: Data.DownPayment,
-                Area: Data.Area,
-                Amenities: Data.Amenities,
-                Bedrooms: Data.Bedrooms,
-                Bathrooms: Data.Bathrooms,
-                Level: Data.Level,
-                Furnished: Data.Furnished,
-                PaymentOption: Data.PaymentOption,
-                DeliveryDate: Data.DeliveryDate,
-                DeliveryTerm: Data.DeliveryTerm,
-                Location: Data.Location,
-                Adtitle: Data.Adtitle,
-                Describewhatyouareselling: Data.Describewhatyouareselling,
-                Date: Data.date + '/' + Data.month + '/' + Data.year
-            });
-            updateDoc(UserRef, {
-                number: num
-            });
+            const Deleted = docSnap.data().Deleted;
+            const DataList = docSnap.data().DataList;
+            if (Deleted.length == 0) {
+                const num = (docSnap.data().number + 1);
+                const UserRef2 = doc(db, "DuplexForSaleAdmin", num.toString());
+                await setDoc(UserRef2, {
+                    uid: user.uid,
+                    phone: Phone,
+                    Photo: arr,
+                    Price: Data.Price,
+                    Negotiable: Data.Negotiable,
+                    Type: Data.Type,
+                    DownPayment: Data.DownPayment,
+                    Area: Data.Area,
+                    Amenities: Data.Amenities,
+                    Bedrooms: Data.Bedrooms,
+                    Bathrooms: Data.Bathrooms,
+                    Level: Data.Level,
+                    Furnished: Data.Furnished,
+                    PaymentOption: Data.PaymentOption,
+                    DeliveryDate: Data.DeliveryDate,
+                    DeliveryTerm: Data.DeliveryTerm,
+                    Location: Data.Location,
+                    Adtitle: Data.Adtitle,
+                    Describewhatyouareselling: Data.Describewhatyouareselling,
+                    Date: Data.date + '/' + Data.month + '/' + Data.year
+                });
+                await updateDoc(UserRef, {
+                    number: num,
+                    DataList: [...DataList,num]
+                });
+            }else{
+                const num = (docSnap.data().number + 1);
+                const val = Deleted.sort(function(a, b){return a - b});
+                const UserRef2 = doc(db, "DuplexForSaleAdmin", (val[0]).toString());
+                await setDoc(UserRef2, {
+                    uid: user.uid,
+                    phone: Phone,
+                    Photo: arr,
+                    Price: Data.Price,
+                    Negotiable: Data.Negotiable,
+                    Type: Data.Type,
+                    DownPayment: Data.DownPayment,
+                    Area: Data.Area,
+                    Amenities: Data.Amenities,
+                    Bedrooms: Data.Bedrooms,
+                    Bathrooms: Data.Bathrooms,
+                    Level: Data.Level,
+                    Furnished: Data.Furnished,
+                    PaymentOption: Data.PaymentOption,
+                    DeliveryDate: Data.DeliveryDate,
+                    DeliveryTerm: Data.DeliveryTerm,
+                    Location: Data.Location,
+                    Adtitle: Data.Adtitle,
+                    Describewhatyouareselling: Data.Describewhatyouareselling,
+                    Date: Data.date + '/' + Data.month + '/' + Data.year
+                });
+                DataList.push((val[0]).toString());
+                DataList.sort(function(a, b){return a - b});
+                val.splice(0,1);
+                await updateDoc(UserRef, {
+                    number: num,
+                    DataList: DataList,
+                    Deleted: val
+                });
+            }
         }
         setLoad(false);
     }
 
-    const UploadImage = async () => {
+    const Upload = async () => {
         if (Phone != '' && Phone != null && Phone != undefined) {
             setLoad(true);
-            await ImageUri().then((results)=>{
-                setLoad(false)
-                alert(Languages.ImageUpload);
+            await ImageUri().then(async (results) => {
+                await AdToAdmin().then((res) => {
+                    setLoad(false);
+                    alert(Languages.AdsUpload);
+                    router.replace({ pathname: '/Home' });
+                    router.back();
+                });
             });
-        } else {
-            alert(Languages.PhoneMising)
-        }
-    }
-    const UploadData= async () => {
-        if (Phone != '' && Phone != null && Phone != undefined) {
-            setLoad(true);
-            await AdToAdmin();
-            setLoad(false)
-            alert(Languages.AdsUpload);
-            router.replace({ pathname: '/Home' })
-            router.back();
         } else {
             alert(Languages.PhoneMising)
         }
@@ -308,26 +340,15 @@ export default function Search() {
                         </View>
                     </View>
                 </ScrollView>
-                {
-                    (!toggle) ? (
-                        <TouchableOpacity style={{ backgroundColor: 'red', height: 40, alignItems: 'center', justifyContent: 'center', width: "90%", borderRadius: 5, marginBottom: 20, marginTop: 20 }} onPress={() => {
-                            UploadImage();
-                            setToggle(!toggle);
-                        }}>
-                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                Upload Image
-                            </Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity style={{ backgroundColor: 'red', height: 40, alignItems: 'center', justifyContent: 'center', width: "90%", borderRadius: 5, marginBottom: 20, marginTop: 20 }} onPress={() => {
-                            UploadData();
-                        }}>
-                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                Upload Data
-                            </Text>
-                        </TouchableOpacity>
-                    )
-                }
+
+                <TouchableOpacity style={{ backgroundColor: 'red', height: 40, alignItems: 'center', justifyContent: 'center', width: "90%", borderRadius: 5, marginBottom: 20, marginTop: 20 }} onPress={() => {
+                    Upload();
+                }}>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                        Upload
+                    </Text>
+                </TouchableOpacity>
+
                 {
                     load ? (
                         <View style={{ height: "100%", width: "100%", top: 0, bottom: 0, position: 'absolute', backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>

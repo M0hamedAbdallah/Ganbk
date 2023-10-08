@@ -13,20 +13,20 @@ export default function Items() {
             img: home,
             name: 'Properties',
         },
-        {
-            img: car,
-            name: 'cars',
-        },
+        // {
+        //     img: car,
+        //     name: 'cars',
+        // },
     ]);
     const [item2, setItem2] = useState([
         {
             img: car,
             name: 'cars',
         },
-        {
-            img: home,
-            name: 'Properties',
-        },
+        // {
+        //     img: home,
+        //     name: 'Properties',
+        // },
     ]);
     return (
         <ScrollView horizontal={true} directionalLockEnabled={true} style={{ width: "100%", flexDirection: 'row', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }} >

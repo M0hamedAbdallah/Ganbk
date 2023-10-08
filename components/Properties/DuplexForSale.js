@@ -11,7 +11,7 @@ import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { EventRegister } from 'react-native-event-listeners';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from "@react-native-community/datetimepicker";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 
 
 export default function DuplexForSale({ id, from }) {
@@ -1240,6 +1240,7 @@ export default function DuplexForSale({ id, from }) {
                                         justifyContent: 'center',
                                         color: (color == 'dark') ? 'white' : 'black'
                                     }}
+                                        multiline={true}
                                         value={Describewhatyouareselling}
                                         onChangeText={setDescribewhatyouareselling}
                                         {...getTextInputProps(Describewhatyouareselling)}

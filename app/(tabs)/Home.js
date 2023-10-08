@@ -29,7 +29,7 @@ export default function Home() {
     const [imageCount, setImageCount] = useState(0);
     const slideLeft = new Animated.Value(imageCount);
     const [location, setlocation] = useState('Egypt');
-    const { width } = Dimensions.get('screen')
+    const { width } = Dimensions.get('screen');
     const color = useColorScheme();
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
@@ -90,7 +90,7 @@ export default function Home() {
 
 
     return (
-        <SafeAreaView style={[styles.container,{backgroundColor:color=='light'?'white':'black'}]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: color == 'light' ? 'white' : 'black' }]}>
             <ScrollView style={styles.container}>
                 <View style={{
                     width: "100%",
@@ -114,7 +114,7 @@ export default function Home() {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{ width: "96%", alignItems: 'center', marginTop:5, flexDirection: direction.direction, justifyContent: 'space-between' }} >
+                    <View style={{ width: "96%", alignItems: 'center', marginTop: 5, flexDirection: direction.direction, justifyContent: 'space-between' }} >
 
                         <TouchableOpacity style={{ width: "60%", height: 45, alignItems: 'center', justifyContent: "space-evenly", borderRadius: 8, flexDirection: direction.direction, borderColor: (color == 'dark') ? 'white' : 'black', borderWidth: 2 }}
                             onPress={() => {
@@ -175,7 +175,7 @@ export default function Home() {
                     <View style={{
                         width: "100%",
                         marginTop: 10,
-                        backgroundColor: "#ffffff"
+                        paddingBottom: 20
                     }}>
                         <View style={{
                             width: "100%",
@@ -184,7 +184,7 @@ export default function Home() {
                         }}>
                             <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
                                 <Text style={[styles.text, { fontSize: 20 }]}>
-                                    {Languages.VillasForSale}
+                                    {Languages.ApartmentsDuplexforSale}
                                 </Text>
                             </View>
                             <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>

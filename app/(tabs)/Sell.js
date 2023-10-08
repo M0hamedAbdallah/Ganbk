@@ -5,9 +5,10 @@ import { StyleSheet, Image, useColorScheme } from "react-native";
 import { router } from "expo-router";
 import wordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
+import auth from "../../firebase/config/firebase-config";
 
 function index() {
-    const colorScheme = useColorScheme(wordsContext);
+    const colorScheme = useColorScheme();
     const Lungaues = useContext(wordsContext);
     const direction = useContext(directionContext);
     function ImageLogo() {
@@ -33,7 +34,15 @@ function index() {
             <View style={{ flexDirection: "row", width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                 <ImageLogo />
             </View>
-            <TouchableOpacity onPress={()=> router.push('/Details/Properties')}>
+            <TouchableOpacity onPress={() => {
+                if(auth.currentUser){
+                    router.push('/Details/Properties');
+                }else{
+                    router.push('/Login');
+                }
+            }
+            }
+            >
                 <View style={{ flexDirection: direction.direction, alignItems: "center", justifyContent: "space-between", width: "100%", marginTop: 20 }}>
                     <View style={{ width: "20%", alignItems: "center", justifyContent: "center" }}>
                         <Image source={require('../../src/assets/HomeShape.png')} style={{ width: 50, height: 50 }} />
@@ -43,14 +52,14 @@ function index() {
                             {Lungaues.Properties}
                         </Text>
                     </View>
-                    <View style={{ width: "10%" ,alignItems:'center',transform:[{rotate:(Lungaues.lang=='en')?'0deg':'180deg'}]}}>
+                    <View style={{ width: "10%", alignItems: 'center', transform: [{ rotate: (Lungaues.lang == 'en') ? '0deg' : '180deg' }] }}>
                         <ImageEdit source={require('../../src/assets/right-arrow.png')} style={{ width: 15, height: 15 }}
                             lightColor="black"
                             darkColor="white" />
                     </View>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=> null}>
+            {/* <TouchableOpacity onPress={()=> null}>
                 <View style={{ flexDirection: direction.direction, alignItems: "center", justifyContent: "space-between", width: "100%", marginTop: 20 }}>
                     <View style={{ width: "20%", alignItems: "center", justifyContent: "center" }}>
                         <Image source={require('../../src/assets/car.png')} style={{ width: 50, height: 50 }} />
@@ -66,7 +75,7 @@ function index() {
                             darkColor="white" />
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     )
 }
