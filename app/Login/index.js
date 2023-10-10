@@ -10,6 +10,7 @@ import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
 import { db } from "../../firebase/config/firebase-config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { EventRegister } from "react-native-event-listeners";
 
 function setteing() {
     const colorScheme = useColorScheme();
@@ -24,30 +25,36 @@ function setteing() {
 
 
     async function onGoogleButtonPress() {
-        const { idToken } = await GoogleSignin.signIn();
-        const googleCredential = GoogleAuthProvider.credential(idToken);
-        const userInfo = signInWithCredential(auth, googleCredential);
-        await userInfo.then(async (user) => {
-            const UserRef = doc(db, "Users", user.user.uid);
-            const docSnap = await getDoc(UserRef);
-            if (docSnap.data() == undefined) {
-                await setDoc(UserRef, {
-                    firstName: user["_tokenResponse"].firstName,
-                    email: user.user.email,
-                    ImageUser: user.user.photoURL,
-                    phone: '',
-                    BirthDate: '',
-                    Love: [],
-                    MyAds: [],
-                    date: Date.now()
+        try {
+
+            const { idToken } = await GoogleSignin.signIn();
+            const googleCredential = GoogleAuthProvider.credential(idToken);
+            const userInfo = signInWithCredential(auth, googleCredential);
+            await userInfo.then(async (user) => {
+                const UserRef = doc(db, "Users", user.user.uid);
+                const docSnap = await getDoc(UserRef);
+                if (docSnap.data() == undefined) {
+                    await setDoc(UserRef, {
+                        firstName: user["_tokenResponse"].firstName,
+                        email: user.user.email,
+                        ImageUser: user.user.photoURL,
+                        phone: '',
+                        BirthDate: '',
+                        Love: [],
+                        MyAds: [],
+                        date: Date.now()
+                    });
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
                 });
-            }
-        })
-            .catch((err) => {
-                console.log(err);
-            });
-        router.replace('/Home');
-        router.back();
+            EventRegister.emit('ReLoad', Math.random() * 1000);
+            router.replace('/Home');
+            router.back();
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     function ImageLogo() {

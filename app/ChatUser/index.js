@@ -8,6 +8,7 @@ import WordsContext from '../../src/lang/wordsContext'
 import auth, { db, firebase } from '../../firebase/config/firebase-config'
 import { useEffect } from 'react'
 import { useLayoutEffect } from 'react'
+// import messaging from '@react-native-firebase/messaging'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
@@ -55,6 +56,24 @@ const index = () => {
         return load;
     }, [])
 
+
+    // const requestUserPermission = async () => { 
+    //     const authStatus = await messaging().requestPermission();
+    //     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL ;
+    //     if (enabled) {
+    //         console.log('some ' , authStatus);
+    //     }
+    // }
+
+    // useEffect(()=>{
+    //     if(requestUserPermission()){
+    //         messaging().getToken().then(token =>{
+    //             console.log(token);
+    //         })
+    //     }else{
+    //         console.log('dlffa ')
+    //     }
+    // })
 
     if (!appIsReady) {
         return null;

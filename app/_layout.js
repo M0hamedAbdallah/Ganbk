@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18n } from "i18n-js";
 import { EventRegister } from 'react-native-event-listeners';
 import auth from "../firebase/config/firebase-config.js";
+// import messaging from '@react-native-firebase/messaging';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const i18n = new I18n(Lang);
@@ -38,7 +39,22 @@ export default function RootLayout() {
     return () => check();
   })
 
-
+  useEffect(() => {
+    // messaging()
+    //   .getInitialNotification()
+    //   .then(remoteMessage => {
+    //     if (remoteMessage) {
+    //       console.log(
+    //         'Notification caused app to open from quit state:',
+    //         remoteMessage.notification,
+    //       );
+    //     }
+    //   });
+    // messaging().onNotificationOpenedApp(remoteMessage => {
+    //   console.log('here',
+    //     remoteMessage.notification,)
+    // })
+  })
 
   const getlang = async () => {
     try {
@@ -65,11 +81,11 @@ export default function RootLayout() {
 
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <WordsContext.Provider value={locale === 'en' ? Lang.en : Lang.ar}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme} >
+      <WordsContext.Provider value={locale === 'en' ? Lang.en : Lang.ar} >
         <DirectionContext.Provider value={(locale === 'en') ? ((!(I18nManager.isRTL)) ? direction.en : direction.ar) : ((I18nManager.isRTL) ? direction.en : direction.ar)}>
 
-          <Stack>
+          <Stack screenOptions={{}}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name='index' options={{ headerShown: false }} />
             <Stack.Screen name="Support" options={{
@@ -222,8 +238,8 @@ export default function RootLayout() {
               },
               headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
-            <Stack.Screen name="Data" options={{ headerShown:false }} />
-            <Stack.Screen name="ChatUser" options={{ headerShown:false }} />
+            <Stack.Screen name="Data" options={{ headerShown: false }} />
+            <Stack.Screen name="ChatUser" options={{ headerShown: false }} />
           </Stack>
         </DirectionContext.Provider>
       </WordsContext.Provider>
