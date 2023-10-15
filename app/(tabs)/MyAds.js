@@ -58,7 +58,7 @@ export default function MyAds() {
                                 From: 28 Oct 22
                             </Text>
                         </ReactView>
-                        <TouchableOpacity style={{ width: "10%" }} onPress={() => {
+                        <TouchableOpacity style={{ width: "10%" , alignItems : 'center'}} onPress={() => {
                             setLoad(true);
                         }}>
                             <ReactView style={{ width: 4, height: 4, borderRadius: 50, backgroundColor: 'black', marginBottom: 2 }} />
@@ -67,20 +67,20 @@ export default function MyAds() {
                         </TouchableOpacity>
                     </View>
                     <View style={{ width: "100%", flexDirection: direction.direction, justifyContent: 'space-between' }} >
-                        <View style={{ width: "52%" }}>
-                            <Image source={require('../../src/assets/house1.jpeg')} />
+                        <View style={{ width: "10%" }}>
+                            <Image source={require('../../src/assets/house1.jpeg')} style={{width:100,height:100}}/>
                         </View>
-                        <View style={{ width: "47%", justifyContent: 'space-between' }}>
+                        <ReactView style={{ width: "70%", justifyContent: 'space-between' }}>
                             <Text style={{ fontSize: 15, fontWeight: 'bold' }} numberOfLines={3}>
                                 some Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Data
                             </Text>
-                            <Text style={{ fontSize: 15, fontWeight: 'bold' }} numberOfLines={2}>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }} numberOfLines={1}>
                                 some Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Data
                             </Text>
                             <Text style={{ fontSize: 15, fontWeight: 'bold' }} numberOfLines={1}>
                                 some Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Datasome Data
                             </Text>
-                        </View>
+                        </ReactView>
                     </View>
                 </View>
                 {
@@ -88,11 +88,11 @@ export default function MyAds() {
                         <>
                             <ReactView style={{ height: "100%", width: "100%", top: 0, bottom: 0, position: 'absolute', backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
                             </ReactView>
-                            <ReactView style={{ width: "90%", height: 200, backgroundColor: "white", opacity: 1 }}>
+                            <ReactView style={{ width: "90%", height: 90, backgroundColor: "white", borderRadius:10 , padding:10 }}>
                                 <TouchableOpacity onPress={() => {
                                     setLoad(false);
                                 }}>
-                                    <ReactText>
+                                    <ReactText style={{fontSize:15 , fontWeight : 'bold'}}>
                                         Delete It
                                     </ReactText>
                                 </TouchableOpacity>
