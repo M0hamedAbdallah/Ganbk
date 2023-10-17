@@ -456,8 +456,6 @@ export default function DuplexForRent({ id, from }) {
         if (theValue) {
             const TypeVar = TypeFunction();
             const FurnishedVar = FurnishedFunction();
-            const PaymentOptionVar = PaymentOptionFunction();
-            const DeliveryTermVar = DeliveryTermFunction();
             const data = {
                 Photo: images,
                 Price: Price,
@@ -470,9 +468,7 @@ export default function DuplexForRent({ id, from }) {
                 Bathrooms: bathrooms,
                 Level: level,
                 Furnished: FurnishedVar,
-                PaymentOption: PaymentOptionVar,
                 DeliveryDate: DeliveryDate,
-                DeliveryTerm: DeliveryTermVar,
                 Location: Location,
                 Adtitle: Adtitle,
                 Describewhatyouareselling: Describewhatyouareselling,
