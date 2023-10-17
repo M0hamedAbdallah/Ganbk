@@ -34,7 +34,6 @@ export default function CommercialForSale({ id, from }) {
     const [type, setType] = useState(0);
     const [Furnished, setFurnished] = useState(0);
     const [PaymentOption, setPaymentOption] = useState(0);
-    const [DeliveryTerm, setDeliveryTerm] = useState(0);
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
     const [theProblem, setTheProblem] = useState({
@@ -50,7 +49,6 @@ export default function CommercialForSale({ id, from }) {
         Furnished: false,
         PaymentOption: false,
         DeliveryDate: false,
-        DeliveryTerm: false,
         Location: false,
         Adtitle: false,
         Describewhatyouareselling: false,
@@ -372,15 +370,6 @@ export default function CommercialForSale({ id, from }) {
                 theValue = true;
             }
         }
-        if (DeliveryTerm == 0) {
-            theProblem.DeliveryTerm = true;
-            theValue = false;
-        } else {
-            theProblem.DeliveryTerm = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (Location == '') {
             theProblem.Location = true;
             theValue = false;
@@ -413,7 +402,6 @@ export default function CommercialForSale({ id, from }) {
             const TypeVar = TypeFunction();
             const FurnishedVar = FurnishedFunction();
             const PaymentOptionVar = PaymentOptionFunction();
-            const DeliveryTermVar = DeliveryTermFunction();
             const data = {
                 Photo: images,
                 Price: Price,
@@ -422,13 +410,9 @@ export default function CommercialForSale({ id, from }) {
                 DownPayment: downPayment,
                 Area: Area,
                 Amenities: amenities,
-                Bedrooms: bedrooms,
-                Bathrooms: bathrooms,
-                Level: level,
                 Furnished: FurnishedVar,
                 PaymentOption: PaymentOptionVar,
                 DeliveryDate: DeliveryDate,
-                DeliveryTerm: DeliveryTermVar,
                 Location: Location,
                 Adtitle: Adtitle,
                 Describewhatyouareselling: Describewhatyouareselling,
@@ -448,13 +432,15 @@ export default function CommercialForSale({ id, from }) {
     }
 
     const TypeFunction = () => {
-        if (type == 1) { return 'CHALET' }
-        if (type == 2) { return 'DUPLEX' }
-        if (type == 3) { return 'PENTHOUSE' }
-        if (type == 4) { return 'STUDIO' }
-        if (type == 5) { return 'STANDALONEVILLA' }
-        if (type == 6) { return 'TOWNHOUSE' }
-        if (type == 7) { return 'TWINHOUSE' }
+        if (type == 1) { return 'CLINIC' }
+        if (type == 2) { return 'FACTORY' }
+        if (type == 3) { return 'FULLCOMMERCIALBUILDING' }
+        if (type == 4) { return 'GARAGE' }
+        if (type == 5) { return 'OFFICESPACE' }
+        if (type == 6) { return 'RESTAUTANTCAFE' }
+        if (type == 7) { return 'RETAIL' }
+        if (type == 8) { return 'WAREHOUSE' }
+        if (type == 9) { return 'OTHER' }
     }
 
     const FurnishedFunction = () => {
@@ -468,12 +454,6 @@ export default function CommercialForSale({ id, from }) {
         if (PaymentOption == 3) { return 'INSTALLMENT' }
     }
 
-    const DeliveryTermFunction = () => {
-        if (DeliveryTerm == 1) { return 'FINISHED' }
-        if (DeliveryTerm == 2) { return 'NOTFINISHED' }
-        if (DeliveryTerm == 3) { return 'CORESHELL' }
-        if (DeliveryTerm == 4) { return 'SEMIFINISHED' }
-    }
 
     const toggleDatepicker = () => {
         setShowPicker(!showPicker)
@@ -499,6 +479,7 @@ export default function CommercialForSale({ id, from }) {
         let day = date.getDate();
         return (day + '/' + month + '/' + year);
     }
+    
     return (
 
         <SafeAreaView style={{ flex: 1 }}>
@@ -644,63 +625,6 @@ export default function CommercialForSale({ id, from }) {
                                     <Text style={styles.paragraph}>{Languages.Negotiable}</Text>
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
-                                <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Type *
-                                    </Text>
-                                </View>
-                                <View style={{ width: '90%' }}>
-                                    <ScrollView horizontal={true} >
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                CLINIC
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                FACTORY
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                FULL COMMERCIAL BUILDING
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                GARAGE
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                OFFICE SPACE
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                RESTAURANT & CAFE
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                RETAIL
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                WAREHOUSE
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
-                                            <Text>
-                                                OTHER
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </ScrollView>
-                                </View>
-                            </View>
                             <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Type) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
@@ -714,49 +638,63 @@ export default function CommercialForSale({ id, from }) {
                                             setType(1);
                                         }}>
                                             <Text>
-                                                {Languages.CHALET}
+                                                {Languages.CLINIC}
                                             </Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 2) ? '#eb304f' : null }]} onPress={() => {
                                             setType(2);
                                         }}>
                                             <Text>
-                                                {Languages.DUPLEX}
+                                                {Languages.FACTORY}
                                             </Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 3) ? '#eb304f' : null }]} onPress={() => {
                                             setType(3);
                                         }}>
                                             <Text>
-                                                {Languages.PENTHOUSE}
+                                                {Languages.FULLCOMMERCIALBUILDING}
                                             </Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 4) ? '#eb304f' : null }]} onPress={() => {
                                             setType(4);
                                         }}>
                                             <Text>
-                                                {Languages.STUDIO}
+                                                {Languages.GARAGE}
                                             </Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 5) ? '#eb304f' : null }]} onPress={() => {
                                             setType(5);
                                         }}>
                                             <Text>
-                                                {Languages.STANDALONEVILLA}
+                                                {Languages.OFFICESPACE}
                                             </Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 6) ? '#eb304f' : null }]} onPress={() => {
                                             setType(6);
                                         }}>
                                             <Text>
-                                                {Languages.TOWNHOUSE}
+                                                {Languages.RESTAUTANTCAFE}
                                             </Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 7) ? '#eb304f' : null }]} onPress={() => {
                                             setType(7);
                                         }}>
                                             <Text>
-                                                {Languages.TWINHOUSE}
+                                                {Languages.RETAIL}
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 8) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(8);
+                                        }}>
+                                            <Text>
+                                                {Languages.WAREHOUSE}
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 9) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(9);
+                                        }}>
+                                            <Text>
+                                                {Languages.OTHER}
                                             </Text>
                                         </TouchableOpacity>
                                     </ScrollView>

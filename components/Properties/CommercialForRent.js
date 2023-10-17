@@ -1,132 +1,465 @@
 import Checkbox from 'expo-checkbox';
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from "../../components/Themed";
-import { Platform, Image, StyleSheet, useColorScheme, Animated, KeyboardAvoidingView, TextInput, SafeAreaView } from 'react-native';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ImageEdit } from "../../components/Themed";
+import { Platform, Image, StyleSheet, useColorScheme, Animated, KeyboardAvoidingView, TextInput, SafeAreaView, ke, Alert, View as V, TouchableOpacity as T, I18nManager, Pressable } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, router } from 'expo-router';
-import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import WordContext from '../../src/lang/wordsContext'; 
+import MultipleSelectList from '../../src/components/MultipleSelectList.js';
+import SelectList from '../../src/components/SelectList.js';
+import lang from '../../src/lang/words';
+import WordsContext from '../../src/lang/wordsContext';
+import directionContext from '../../src/direction/directionContext';
+import { EventRegister } from 'react-native-event-listeners';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default function CommercialForRent({ id, from }) {
-    const Languages = useContext(WordContext);
+export default function CommercialForSale({ id, from }) {
     const color = useColorScheme();
+    const Languages = useContext(WordsContext);
+    const direction = useContext(directionContext);
     const [valueImage, setvalueImage] = useState(false);
     const [images, setImages] = useState([]);
     const [isChecked, setChecked] = useState(false);
-    const slide = useState(new Animated.Value(-10))[0];
-    const viewHight = useState(new Animated.Value(50))[0];
-    const opacity = useState(new Animated.Value(0))[0];
-    const rotate = useState(new Animated.Value(0))[0];
+    const [Price, setPrice] = useState('');
+    const [downPayment, setdownPayment] = useState('');
+    const [DeliveryDate, setDeliveryDate] = useState('');
+    const [Area, setArea] = useState('');
+    const [Adtitle, setAdtitle] = useState('');
+    const [Location, setlocation] = useState('');
+    const [Describewhatyouareselling, setDescribewhatyouareselling] = useState('');
+    const slide = useRef(new Animated.Value(-10)).current;
+    const viewHight = useRef(new Animated.Value(50)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
+    const rotate = useRef(new Animated.Value(0)).current;
+    const [type, setType] = useState(0);
+    const [Furnished, setFurnished] = useState(0);
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
+    const [theProblem, setTheProblem] = useState({
+        Photo: false,
+        Price: false,
+        Type: false,
+        Downpayment: false,
+        Area: false,
+        Amenities: false,
+        Bedrooms: false,
+        Bathrooms: false,
+        Level: false,
+        Furnished: false,
+        DeliveryDate: false,
+        Location: false,
+        Adtitle: false,
+        Describewhatyouareselling: false,
+    })
     const [amenities, SetAmenities] = useState([]);
-    const data_amenities = [
+    const data_amenities_en = [
         { key: "1", value: "Air Conditioning" },
         { key: "2", value: "Covered Parking" },
         { key: "3", value: "Secuirty" },
         { key: "4", value: "Storage" },
     ]
 
+    const data_amenities_ar = [
+        { key: "1", value: "تكيف" },
+        { key: "2", value: "موقف سيارات مغطى" },
+        { key: "3", value: "أمن" },
+        { key: "4", value: "مخزن" },
+    ]
 
-    const pickImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert('permission to access media library is required');
-        }
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            multiple: true,
-        });
 
-        if (!result.canceled) {
-            setImages([...images, result.assets[0].uri]);
-            slideUp.start(({ finished }) => {
-                if (finished) {
-                    setvalueImage(false);
+    const pickImage = useCallback(async () => {
+        if (!(images.length > 20)) {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                alert('permission to access media library is required');
+            } else {
+
+                const result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    // allowsEditing: true,
+                    aspect: [4, 3],
+                    quality: 1,
+                    allowsMultipleSelection: true,
+                    selectionLimit: 20,
+                    base64: false
+                });
+
+                if (!result.canceled) {
+                    let array = []
+                    result.assets.map((i) => {
+                        array.push(i.uri);
+                    })
+                    if (!((array.length + images.length) > 20)) {
+                        setImages([...images, ...array]);
+                        slideUp.start(({ finished }) => {
+                            if (finished) {
+                                setvalueImage(false);
+                            }
+                        });
+                        opacityHide.start();
+                        rotateDown.start();
+                        viewEnd.start();
+                    } else {
+                        alert('you can,t add large than 20 images');
+                    }
                 }
-            });
-            opacityHide.start();
-            rotateDown.start();
-            viewEnd.start();
+            }
         }
-    };
+    }, [valueImage])
 
-    const takePhoto = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert('permission to access media library is required');
-        }
-        const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            multiple: true,
-        });
+    const takePhoto = useCallback(async () => {
+        if (!(images.length > 20)) {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                alert('permission to access media library is required');
+            } else {
+                const result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    aspect: [4, 3],
+                    quality: 1,
+                    allowsMultipleSelection: true,
+                    selectionLimit: 20,
+                    base64: false
+                });
 
-        if (!result.canceled) {
-            setImages([...images, result.assets[0].uri]);
-            slideUp.start(({ finished }) => {
-                if (finished) {
-                    setvalueImage(false);
+                if (!result.canceled) {
+                    setImages([...images, result.assets[0].uri]);
+                    slideUp.start(({ finished }) => {
+                        if (finished) {
+                            setvalueImage(false);
+                        }
+                    });
+                    opacityHide.start();
+                    rotateDown.start();
+                    viewEnd.start();
                 }
-            });
-            opacityHide.start();
-            rotateDown.start();
-            viewEnd.start();
+            }
         }
-    };
+    }, [valueImage])
 
-    const viewStart = Animated.timing(viewHight, {
+    const viewStart = useCallback(Animated.timing(viewHight, {
         toValue: 80,
         duration: 1000,
         useNativeDriver: false,
-    })
+    }), [viewHight]);
 
-    const viewEnd = Animated.timing(viewHight, {
+    const viewEnd = useCallback(Animated.timing(viewHight, {
         toValue: 50,
         duration: 1000,
         useNativeDriver: false,
-    })
+    }), [viewHight]);
 
-    const slideDown = Animated.timing(slide, {
+    const slideDown = useCallback(Animated.timing(slide, {
         toValue: 3,
         duration: 1000,
         useNativeDriver: true,
-    })
+    }), [slide]);
 
-    const opacityShow = Animated.timing(opacity, {
+    const opacityShow = useCallback(Animated.timing(opacity, {
         toValue: 1,
         duration: 1000,
         useNativeDriver: true,
-    })
+    }), [opacity]);
 
-    const slideUp = Animated.timing(slide, {
+    const slideUp = useCallback(Animated.timing(slide, {
         toValue: -10,
         duration: 1000,
         useNativeDriver: true,
-    })
+    }), [slide]);
 
-    const opacityHide = Animated.timing(opacity, {
+    const opacityHide = useCallback(Animated.timing(opacity, {
         toValue: 0,
         duration: 1000,
         useNativeDriver: true,
-    })
+    }), [opacity]);
 
-    const rotateUp = Animated.timing(rotate, {
+    const rotateUp = useCallback(Animated.timing(rotate, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
-    })
+    }), [rotate]);
 
-    const rotateDown = Animated.timing(rotate, {
+    const rotateDown = useCallback(Animated.timing(rotate, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-    })
+    }), [rotate]);
 
 
+    const IMageVeiw = useCallback(() => {
+        if (images.length == 0) {
+            return (
+                (theProblem.Photo) ?
+                    (
+                        <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                    لم تقم بملئ هذا الحقل
+                                </Text>
+                            </View>
+                        </View>
+                    ) : null
+            )
+        } else {
+            return (
+                <View style={{ width: "100%", alignItems: 'center', marginTop: 10, height: 90 }}>
+                    <ScrollView style={[styles.imageContainer, { marginBottom: 10 }]} horizontal={true}>
+                        {images.map((image, index) => (
+                            <TouchableOpacity key={index} onPress={() => setImages(images.filter((img, i) => i !== index))}>
+                                <Image source={{ uri: image }} style={styles.image} />
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )
+        }
+    }, [images])
+
+
+    useEffect(() => {
+        const lis = EventRegister.addEventListener('Loc', (data) => {
+            setlocation(data);
+        })
+        return () => {
+            EventRegister.removeEventListener('Loc');
+        }
+    },)
+
+    useEffect(() => {
+        setTheProblem(theProblem);
+    }, [theProblem]);
+
+    const getTextInputProps = (v) => {
+        const isRTL = isTextRTL(v) || ((v === '' && Languages.lang === 'ar') ? true : false);
+        return {
+            textAlign: (Languages.lang === 'ar') ? ((isRTL) ? "right" : "left") : ((!isRTL) ? "left" : "right"),
+            // writingDirection: isRTL ? 'rtl' : 'ltr',
+        };
+    };
+
+    const isTextRTL = (inputText) => {
+        return /[\u0600-\u06FF]/.test(inputText); // Regex pattern for Arabic characters
+    };
+
+    const LocationView = () => {
+        if (Location.length === 0) {
+            return (
+                <Text style={{ fontWeight: "bold", fontSize: 15 }}>
+                    {Languages.Null}
+                </Text>
+            );
+        } else {
+            return (
+                <Text style={{ fontWeight: "bold", fontSize: 15 }}>
+                    {Location}
+                </Text>
+            );
+        }
+    }
+
+    const Check = async () => {
+        let theValue = true;
+        if (images.length == 0) {
+            theProblem.Photo = true;
+            theValue = false;
+        } else {
+            theProblem.Photo = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Price === '') {
+            theProblem.Price = true;
+            theValue = false;
+        } else {
+            theProblem.Price = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (type == 0) {
+            theProblem.Type = true;
+            theValue = false;
+        } else {
+            theProblem.Type = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (downPayment == 0) {
+            theProblem.Downpayment = true;
+            theValue = false;
+        } else {
+            theProblem.Downpayment = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Area == 0) {
+            theProblem.Area = true;
+            theValue = false;
+        } else {
+            theProblem.Area = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (amenities.length == 0) {
+            theProblem.Amenities = true;
+            theValue = false;
+        } else {
+            theProblem.Amenities = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (bedrooms == "") {
+            theProblem.Bedrooms = true;
+            theValue = false;
+        } else {
+            theProblem.Bedrooms = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (level == "") {
+            theProblem.Level = true;
+            theValue = false;
+        } else {
+            theProblem.Level = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (bathrooms == "") {
+            theProblem.Bathrooms = true;
+            theValue = false;
+        } else {
+            theProblem.Bathrooms = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Furnished == 0) {
+            theProblem.Furnished = true;
+            theValue = false;
+        } else {
+            theProblem.Furnished = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (DeliveryDate == '') {
+            theProblem.DeliveryDate = true;
+            theValue = false;
+        } else {
+            theProblem.DeliveryDate = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Location == '') {
+            theProblem.Location = true;
+            theValue = false;
+        } else {
+            theProblem.Location = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Adtitle == '') {
+            theProblem.Adtitle = true;
+            theValue = false;
+        } else {
+            theProblem.Adtitle = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (Describewhatyouareselling == '') {
+            theProblem.Describewhatyouareselling = true;
+            theValue = false
+        }
+        else {
+            theProblem.Describewhatyouareselling = false;
+            if (theValue != false) {
+                theValue = true;
+            }
+        }
+        if (theValue) {
+            const TypeVar = TypeFunction();
+            const FurnishedVar = FurnishedFunction();
+            const data = {
+                Photo: images,
+                Price: Price,
+                Negotiable: isChecked,
+                Type: TypeVar,
+                DownPayment: downPayment,
+                Area: Area,
+                Amenities: amenities,
+                Furnished: FurnishedVar,
+                DeliveryDate: DeliveryDate,
+                Location: Location,
+                Adtitle: Adtitle,
+                Describewhatyouareselling: Describewhatyouareselling,
+                date: new Date().getDate(),
+                month: new Date().getMonth() + 1,
+                year: new Date().getFullYear(),
+                hours: new Date().getHours(),
+                min: new Date().getMinutes(),
+                sec: new Date().getSeconds(),
+            }
+            await AsyncStorage.setItem("@Data", JSON.stringify(data));
+            router.push('/Confirm');
+        }
+
+        setvalueImage(valueImage);
+        setvalueImage(!valueImage);
+    }
+
+    const TypeFunction = () => {
+        if (type == 1) { return 'CLINIC' }
+        if (type == 2) { return 'FACTORY' }
+        if (type == 3) { return 'FULLCOMMERCIALBUILDING' }
+        if (type == 4) { return 'GARAGE' }
+        if (type == 5) { return 'OFFICESPACE' }
+        if (type == 6) { return 'RESTAUTANTCAFE' }
+        if (type == 7) { return 'RETAIL' }
+        if (type == 8) { return 'WAREHOUSE' }
+        if (type == 9) { return 'OTHER' }
+    }
+
+    const FurnishedFunction = () => {
+        if (Furnished == 1) { return 'NO' }
+        if (Furnished == 2) { return 'YES' }
+    }
+
+
+    const toggleDatepicker = () => {
+        setShowPicker(!showPicker)
+    }
+
+    const onChange = ({ type }, selectedDate) => {
+        if (type == 'set') {
+            const currentDate = selectedDate;
+            setDate(currentDate);
+            if (Platform.OS === 'android') {
+                toggleDatepicker();
+                setDeliveryDate(formatDate(currentDate));
+            }
+        } else {
+            toggleDatepicker();
+        }
+    }
+
+    const formatDate = (rawDate) => {
+        let date = new Date(rawDate);
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        return (day + '/' + month + '/' + year);
+    }
     return (
 
         <SafeAreaView style={{ flex: 1 }}>
@@ -134,26 +467,26 @@ export default function CommercialForRent({ id, from }) {
             <Stack.Screen options={{
                 headerLeft: () => {
                     if (Languages.lang === 'en') {
-                        return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
+                        return <T style={{ alignItems: 'center' }} onPress={() => router.back()}>
                             <Image source={require('../../src/assets/arrow-left.png')} tintColor={(color == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
-                        </TouchableOpacity>
+                        </T>
                     }
                 },
                 headerRight: () => {
                     if (Languages.lang === 'ar') {
-                        return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
+                        return <T style={{ alignItems: 'center' }} onPress={() => router.back()}>
                             <Image source={require('../../src/assets/arrow-left.png')} tintColor={(color == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
-                        </TouchableOpacity>
+                        </T>
                     }
                 },
                 headerTitle: () => {
-                    return <View style={{ width: "85%", marginLeft: 23 }}>
+                    return <V style={{ width: "85%", marginLeft: 23 }}>
                         <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
                             {id}
                         </Text>
-                    </View>
+                    </V>
                 },
-                headerBackVisible: false
+                headerBackVisible: (I18nManager.isRTL) ? true : false
             }} />
 
             <KeyboardAvoidingView
@@ -187,9 +520,9 @@ export default function CommercialForRent({ id, from }) {
                                         rotateUp.start();
                                         viewStart.start();
                                     }
-                                }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between", marginBottom: 10, padding: 5, borderTopRightRadius: 5, borderTopLeftRadius: 5, width: "90%" }} lightColor="#eee" darkColor="#404040">
+                                }} style={{ flexDirection: direction.direction, alignItems: 'center', justifyContent: "space-between", marginBottom: 10, padding: 5, borderTopRightRadius: 5, borderTopLeftRadius: 5, width: "90%" }} lightColor="#eee" darkColor="#404040">
 
-                                    <Text style={styles.label}>UPLOAD IMAGES</Text>
+                                    <Text style={styles.label}>{Languages.UPLOADIMAGES}</Text>
                                     <Animated.View style={[{ transform: [{ rotate: rotate.interpolate({ inputRange: [0, 1], outputRange: ['90deg', '270deg'], }) }], marginRight: 10 }]}>
                                         <Animated.Image source={require('../../src/assets/right-arrow.png')} style={{ width: 10, height: 10 }} tintColor={color == 'dark' ? 'white' : 'black'} />
                                     </Animated.View>
@@ -197,37 +530,27 @@ export default function CommercialForRent({ id, from }) {
 
                                 {
                                     valueImage ? (
-                                        <Animated.View style={{ flexDirection: 'row', width: "90%", justifyContent: "space-between", transform: [{ translateY: slide }], opacity: opacity }}>
+                                        <Animated.View style={{ flexDirection: direction.direction, width: "90%", justifyContent: "space-between", transform: [{ translateY: slide }], opacity: opacity }}>
                                             <TouchableOpacity style={styles.addImage} onPress={pickImage}>
-                                                <Text style={styles.addImageText}>+</Text>
+                                                <Image style={styles.ImageCamera} source={require('../../src/assets/plus.png')} tintColor={(color == 'dark') ? 'white' : 'black'} />
                                             </TouchableOpacity>
                                             <TouchableOpacity style={styles.addImage} onPress={takePhoto}>
-                                                <Image style={styles.ImageCamera} source={require('../../src/assets/addPhoto.png')} />
+                                                <Image style={styles.ImageCamera} source={require('../../src/assets/addPhoto.png')} tintColor={(color == 'dark') ? 'white' : 'black'} />
                                             </TouchableOpacity>
                                         </Animated.View>) : (
                                         null
                                     )
                                 }
                             </Animated.View>
-                            {images.length == 0 ? (null) : (
-                                <View style={{ width: "100%", alignItems: 'center', marginTop: 10, height: 90 }}>
-                                    <ScrollView style={[styles.imageContainer, { marginBottom: 10 }]} horizontal={true}>
-                                        {images.map((image, index) => (
-                                            <TouchableOpacity key={index} onPress={() => setImages(images.filter((img, i) => i !== index))}>
-                                                <Image source={{ uri: image }} style={styles.image} />
-                                            </TouchableOpacity>
-                                        ))}
-                                    </ScrollView>
-                                </View>
-                            )}
+                            <IMageVeiw />
                             <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Category *
+                                        {Languages.category}
                                     </Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', width: "100%", alignItems: 'center', }}>
-                                    <Image source={from == 'Properties' ? require('../../src/assets/HomeShape.png') : require('../../src/assets/car.png')} style={{ width: 90, height: 90 }} />
+                                <View style={{ flexDirection: direction.direction, justifyContent: 'flex-start', width: "100%", alignItems: 'center', }}>
+                                    <Image source={require('../../src/assets/HomeShape.png')} style={{ width: 90, height: 90 }} />
                                     <View style={{}}>
                                         <Text style={{ fontSize: 20, fontWeight: '900', color: 'gray' }}>{from}</Text>
                                         <Text style={{ fontSize: 15, fontWeight: '900', color: 'gray' }}>{id}</Text>
@@ -238,13 +561,40 @@ export default function CommercialForRent({ id, from }) {
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Price *
+                                        {Languages.price}*
                                     </Text>
                                 </View>
-                                <View style={{ width: "90%", backgroundColor: 'white', borderRadius: 6 }}>
-                                    <TextInput style={{ width: "100%", height: 45, paddingLeft: 10, borderColor: 'gray', borderRadius: 5, borderWidth: 1, alignItems: 'center', justifyContent: 'center' }} />
+
+                                <View style={{ width: "90%", borderRadius: 6 }}>
+                                    <TextInput style={{
+                                        width: "100%",
+                                        height: 45,
+                                        paddingLeft: 10,
+                                        paddingRight: 10,
+                                        borderColor: 'gray',
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: (color == 'dark') ? 'white' : 'black'
+                                    }}
+                                        value={Price}
+                                        onChangeText={setPrice}
+                                        {...getTextInputProps(Price)}
+                                    />
+                                    {
+                                        (theProblem.Price) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', width: "90%", alignItems: 'center' }}>
+                                <View style={{ flexDirection: direction.direction, justifyContent: 'flex-start', width: "90%", alignItems: 'center' }}>
 
                                     <Checkbox
                                         style={styles.checkbox}
@@ -252,172 +602,355 @@ export default function CommercialForRent({ id, from }) {
                                         onValueChange={setChecked}
                                         color={isChecked ? '#eb304f' : undefined}
                                     />
-                                    <Text style={styles.paragraph}>Negotiable</Text>
+                                    <Text style={styles.paragraph}>{Languages.Negotiable}</Text>
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Type) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Type *
+                                        {Languages.Type}*
                                     </Text>
                                 </View>
-                                <View style={{ width: '90%' }}>
+                                <View style={{ width: '90%', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
                                     <ScrollView horizontal={true} >
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 1) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(1);
+                                        }}>
                                             <Text>
-                                                CLINIC
+                                                {Languages.CLINIC}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 2) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(2);
+                                        }}>
                                             <Text>
-                                                FACTORY
+                                                {Languages.FACTORY}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 3) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(3);
+                                        }}>
                                             <Text>
-                                                FULL COMMERCIAL BUILDING
+                                                {Languages.FULLCOMMERCIALBUILDING}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 4) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(4);
+                                        }}>
                                             <Text>
-                                                GARAGE
+                                                {Languages.GARAGE}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 5) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(5);
+                                        }}>
                                             <Text>
-                                                OFFICE SPACE
+                                                {Languages.OFFICESPACE}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 6) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(6);
+                                        }}>
                                             <Text>
-                                                RESTAURANT & CAFE
+                                                {Languages.RESTAUTANTCAFE}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 7) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(7);
+                                        }}>
                                             <Text>
-                                                RETAIL
+                                                {Languages.RETAIL}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 8) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(8);
+                                        }}>
                                             <Text>
-                                                WAREHOUSE
+                                                {Languages.WAREHOUSE}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 9) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(9);
+                                        }}>
                                             <Text>
-                                                OTHER
+                                                {Languages.OTHER}
                                             </Text>
                                         </TouchableOpacity>
                                     </ScrollView>
+                                    {
+                                        (theProblem.Price) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5, marginBottom: 10, transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Down Payment
+                                        {Languages.DownPayment}
                                     </Text>
                                 </View>
-                                <View style={{ width: "90%", backgroundColor: 'white', borderRadius: 6 }}>
-                                    <TextInput style={{ width: "100%", height: 45, paddingLeft: 10, borderColor: 'gray', borderRadius: 5, borderWidth: 1, alignItems: 'center', justifyContent: 'center' }} />
+                                <View style={{ width: "90%", borderRadius: 6 }}>
+                                    <TextInput style={{
+                                        width: "100%",
+                                        height: 45,
+                                        paddingLeft: 10,
+                                        paddingRight: 10,
+                                        borderColor: 'gray',
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: (color == 'dark') ? 'white' : 'black'
+                                    }}
+                                        value={downPayment}
+                                        onChangeText={setdownPayment}
+                                        {...getTextInputProps(downPayment)}
+                                    />
+                                    {
+                                        (theProblem.Downpayment) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Area (m2)*
+                                        {Languages.Area}*
                                     </Text>
                                 </View>
-                                <View style={{ width: "90%", backgroundColor: 'white', borderRadius: 6 }}>
-                                    <TextInput style={{ width: "100%", height: 45, paddingLeft: 10, borderColor: 'gray', borderRadius: 5, borderWidth: 1, alignItems: 'center', justifyContent: 'center' }} />
+                                <View style={{ width: "90%", borderRadius: 6 }}>
+                                    <TextInput style={{
+                                        width: "100%",
+                                        height: 45,
+                                        paddingLeft: 10,
+                                        paddingRight: 10,
+                                        borderColor: 'gray',
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: (color == 'dark') ? 'white' : 'black'
+                                    }}
+                                        value={Area}
+                                        onChangeText={setArea}
+                                        {...getTextInputProps(Area)}
+                                    />
+                                    {
+                                        (theProblem.Area) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Amenities
+                                        {Languages.Amenities}
                                     </Text>
                                 </View>
                                 <View style={{ width: "90%" }}>
                                     <MultipleSelectList
-                                        data={data_amenities}
+                                        data={(Languages.lang == 'ar') ? data_amenities_ar : data_amenities_en}
                                         setSelected={(val) => SetAmenities(val)}
                                         save="value"
-                                        label='Categories'
-                                        boxStyles={{ alignItems: 'center', backgroundColor: "white" }}
-                                        dropdownStyles={{ backgroundColor: 'white' }}
-                                        arrowicon={<Image tintColor={(color == 'light') ? 'black' : '#888888'} source={require('../../src/assets/right-arrow.png')} style={{
+                                        label={Languages.Categories}
+                                        searchPlaceholder={Languages.search}
+                                        boxStyles={{ alignItems: 'center' }}
+                                        dropdownStyles={{ backgroundColor: (color == 'dark') ? 'gray' : 'white' }}
+                                        arrowicon={<Image tintColor={(color == 'light') ? 'black' : '#ffffff'} source={require('../../src/assets/right-arrow.png')} style={{
                                             width: 10, height: 10, transform: [{
                                                 rotate: '90deg'
                                             }]
                                         }} />}
                                     />
                                 </View>
+                                {
+                                    (theProblem.Amenities) ?
+                                        (
+                                            <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                    لم تقم بملئ هذا الحقل
+                                                </Text>
+                                            </View>
+                                        ) : null
+                                }
                             </View>
-
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Furnished) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Furnished
+                                        {Languages.Furnished}
                                     </Text>
                                 </View>
-                                <View style={{ width: '90%' }}>
+                                <View style={{ width: '90%', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
                                     <ScrollView horizontal={true} >
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (Furnished == 1) ? "#eb304f" : null }]} onPress={() => {
+                                            setFurnished(1);
+                                        }}>
                                             <Text>
-                                                NO
+                                                {Languages.NO}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (Furnished == 2) ? "#eb304f" : null }]} onPress={() => {
+                                            setFurnished(2);
+                                        }}>
                                             <Text>
-                                                YES
+                                                {Languages.YES}
                                             </Text>
                                         </TouchableOpacity>
                                     </ScrollView>
+                                    {
+                                        (theProblem.Furnished) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5, marginBottom: 10, transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
 
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", height: 90, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Location) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                <View style={{ width: "90%", marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Location *
+                                        {Languages.Location} *
                                     </Text>
+                                    <TouchableOpacity style={{ width: "100%", height: 45, flexDirection: direction.direction, justifyContent: "space-between", alignItems: "center" }}
+                                        onPress={() => {
+                                            router.push({ pathname: 'Location', params: ["sale"] });
+                                        }}
+                                    >
+                                        <LocationView />
+                                        <ImageEdit
+                                            source={require("../../src/assets/right-arrow.png")}
+                                            style={{ width: 13, height: 13, transform: [{ rotate: (Languages.lang == 'en') ? '0deg' : '180deg' }] }} />
+                                    </TouchableOpacity>
+                                    {
+                                        (theProblem.Location) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center' }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
 
                             </View>
-                            <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", alignItems: 'center' }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Ad title *
+                                        {Languages.Adtitle}
                                     </Text>
                                 </View>
-                                <View style={{ width: "90%", backgroundColor: 'white', borderRadius: 6 }}>
-                                    <TextInput style={{ width: "100%", height: 45, paddingLeft: 10, borderColor: 'gray', borderRadius: 5, borderWidth: 1, alignItems: 'center', justifyContent: 'center' }} />
+                                <View style={{ width: "90%", borderRadius: 6 }}>
+                                    <TextInput style={{
+                                        width: "100%",
+                                        height: 45,
+                                        paddingLeft: 10,
+                                        paddingRight: 10,
+                                        borderColor: 'gray',
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: (color == 'dark') ? 'white' : 'black'
+                                    }}
+                                        value={Adtitle}
+                                        onChangeText={setAdtitle}
+                                        {...getTextInputProps(Adtitle)}
+                                    />
+                                    {
+                                        (theProblem.Adtitle) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', marginTop: 10, marginBottom: 150 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Describe what you are selling *
+                                        {Languages.Describewhatyouareselling}
                                     </Text>
                                 </View>
-                                <View style={{ width: "90%", backgroundColor: 'white', borderRadius: 6 }}>
-                                    <TextInput style={{ width: "100%", height: 45, paddingLeft: 10, borderColor: 'gray', borderRadius: 5, borderWidth: 1, alignItems: 'center', justifyContent: 'center' }} />
+                                <View style={{ width: "90%", borderRadius: 6 }}>
+                                    <TextInput style={{
+                                        width: "100%",
+                                        height: 45,
+                                        paddingLeft: 10,
+                                        paddingRight: 10,
+                                        borderColor: 'gray',
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: (color == 'dark') ? 'white' : 'black'
+                                    }}
+                                        multiline={true}
+                                        value={Describewhatyouareselling}
+                                        onChangeText={setDescribewhatyouareselling}
+                                        {...getTextInputProps(Describewhatyouareselling)}
+                                    />
+                                    {
+                                        (theProblem.Describewhatyouareselling) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
                         </ScrollView>
                     </View>
                     <View style={{ width: '100%', height: "10%", justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 0, }}>
-                        <TouchableOpacity style={styles.ButtonContainer} >
+                        <TouchableOpacity style={styles.ButtonContainer} onPress={() => {
+                            Check();
+                        }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: "white" }}>
-                                Next
+                                {Languages.next}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -477,7 +1010,8 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         marginTop: 8,
-        marginRight: 8
+        marginRight: 8,
+        marginLeft: 8
     },
     ButtonContainer: {
         width: "85%",
