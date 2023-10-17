@@ -152,6 +152,17 @@ const lang = {
         STANDALONEVILLA:"STAND ALONE VILLA",
         TOWNHOUSE:"TOWN HOUSE",
         TWINHOUSE:"TWIN HOUSE",
+        CHALET:"CHALET",
+
+        CLINIC:"CLINIC",
+        FACTORY:"FACTORY",
+        FULLCOMMERCIALBUILDING:"FULLCOMMERCIALBUILDING",
+        GARAGE:"GARAGE",
+        OFFICESPACE:"OFFICESPACE",
+        RESTAUTANTCAFE:"RESTAUTANTCAFE",
+        RETAIL:"RETAIL",
+        WAREHOUSE:"WAREHOUSE",
+        OTHER:"OTHER",
     },
     en: {
         lang: 'en',
@@ -213,6 +224,7 @@ const lang = {
         STANDALONEVILLA:"STAND ALONE VILLA",
         TOWNHOUSE:"TOWN HOUSE",
         TWINHOUSE:"TWIN HOUSE",
+        CHALET:"CHALET",
         STUDIO: "STUDIO",
         DownPayment: "Down Payment",
         Area: "Area (m²)",
@@ -305,7 +317,16 @@ const lang = {
         Sharqia: "Sharqia, Egypt",
         Sohag: "Sohag, Egypt",
         SouthSinai: "South Sinai, Egypt",
-        Suez: "Suez, Egypt"
+        Suez: "Suez, Egypt",
+        CLINIC:"CLINIC",
+        FACTORY:"FACTORY",
+        FULLCOMMERCIALBUILDING:"FULLCOMMERCIALBUILDING",
+        GARAGE:"GARAGE",
+        OFFICESPACE:"OFFICESPACE",
+        RESTAUTANTCAFE:"RESTAUTANTCAFE",
+        RETAIL:"RETAIL",
+        WAREHOUSE:"WAREHOUSE",
+        OTHER:"OTHER",
     }
 }
 

@@ -489,10 +489,9 @@ export default function VillasForSale({ id, from }) {
     }
 
     const TypeFunction = () => {
-        if (type == 1) { return 'APARTMENT' }
-        if (type == 2) { return 'DUPLEX' }
-        if (type == 3) { return 'PENTHOUSE' }
-        if (type == 4) { return 'STUDIO' }
+        if (type == 1) { return 'STANDALONEVILLA' }
+        if (type == 2) { return 'TOWNHOUSE' }
+        if (type == 3) { return 'TWINHOUSE' }
     }
 
     const FurnishedFunction = () => {
