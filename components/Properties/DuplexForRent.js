@@ -34,8 +34,6 @@ export default function DuplexForRent({ id, from }) {
     const rotate = useRef(new Animated.Value(0)).current;
     const [type, setType] = useState(0);
     const [Furnished, setFurnished] = useState(0);
-    const [PaymentOption, setPaymentOption] = useState(0);
-    const [DeliveryTerm, setDeliveryTerm] = useState(0);
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
     const [theProblem, setTheProblem] = useState({
@@ -418,29 +416,11 @@ export default function DuplexForRent({ id, from }) {
                 theValue = true;
             }
         }
-        if (PaymentOption == 0) {
-            theProblem.PaymentOption = true;
-            theValue = false;
-        } else {
-            theProblem.PaymentOption = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (DeliveryDate == '') {
             theProblem.DeliveryDate = true;
             theValue = false;
         } else {
             theProblem.DeliveryDate = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (DeliveryTerm == 0) {
-            theProblem.DeliveryTerm = true;
-            theValue = false;
-        } else {
-            theProblem.DeliveryTerm = false;
             if (theValue != false) {
                 theValue = true;
             }
@@ -525,18 +505,6 @@ export default function DuplexForRent({ id, from }) {
         if (Furnished == 2) { return 'YES' }
     }
 
-    const PaymentOptionFunction = () => {
-        if (PaymentOption == 1) { return 'CASH' }
-        if (PaymentOption == 2) { return 'CASHORINSTALLMENT' }
-        if (PaymentOption == 3) { return 'INSTALLMENT' }
-    }
-
-    const DeliveryTermFunction = () => {
-        if (DeliveryTerm == 1) { return 'FINISHED' }
-        if (DeliveryTerm == 2) { return 'NOTFINISHED' }
-        if (DeliveryTerm == 3) { return 'CORESHELL' }
-        if (DeliveryTerm == 4) { return 'SEMIFINISHED' }
-    }
 
     const toggleDatepicker = () => {
         setShowPicker(!showPicker)
