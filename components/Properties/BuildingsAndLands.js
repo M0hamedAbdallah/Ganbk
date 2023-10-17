@@ -22,7 +22,6 @@ export default function BuildingsAndLands({ id, from }) {
     const [isChecked, setChecked] = useState(false);
     const [Price, setPrice] = useState('');
     const [downPayment, setdownPayment] = useState('');
-    const [DeliveryDate, setDeliveryDate] = useState('');
     const [Area, setArea] = useState('');
     const [Adtitle, setAdtitle] = useState('');
     const [Location, setlocation] = useState('');
@@ -32,41 +31,20 @@ export default function BuildingsAndLands({ id, from }) {
     const opacity = useRef(new Animated.Value(0)).current;
     const rotate = useRef(new Animated.Value(0)).current;
     const [type, setType] = useState(0);
-    const [Furnished, setFurnished] = useState(0);
     const [PaymentOption, setPaymentOption] = useState(0);
-    const [date, setDate] = useState(new Date());
-    const [showPicker, setShowPicker] = useState(false);
+    const [SaleRent, setSaleRent] = useState(0);
     const [theProblem, setTheProblem] = useState({
         Photo: false,
         Price: false,
         Type: false,
         Downpayment: false,
         Area: false,
-        Amenities: false,
-        Bedrooms: false,
-        Bathrooms: false,
-        Level: false,
-        Furnished: false,
         PaymentOption: false,
-        DeliveryDate: false,
+        SaleRent: false,
         Location: false,
         Adtitle: false,
         Describewhatyouareselling: false,
     })
-    const [amenities, SetAmenities] = useState([]);
-    const data_amenities_en = [
-        { key: "1", value: "Air Conditioning" },
-        { key: "2", value: "Covered Parking" },
-        { key: "3", value: "Secuirty" },
-        { key: "4", value: "Storage" },
-    ]
-
-    const data_amenities_ar = [
-        { key: "1", value: "تكيف" },
-        { key: "2", value: "موقف سيارات مغطى" },
-        { key: "3", value: "أمن" },
-        { key: "4", value: "مخزن" },
-    ]
 
 
     const pickImage = useCallback(async () => {
@@ -307,51 +285,6 @@ export default function BuildingsAndLands({ id, from }) {
                 theValue = true;
             }
         }
-        if (amenities.length == 0) {
-            theProblem.Amenities = true;
-            theValue = false;
-        } else {
-            theProblem.Amenities = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (bedrooms == "") {
-            theProblem.Bedrooms = true;
-            theValue = false;
-        } else {
-            theProblem.Bedrooms = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (level == "") {
-            theProblem.Level = true;
-            theValue = false;
-        } else {
-            theProblem.Level = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (bathrooms == "") {
-            theProblem.Bathrooms = true;
-            theValue = false;
-        } else {
-            theProblem.Bathrooms = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (Furnished == 0) {
-            theProblem.Furnished = true;
-            theValue = false;
-        } else {
-            theProblem.Furnished = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (PaymentOption == 0) {
             theProblem.PaymentOption = true;
             theValue = false;
@@ -361,11 +294,11 @@ export default function BuildingsAndLands({ id, from }) {
                 theValue = true;
             }
         }
-        if (DeliveryDate == '') {
-            theProblem.DeliveryDate = true;
+        if (SaleRent == 0) {
+            theProblem.SaleRent = true;
             theValue = false;
         } else {
-            theProblem.DeliveryDate = false;
+            theProblem.SaleRent = false;
             if (theValue != false) {
                 theValue = true;
             }
@@ -400,8 +333,8 @@ export default function BuildingsAndLands({ id, from }) {
         }
         if (theValue) {
             const TypeVar = TypeFunction();
-            const FurnishedVar = FurnishedFunction();
             const PaymentOptionVar = PaymentOptionFunction();
+            const SaleRentVar = SaleRentFunction(); 
             const data = {
                 Photo: images,
                 Price: Price,
@@ -409,10 +342,8 @@ export default function BuildingsAndLands({ id, from }) {
                 Type: TypeVar,
                 DownPayment: downPayment,
                 Area: Area,
-                Amenities: amenities,
-                Furnished: FurnishedVar,
                 PaymentOption: PaymentOptionVar,
-                DeliveryDate: DeliveryDate,
+                SaleRent: SaleRentVar,
                 Location: Location,
                 Adtitle: Adtitle,
                 Describewhatyouareselling: Describewhatyouareselling,
@@ -432,21 +363,13 @@ export default function BuildingsAndLands({ id, from }) {
     }
 
     const TypeFunction = () => {
-        if (type == 1) { return 'CLINIC' }
-        if (type == 2) { return 'FACTORY' }
-        if (type == 3) { return 'FULLCOMMERCIALBUILDING' }
-        if (type == 4) { return 'GARAGE' }
-        if (type == 5) { return 'OFFICESPACE' }
-        if (type == 6) { return 'RESTAUTANTCAFE' }
-        if (type == 7) { return 'RETAIL' }
-        if (type == 8) { return 'WAREHOUSE' }
-        if (type == 9) { return 'OTHER' }
+        if (type == 1) { return 'AGRICULTURAL' }
+        if (type == 2) { return 'ANYUSE' }
+        if (type == 3) { return 'COMMERCIAL' }
+        if (type == 4) { return 'INDUSTRIAL' }
+        if (type == 5) { return 'RESIDENTIAL' }
     }
 
-    const FurnishedFunction = () => {
-        if (Furnished == 1) { return 'NO' }
-        if (Furnished == 2) { return 'YES' }
-    }
 
     const PaymentOptionFunction = () => {
         if (PaymentOption == 1) { return 'CASH' }
@@ -454,30 +377,9 @@ export default function BuildingsAndLands({ id, from }) {
         if (PaymentOption == 3) { return 'INSTALLMENT' }
     }
 
-
-    const toggleDatepicker = () => {
-        setShowPicker(!showPicker)
-    }
-
-    const onChange = ({ type }, selectedDate) => {
-        if (type == 'set') {
-            const currentDate = selectedDate;
-            setDate(currentDate);
-            if (Platform.OS === 'android') {
-                toggleDatepicker();
-                setDeliveryDate(formatDate(currentDate));
-            }
-        } else {
-            toggleDatepicker();
-        }
-    }
-
-    const formatDate = (rawDate) => {
-        let date = new Date(rawDate);
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-        return (day + '/' + month + '/' + year);
+    const SaleRentFunction = () => {
+        if (SaleRent == 1) { return 'FORRENT' }
+        if (SaleRent == 2) { return 'FORSALE' }
     }
 
     return (
@@ -626,41 +528,62 @@ export default function BuildingsAndLands({ id, from }) {
                                     <Text style={styles.paragraph}>{Languages.Negotiable}</Text>
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Type *
+                                        {Languages.Type}*
                                     </Text>
                                 </View>
-                                <View style={{ width: '90%' }}>
+                                <View style={{ width: '90%', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
                                     <ScrollView horizontal={true} >
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 1) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(1);
+                                        }}>
                                             <Text>
-                                                AGRICULTURAL
+                                                {Languages.AGRICULTURAL}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 2) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(2);
+                                        }}>
                                             <Text>
-                                                ANY USE
+                                                {Languages.ANYUSE}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 3) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(3);
+                                        }}>
                                             <Text>
-                                                COMMERCIAL
+                                                {Languages.COMMERCIAL}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 4) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(4);
+                                        }}>
                                             <Text>
-                                                INDUSTRIAL
+                                                {Languages.INDUSTRIAL}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (type == 5) ? '#eb304f' : null }]} onPress={() => {
+                                            setType(5);
+                                        }}>
                                             <Text>
-                                                RESIDENTIAL
+                                                {Languages.RESIDENTIAL}
                                             </Text>
                                         </TouchableOpacity>
                                     </ScrollView>
+                                    {
+                                        (theProblem.Type) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5, marginBottom: 10, transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
@@ -740,54 +663,86 @@ export default function BuildingsAndLands({ id, from }) {
 
 
 
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Payment Option
+                                        {Languages.PaymentOption}
                                     </Text>
                                 </View>
-                                <View style={{ width: '90%' }}>
+                                <View style={{ width: '90%', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
                                     <ScrollView horizontal={true} >
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (PaymentOption == 1) ? "#eb304f" : null }]} onPress={() => {
+                                            setPaymentOption(1)
+                                        }}>
                                             <Text>
-                                                CASH
+                                                {Languages.CASH}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (PaymentOption == 2) ? "#eb304f" : null }]} onPress={() => {
+                                            setPaymentOption(2)
+                                        }}>
                                             <Text>
-                                                CASH OR INSTALLMENT
+                                                {Languages.CASHORINSTALLMENT}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (PaymentOption == 3) ? "#eb304f" : null }]} onPress={() => {
+                                            setPaymentOption(3)
+                                        }}>
                                             <Text>
-                                                INSTALLMENT
+                                                {Languages.INSTALLMENT}
                                             </Text>
                                         </TouchableOpacity>
                                     </ScrollView>
+                                    {
+                                        (theProblem.PaymentOption) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5, marginBottom: 10, transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
 
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Sale/Rent *
+                                        {Languages.SaleRent} *
                                     </Text>
                                 </View>
-                                <View style={{ width: '90%' }}>
+                                <View style={{ width: '90%', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
                                     <ScrollView horizontal={true} >
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (SaleRent == 1) ? '#eb304f' : null }]} onPress={() => {
+                                            setSaleRent(1);
+                                        }}>
                                             <Text>
-                                                FOR RENT
+                                                {Languages.FORRENT}
                                             </Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={styles.Chooses}>
+                                        <TouchableOpacity style={[styles.Chooses, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }], backgroundColor: (SaleRent == 2) ? '#eb304f' : null }]} onPress={() => {
+                                            setSaleRent(2);
+                                        }}>
                                             <Text>
-                                                FOR SALE
+                                                {Languages.FORSALE}
                                             </Text>
                                         </TouchableOpacity>
                                     </ScrollView>
+                                    {
+                                        (theProblem.SaleRent) ?
+                                            (
+                                                <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5, marginBottom: 10, transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }}>
+                                                    <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                    <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                        لم تقم بملئ هذا الحقل
+                                                    </Text>
+                                                </View>
+                                            ) : null
+                                    }
                                 </View>
                             </View>
 

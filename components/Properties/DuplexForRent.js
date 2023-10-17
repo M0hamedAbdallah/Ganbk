@@ -416,15 +416,6 @@ export default function DuplexForRent({ id, from }) {
                 theValue = true;
             }
         }
-        if (DeliveryDate == '') {
-            theProblem.DeliveryDate = true;
-            theValue = false;
-        } else {
-            theProblem.DeliveryDate = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (Location == '') {
             theProblem.Location = true;
             theValue = false;
@@ -480,7 +471,7 @@ export default function DuplexForRent({ id, from }) {
                 sec: new Date().getSeconds(),
             }
             await AsyncStorage.setItem("@Data", JSON.stringify(data));
-            router.push('/Confirm');
+            router.push('/Confirm/DuplexForRent');
         }
 
         setvalueImage(valueImage);
