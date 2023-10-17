@@ -148,6 +148,7 @@ const lang = {
         Publisher:"الناشر",
         Call:"مكالمة",
         Chat:"محادثة",
+        ROOM:"غرف",
     },
     en: {
         lang: 'en',
@@ -198,6 +199,7 @@ const lang = {
         CommercialforRent: "Commercial for Rent",
         BuildingsLands: "Buildings & Lands",
         price: "price ",
+        ROOM:"ROOM",
         UPLOADIMAGES: "UPLOAD IMAGES",
         Negotiable: "Negotiable",
         Type: "Type ",
