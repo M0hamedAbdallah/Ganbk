@@ -4,6 +4,8 @@ import React from "react";
 // import messaging from "@react-native-firebase/messaging";
 
 
+//npx cross-env EAS_NO_VCS=1 eas build -p android --profile preview
+
 export default function Page() {
     // firebase.messaging().setBackgroundMessageHandler(async remoteMessage => {
     //     console.log('Message handled in the background!', remoteMessage);

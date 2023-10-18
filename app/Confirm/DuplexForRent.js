@@ -109,7 +109,7 @@ export default function Search() {
                 });
                 await updateDoc(UserRef, {
                     number: num,
-                    DataList: [...DataList,num]
+                    DataList: [...DataList,(num).toString()]
                 });
             }else{
                 const num = (docSnap.data().number + 1);
