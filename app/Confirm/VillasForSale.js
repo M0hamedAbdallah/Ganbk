@@ -100,7 +100,6 @@ export default function Search() {
                     Amenities: Data.Amenities,
                     Bedrooms: Data.Bedrooms,
                     Bathrooms: Data.Bathrooms,
-                    Level: Data.Level,
                     Furnished: Data.Furnished,
                     PaymentOption: Data.PaymentOption,
                     DeliveryDate: Data.DeliveryDate,
