@@ -316,33 +316,6 @@ export default function CommercialForSale({ id, from }) {
                 theValue = true;
             }
         }
-        if (bedrooms == "") {
-            theProblem.Bedrooms = true;
-            theValue = false;
-        } else {
-            theProblem.Bedrooms = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (level == "") {
-            theProblem.Level = true;
-            theValue = false;
-        } else {
-            theProblem.Level = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (bathrooms == "") {
-            theProblem.Bathrooms = true;
-            theValue = false;
-        } else {
-            theProblem.Bathrooms = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (Furnished == 0) {
             theProblem.Furnished = true;
             theValue = false;
@@ -424,7 +397,7 @@ export default function CommercialForSale({ id, from }) {
                 sec: new Date().getSeconds(),
             }
             await AsyncStorage.setItem("@Data", JSON.stringify(data));
-            router.push('/Confirm');
+            router.push('/Confirm/CommercialForSale');
         }
 
         setvalueImage(valueImage);
@@ -479,7 +452,7 @@ export default function CommercialForSale({ id, from }) {
         let day = date.getDate();
         return (day + '/' + month + '/' + year);
     }
-    
+
     return (
 
         <SafeAreaView style={{ flex: 1 }}>
@@ -902,7 +875,56 @@ export default function CommercialForSale({ id, from }) {
                                     }
                                 </View>
                             </View>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.DeliveryDate) ? 15 : 0 }}>
+                                <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
+                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                        {Languages.DeliveryDate}
+                                    </Text>
+                                </View>
+                                {!showPicker && (<Pressable
+                                    onPress={toggleDatepicker}
+                                    style={{ width: "90%" }}
+                                >
+                                    <View style={{ width: "100%", borderRadius: 6 }}>
+                                        <TextInput style={{
+                                            width: "100%",
+                                            height: 45,
+                                            paddingLeft: 10,
+                                            paddingRight: 10,
+                                            borderColor: 'gray',
+                                            borderRadius: 5,
+                                            borderWidth: 1,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: (color == 'dark') ? 'white' : 'black'
+                                        }}
+                                            value={DeliveryDate}
+                                            onChangeText={setDeliveryDate}
+                                            {...getTextInputProps(DeliveryDate)}
+                                            editable={false}
+                                        />
+                                        {
+                                            (theProblem.DeliveryDate) ?
+                                                (
+                                                    <View style={{ flexDirection: direction.direction, alignItems: 'center', marginTop: 5 }}>
+                                                        <View style={{ width: 10, height: 10, backgroundColor: 'red', borderRadius: 5 }} />
+                                                        <Text style={{ fontSize: 15, fontWeight: '700', marginLeft: 5, marginRight: 5, color: 'red' }}>
+                                                            لم تقم بملئ هذا الحقل
+                                                        </Text>
+                                                    </View>
+                                                ) : null
+                                        }
 
+                                    </View>
+                                </Pressable>)}
+                                {showPicker && (<DateTimePicker
+                                    mode='date'
+                                    display='spinner'
+                                    value={date}
+                                    onChange={onChange}
+                                />)}
+                            </View>
                             <View style={{ width: "100%", height: 90, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Location) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginTop: 10 }}>

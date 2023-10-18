@@ -457,7 +457,7 @@ export default function VillasForSale({ id, from }) {
                 sec: new Date().getSeconds(),
             }
             await AsyncStorage.setItem("@Data", JSON.stringify(data));
-            router.push('/Confirm');
+            router.push('/Confirm/HomesForRent');
         }
 
         setvalueImage(valueImage);

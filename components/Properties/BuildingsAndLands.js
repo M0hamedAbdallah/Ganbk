@@ -355,7 +355,7 @@ export default function BuildingsAndLands({ id, from }) {
                 sec: new Date().getSeconds(),
             }
             await AsyncStorage.setItem("@Data", JSON.stringify(data));
-            router.push('/Confirm');
+            router.push('/Confirm/BuildingsLands');
         }
 
         setvalueImage(valueImage);
@@ -528,7 +528,7 @@ export default function BuildingsAndLands({ id, from }) {
                                     <Text style={styles.paragraph}>{Languages.Negotiable}</Text>
                                 </View>
                             </View>
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption) ? 15 : 0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.Type) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -708,7 +708,7 @@ export default function BuildingsAndLands({ id, from }) {
                                 </View>
                             </View>
 
-                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.PaymentOption) ? 15 : 0 }}>
+                            <View style={{ width: "100%", height: 100, alignItems: 'center', marginTop: 10, marginBottom: (theProblem.SaleRent) ? 15 : 0 }}>
                                 <View style={{ width: "90%", height: 1 }} lightColor="gray" darkColor="#c1c1c1" />
                                 <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
                                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>

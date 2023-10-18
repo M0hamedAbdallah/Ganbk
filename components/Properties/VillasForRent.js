@@ -396,15 +396,6 @@ export default function VillasForRent({ id, from }) {
                 theValue = true;
             }
         }
-        if (DeliveryDate == '') {
-            theProblem.DeliveryDate = true;
-            theValue = false;
-        } else {
-            theProblem.DeliveryDate = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (Location == '') {
             theProblem.Location = true;
             theValue = false;
@@ -459,7 +450,7 @@ export default function VillasForRent({ id, from }) {
                 sec: new Date().getSeconds(),
             }
             await AsyncStorage.setItem("@Data", JSON.stringify(data));
-            router.push('/Confirm');
+            router.push('/Confirm/VillasForRent');
         }
 
         setvalueImage(valueImage);

@@ -314,47 +314,11 @@ export default function CommercialForSale({ id, from }) {
                 theValue = true;
             }
         }
-        if (bedrooms == "") {
-            theProblem.Bedrooms = true;
-            theValue = false;
-        } else {
-            theProblem.Bedrooms = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (level == "") {
-            theProblem.Level = true;
-            theValue = false;
-        } else {
-            theProblem.Level = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (bathrooms == "") {
-            theProblem.Bathrooms = true;
-            theValue = false;
-        } else {
-            theProblem.Bathrooms = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
         if (Furnished == 0) {
             theProblem.Furnished = true;
             theValue = false;
         } else {
             theProblem.Furnished = false;
-            if (theValue != false) {
-                theValue = true;
-            }
-        }
-        if (DeliveryDate == '') {
-            theProblem.DeliveryDate = true;
-            theValue = false;
-        } else {
-            theProblem.DeliveryDate = false;
             if (theValue != false) {
                 theValue = true;
             }
@@ -411,7 +375,7 @@ export default function CommercialForSale({ id, from }) {
                 sec: new Date().getSeconds(),
             }
             await AsyncStorage.setItem("@Data", JSON.stringify(data));
-            router.push('/Confirm');
+            router.push('/Confirm/CommercialForRent');
         }
 
         setvalueImage(valueImage);
