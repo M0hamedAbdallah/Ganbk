@@ -240,6 +240,7 @@ export default function RootLayout() {
             }} />
             <Stack.Screen name="Data" options={{ headerShown: false }} />
             <Stack.Screen name="ChatUser" options={{ headerShown: false }} />
+            <Stack.Screen name="DetailsShow" options={{ headerShown: false }} />
           </Stack>
         </DirectionContext.Provider>
       </WordsContext.Provider>

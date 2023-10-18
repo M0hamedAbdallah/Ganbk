@@ -5,6 +5,7 @@ import { View, Text, ScrollView, TouchableOpacity } from "../../components/Theme
 import { Image, StyleSheet, I18nManager } from "react-native";
 import WordsContext from "../lang/wordsContext";
 import directionContext from "../direction/directionContext";
+import { router } from "expo-router";
 export default function Items() {
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
@@ -19,14 +20,14 @@ export default function Items() {
         // },
     ]);
     const [item2, setItem2] = useState([
-        {
-            img: car,
-            name: 'cars',
-        },
         // {
-        //     img: home,
-        //     name: 'Properties',
+        //     img: car,
+        //     name: 'cars',
         // },
+        {
+            img: home,
+            name: 'Properties',
+        },
     ]);
     return (
         <ScrollView horizontal={true} directionalLockEnabled={true} style={{ width: "100%", flexDirection: 'row', transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }} >
@@ -35,7 +36,9 @@ export default function Items() {
 
                     item.map((value, key) =>
                         <View style={[styles.marksscroll, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }]} key={key}>
-                            <TouchableOpacity onPress={() => { }}>
+                            <TouchableOpacity onPress={() => { 
+                                router.push("/DetailsShow")
+                             }}>
                                 <Image source={value.img} style={[styles.marksicons]} />
                                 <Text style={styles.markstext}>{Languages[value.name]}</Text>
                             </TouchableOpacity>
@@ -43,7 +46,9 @@ export default function Items() {
                     ) :
                     item2.map((value, key) =>
                         <View style={[styles.marksscroll, { transform: [{ scaleX: (Languages.lang == 'ar') ? -1 : 1 }] }]} key={key}>
-                            <TouchableOpacity onPress={() => { }}>
+                            <TouchableOpacity onPress={() => { 
+                                router.push("/DetailsShow")
+                             }}>
                                 <Image source={value.img} style={[styles.marksicons]} />
                                 <Text style={styles.markstext}>{Languages[value.name]}</Text>
                             </TouchableOpacity>

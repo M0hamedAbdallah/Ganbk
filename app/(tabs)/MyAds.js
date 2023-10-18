@@ -16,6 +16,8 @@ export default function MyAds() {
     const [MyAds, setMyAds] = useState([]);
     const [MyAdsDetails, setMyAdsDetails] = useState([]);
     const [value, setValue] = useState(0);
+    const [plus, setPlus] = useState(0);
+    const [plus1, setPlus1] = useState(0);
     const Lungaues = useContext(WordsContext);
     const direction = useContext(directionContext);
     const Languages = useContext(WordsContext);
@@ -45,34 +47,36 @@ export default function MyAds() {
             const docSnap = await getDoc(UserRef);
             const data = docSnap.data();
             setMyAds((data.MyAds));
-
-
+            return 0;
         }
         if (auth?.currentUser) {
-            login()
+            setPlus(
+                login()
+            )
         }
-    }, [auth?.currentUser, value])
+        return login;
+    }, [value])
 
-    const dataObjct = async (dataSend) => {
-        MyAdsDetails.push(dataSend);
-    }
+
 
     useEffect(() => {
-        const login = async () => {
+        const login = () => {
             MyAds?.map(async ({ from, num }) => {
                 const UserRef = doc(db, from, num);
                 const docSnap = await getDoc(UserRef);
-                const data = docSnap.data();
-                console.log(data)
-                await dataObjct(data)
+                const data = docSnap?.data();
+                setMyAdsDetails([...MyAdsDetails,data]);
+                setPlus1(plus1+1)
             })
+            return 1;
         }
         if (MyAds.length != 0 && MyAdsDetails.length == 0) {
-
-            login()
-
+            setPlus1(
+                login()
+            );
         }
-    }, MyAds)
+        return login;
+    }, [plus])
 
 
     // console.log()
@@ -95,10 +99,10 @@ export default function MyAds() {
 
                 <ScrollView style={{ width: "90%", }}>
 
-                    {MyAdsDetails?.map((value) => {
+                    {MyAdsDetails?.map((value, index) => {
                         return (
 
-                            <View style={{ width: "100%", alignItems: "center" }}>
+                            <View style={{ width: "100%", alignItems: "center" }} key={index}>
                                 <View style={{ width: "100%", height: 40, backgroundColor: 'gray', flexDirection: direction.direction, alignItems: "center", justifyContent: 'space-around' }}>
                                     <ReactView style={{ width: "80%" }}>
                                         <Text>
@@ -150,7 +154,7 @@ export default function MyAds() {
                             <ReactView style={{ height: "100%", width: "100%", top: 0, bottom: 0, position: 'absolute', backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
                             </ReactView>
                             {!load2 ? (
-                                <ReactView style={{ height: "100%", width: "100%", alignItems:'center' , justifyContent :'center' ,}}>
+                                <ReactView style={{ height: "100%", width: "100%", alignItems: 'center', justifyContent: 'center', }}>
                                     <ReactView style={{ width: "90%", height: 90, backgroundColor: "white", borderRadius: 10, padding: 10 }}>
                                         <TouchableOpacity onPress={() => {
                                             setLoad2(true);

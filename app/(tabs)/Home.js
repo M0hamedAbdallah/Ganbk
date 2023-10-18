@@ -172,7 +172,7 @@ export default function Home() {
                             />
                         ))}
                     </View>
-                    <View style={{
+                    {/*<View style={{
                         width: "100%",
                         marginTop: 10,
                         paddingBottom: 20
@@ -195,6 +195,29 @@ export default function Home() {
                         </View>
                         <Boxs />
                     </View>
+                     <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
+                        <View style={{
+                            width: "100%",
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
+                        }}>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.ApartmentsDuplexforRent}
+                                </Text>
+                            </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </View>
+                        </View>
+                        <Boxs />
+                    </View> */}
 
                 </View>
             </ScrollView>
