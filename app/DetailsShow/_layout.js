@@ -18,10 +18,7 @@ const index = () => {
     }
 
     return (
-        <Stack>
-            {/* <Stack.Screen name='[id]' options={{
-                title:""
-            }} /> */}
+        <Stack>           
             <Stack.Screen name='Properties' options={{
                 headerLeft: () => {
                     if (Languages.lang === 'en') {

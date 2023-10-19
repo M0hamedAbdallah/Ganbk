@@ -172,7 +172,7 @@ export default function Home() {
                             />
                         ))}
                     </View>
-                    {/*<View style={{
+                    <View style={{
                         width: "100%",
                         marginTop: 10,
                         paddingBottom: 20
@@ -193,9 +193,9 @@ export default function Home() {
                                 </Text>
                             </View>
                         </View>
-                        <Boxs />
+                        <Boxs value={"DuplexForSale"}/>
                     </View>
-                     <View style={{
+                    <View style={{
                         width: "100%",
                         marginTop: 10,
                         paddingBottom: 20
@@ -216,9 +216,169 @@ export default function Home() {
                                 </Text>
                             </View>
                         </View>
-                        <Boxs />
-                    </View> */}
-
+                        <Boxs value={"DuplexForRent"}/>
+                    </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.VillasForSale}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"VillasForSale"}/>
+                        </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.VillasForRent}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"VillasForRent"}/>
+                        </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.VacationHomesforSale}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"HomesForSale"}/>
+                        </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.VacationHomesforRent}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"HomesForRent"}/>
+                        </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.CommercialforSale}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"CommercialForSale"}/>
+                        </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.CommercialforRent}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"CommercialForRent"}/>
+                        </View>
+                        <View style={{
+                            width: "100%",
+                            marginTop: 10,
+                            paddingBottom: 20
+                        }}>
+                            <View style={{
+                                width: "100%",
+                                flexDirection: direction.direction,
+                                justifyContent: 'space-around'
+                            }}>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                    <Text style={[styles.text, { fontSize: 20 }]}>
+                                        {Languages.BuildingsLands}
+                                    </Text>
+                                </View>
+                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                    <Text style={styles.text}>
+                                        {Languages.SeeAll}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Boxs value={"BuildingsLands"}/>
+                        </View>
                 </View>
             </ScrollView>
         </SafeAreaView>

@@ -171,6 +171,7 @@ const lang = {
         SaleRent:"للايجار\\للبيع",
         FORRENT:"للايجار",
         FORSALE:"للبيع",
+        Search:"بحث",
     },
     en: {
         lang: 'en',
@@ -343,6 +344,7 @@ const lang = {
         SaleRent:"Sale\\Rent",
         FORRENT:"FOR RENT",
         FORSALE:"FOR SALE",
+        Search:"Search",
     }
 }
 

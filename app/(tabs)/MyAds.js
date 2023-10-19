@@ -60,13 +60,15 @@ export default function MyAds() {
 
 
     useEffect(() => {
+        let arr = [];
         const login = () => {
             MyAds?.map(async ({ from, num }) => {
                 const UserRef = doc(db, from, num);
                 const docSnap = await getDoc(UserRef);
                 const data = docSnap?.data();
-                setMyAdsDetails([...MyAdsDetails,data]);
-                setPlus1(plus1+1)
+                // setMyAdsDetails([...MyAdsDetails,data]);
+                arr.push(data);
+                setPlus1(plus1 + 1)
             })
             return 1;
         }
@@ -74,6 +76,7 @@ export default function MyAds() {
             setPlus1(
                 login()
             );
+            setMyAdsDetails(arr);
         }
         return login;
     }, [plus])
