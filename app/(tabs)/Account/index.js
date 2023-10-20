@@ -116,7 +116,7 @@ export default function Account() {
                 </TouchableOpacity>
                 <View style={{ width: "90%", height: 1, marginTop: 20 }} lightColor="black" darkColor="#c1c1c1" />
                     <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={()=>{
-                        router.push('/Support')
+                        router.push('/OTP')
                     }}>
                         <ImageEdit
                             source={require("../../../src/assets/help.png")}
