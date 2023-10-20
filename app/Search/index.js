@@ -4,6 +4,8 @@ import WordsContext from "../../src/lang/wordsContext";
 import { KeyboardAvoidingView, SafeAreaView, Platform, StyleSheet, TextInput } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { firebase } from "../../firebase/config/firebase-config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 
 
@@ -12,12 +14,18 @@ export default function Search() {
     const [search, setSearch] = useState("");
 
     const Search = async (value) => {
-        const unsub = firebase.firestore().collection("DuplexForSale").where('Describewhatyouareselling', "<=", value).onSnapshot((e)=>{
-            console.log(e.docs.map((doc)=>{ return doc.data()}))
-        });
-        // unsub.forEach((doc) => {
-        //     console.log(doc.id, '=>', doc.data());
-        // });
+        const unsub = firebase.firestore().collection("DuplexForSale")
+            // .where('Describewhatyouareselling', ">=", value + "%")
+            // .where('Describewhatyouareselling', "<=", "\uf8ff" + value)
+            .onSnapshot(async (e) => {
+                const Data = (e.docs.map((doc) => { return doc.data() }))
+                console.log(Data)
+                const DataDetails = Data.filter((da) =>(da.Describewhatyouareselling)?.includes(value))
+                console.log(DataDetails)
+                await AsyncStorage.setItem("@Details", JSON.stringify(DataDetails)).then(
+                    router.push("/Search/Detail")
+                );
+            });
     }
     return (
         <SafeAreaView style={{ flex: 1 }}>

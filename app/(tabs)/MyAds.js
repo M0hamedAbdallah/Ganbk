@@ -6,7 +6,7 @@ import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
 import auth, { db } from "../../firebase/config/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
-
+import {firebase} from "../../firebase/config/firebase-config";
 
 
 export default function MyAds() {
@@ -14,6 +14,7 @@ export default function MyAds() {
     const [load, setLoad] = useState(false);
     const [load2, setLoad2] = useState(false);
     const [MyAds, setMyAds] = useState([]);
+    const [MyAdsVersion, setMyAdsVersion] = useState([]);
     const [MyAdsDetails, setMyAdsDetails] = useState([]);
     const [value, setValue] = useState(0);
     const [plus, setPlus] = useState(0);
@@ -41,9 +42,9 @@ export default function MyAds() {
 
 
     useEffect(() => {
-        // setMyAdsDetails([]);
+        setMyAdsDetails([]);
         const login = async () => {
-            const UserRef = doc(db, "Users", auth?.currentUser.uid);
+            const UserRef = doc(db, "Users", auth?.currentUser?.uid);
             const docSnap = await getDoc(UserRef);
             const data = docSnap.data();
             setMyAds((data.MyAds));
@@ -60,15 +61,11 @@ export default function MyAds() {
 
 
     useEffect(() => {
-        let arr = [];
         const login = () => {
             MyAds?.map(async ({ from, num }) => {
-                const UserRef = doc(db, from, num);
-                const docSnap = await getDoc(UserRef);
-                const data = docSnap?.data();
-                // setMyAdsDetails([...MyAdsDetails,data]);
-                arr.push(data);
-                setPlus1(plus1 + 1)
+                firebase.firestore().doc('/'+from+'/'+num).onSnapshot((value)=>{
+                    MyAdsDetails.push(value.data())
+                })
             })
             return 1;
         }
@@ -76,13 +73,11 @@ export default function MyAds() {
             setPlus1(
                 login()
             );
-            setMyAdsDetails(arr);
         }
+
         return login;
     }, [plus])
 
-
-    // console.log()
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: (colorScheme == 'dark') ? 'black' : 'white' }}>
