@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text } from "../../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, useColorScheme, View as ReactView, TouchableOpacity, Text as ReactText, ScrollView } from "react-native";
+import { Image, useColorScheme, View as ReactView, TouchableOpacity, Text as ReactText, ScrollView, Alert, Button } from "react-native";
 import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
 import auth, { db } from "../../firebase/config/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
-import {firebase} from "../../firebase/config/firebase-config";
+import { firebase } from "../../firebase/config/firebase-config";
+import Modal from "react-native-modal";
 
 
 export default function MyAds() {
@@ -22,6 +23,9 @@ export default function MyAds() {
     const Lungaues = useContext(WordsContext);
     const direction = useContext(directionContext);
     const Languages = useContext(WordsContext);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleModal = () => setIsModalVisible(() => !isModalVisible);
     function ImageLogo() {
         if (colorScheme == 'light') {
             return (
@@ -42,13 +46,13 @@ export default function MyAds() {
 
 
     useEffect(() => {
-        setMyAdsDetails([]);
         const login = async () => {
             const UserRef = doc(db, "Users", auth?.currentUser?.uid);
             const docSnap = await getDoc(UserRef);
             const data = docSnap.data();
             setMyAds((data.MyAds));
-            return 0;
+            // setMyAdsDetails([]);
+            return Math.round() * 1000;
         }
         if (auth?.currentUser) {
             setPlus(
@@ -63,20 +67,22 @@ export default function MyAds() {
     useEffect(() => {
         const login = () => {
             MyAds?.map(async ({ from, num }) => {
-                firebase.firestore().doc('/'+from+'/'+num).onSnapshot((value)=>{
-                    MyAdsDetails.push(value.data())
+                firebase.firestore().doc('/' + from + '/' + num).onSnapshot((value) => {
+                    MyAdsDetails.push(value.data());
+                    // console.log(value.data())
+
                 })
             })
-            return 1;
+            return Math.round() * 1000;
         }
-        if (MyAds.length != 0 && MyAdsDetails.length == 0) {
-            setPlus1(
-                login()
-            );
-        }
-
+        // if (MyAdsDetails.length == 0) {
+        setPlus1(
+            login()
+        );
+        // }
+        console.log(MyAdsDetails)
         return login;
-    }, [plus])
+    }, [])
 
 
     return (
@@ -94,7 +100,58 @@ export default function MyAds() {
                         </ReactView>
                     </View>
                 </View>
+                <Modal isVisible={isModalVisible}>
+                    <ReactView style={{ flex: 1 }}>
+                        {!load2 ? (
+                            <ReactView style={{ height: "100%", width: "100%", alignItems: 'center', justifyContent: 'center', }}>
+                                <ReactView style={{ width: "90%", height: 90, backgroundColor: "white", borderRadius: 10, padding: 10 }}>
+                                    <TouchableOpacity onPress={() => {
+                                        setLoad2(true);
+                                    }}>
+                                        <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            Delete It
+                                        </ReactText>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => {
+                                        handleModal();
+                                    }}>
+                                        <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            Cancel
+                                        </ReactText>
+                                    </TouchableOpacity>
+                                </ReactView>
+                            </ReactView>
 
+                        ) : (
+                            <ReactView style={{ height: "100%", width: "100%", alignItems: 'center', justifyContent: 'center', }}>
+
+                                <ReactView style={{ width: "90%", height: 90, backgroundColor: "white", borderRadius: 10, padding: 10 }}>
+                                    <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                        Are you sure for delete it?
+                                    </ReactText>
+                                    <ReactView style={{ flexDirection: direction.direction, alignItems: direction.start, width: "100%" }}>
+                                        <TouchableOpacity style={{ padding: 10 }} onPress={() => {
+                                            setLoad2(false);
+                                            handleModal();
+                                        }}>
+                                            <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                                Yes
+                                            </ReactText>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{ padding: 10 }} onPress={() => {
+                                            setLoad2(false);
+                                            handleModal();
+                                        }}>
+                                            <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                                No
+                                            </ReactText>
+                                        </TouchableOpacity>
+                                    </ReactView>
+                                </ReactView>
+                            </ReactView>
+                        )}
+                    </ReactView>
+                </Modal>
                 <ScrollView style={{ width: "90%", }}>
 
                     {MyAdsDetails?.map((value, index) => {
@@ -108,7 +165,8 @@ export default function MyAds() {
                                         </Text>
                                     </ReactView>
                                     <TouchableOpacity style={{ width: "10%", alignItems: 'center' }} onPress={() => {
-                                        setLoad(true);
+                                        // setLoad(true);
+                                        handleModal();
                                     }}>
                                         <ReactView style={{ width: 4, height: 4, borderRadius: 50, backgroundColor: 'black', marginBottom: 2 }} />
                                         <ReactView style={{ width: 4, height: 4, borderRadius: 50, backgroundColor: 'black', marginBottom: 2 }} />
@@ -145,54 +203,6 @@ export default function MyAds() {
                         )
                     })}
                 </ScrollView>
-
-                {
-                    load ? (
-                        <>
-                            <ReactView style={{ height: "100%", width: "100%", top: 0, bottom: 0, position: 'absolute', backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
-                            </ReactView>
-                            {!load2 ? (
-                                <ReactView style={{ height: "100%", width: "100%", alignItems: 'center', justifyContent: 'center', }}>
-                                    <ReactView style={{ width: "90%", height: 90, backgroundColor: "white", borderRadius: 10, padding: 10 }}>
-                                        <TouchableOpacity onPress={() => {
-                                            setLoad2(true);
-                                        }}>
-                                            <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                                Delete It
-                                            </ReactText>
-                                        </TouchableOpacity>
-                                    </ReactView>
-                                </ReactView>
-
-                            ) : (
-                                <ReactView style={{ width: "90%", height: 90, backgroundColor: "white", borderRadius: 10, padding: 10 }}>
-                                    <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        Are you sure for delete it?
-                                    </ReactText>
-                                    <ReactView style={{ flexDirection: direction.direction, alignItems: direction.start, width: "100%" }}>
-                                        <TouchableOpacity style={{ padding: 10 }} onPress={() => {
-                                            setLoad(false);
-                                            setLoad2(false);
-                                        }}>
-                                            <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                                Yes
-                                            </ReactText>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{ padding: 10 }} onPress={() => {
-                                            setLoad(false);
-                                            setLoad2(false);
-                                        }}>
-                                            <ReactText style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                                No
-                                            </ReactText>
-                                        </TouchableOpacity>
-                                    </ReactView>
-                                </ReactView>
-                            )}
-                        </>
-                    ) : (<></>)
-                }
-
             </View>
 
         </SafeAreaView>

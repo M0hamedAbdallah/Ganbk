@@ -30,7 +30,6 @@ function Boxs(prames) {
         const load = async () => {
             const UserRef = doc(db, prames.value, '0');
             const docSnap = await getDoc(UserRef);
-            console.log(docSnap.data())
             if (auth?.currentUser) {
                 const UserRefLike = doc(db, "Users", user?.uid);
                 const docSnapLike = await getDoc(UserRefLike);
@@ -120,7 +119,6 @@ function Boxs(prames) {
                     </>
                 ) : (
                     item.map((value, key) => {
-                        console.log(value);
                         return (
                             <View style={[styles.marksscroll, {
                                 transform: [{ scaleX: (direction.lang == 'ar') ? -1 : 1 }],
