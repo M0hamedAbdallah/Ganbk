@@ -7,7 +7,7 @@ import directionContext from "../../src/direction/directionContext";
 import auth, { db } from "../../firebase/config/firebase-config";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { firebase } from "../../firebase/config/firebase-config";
-import { getStorage, ref, deleteObject } from "firebase/storage";
+import { getStorage, ref } from "firebase/storage";
 import Modal from "react-native-modal";
 
 
@@ -20,7 +20,7 @@ export default function MyAds() {
     const [valueData, setvalueData] = useState([]);
     const [deleteIt, setDeleteIt] = useState({});
     const [indexItem, setindexItem] = useState(-1);
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(false);
     const [plus, setPlus] = useState(0);
     const [plus1, setPlus1] = useState(0);
     const Lungaues = useContext(WordsContext);
@@ -51,14 +51,20 @@ export default function MyAds() {
     useEffect(() => {
         setvalueData([]);
         const login = async () => {
-            const UserRef = doc(db, "Users", auth?.currentUser?.uid);
-            const docSnap = await getDoc(UserRef);
-            const data = docSnap.data();
-            setMyAds((data.MyAds));
+            const wa = await new Promise(async (r, e) => {
+                const UserRef = doc(db, "Users", auth?.currentUser?.uid);
+                const docSnap = await getDoc(UserRef);
+                const data = docSnap.data();
+                setMyAds((data.MyAds));
+            })
+            setTimeout(() => {
+                setValue(!value);
+            }, 0);
         }
         if (auth?.currentUser) {
             login()
         }
+        Promise.all(login);
     }, [value])
 
 
@@ -75,6 +81,7 @@ export default function MyAds() {
             setMyAdsDetails(valueData);
         }
         login();
+        Promise.all(login);
     }, [value])
 
     const DeleteTheAds = async (dataSended) => {
@@ -82,22 +89,12 @@ export default function MyAds() {
         try {
             const Ad = (dataSended?.Photo)?.map(async (ImageUri) => {
                 const Sended = await new Promise((resolve, reject) => {
-                    const Arrayone = ImageUri.split("/");
-                    const Arraytwo = Arrayone[(Arrayone?.length) - 1].split("?");
-                    const Arraythree = Arraytwo[0].replace("%", "/");
-                    const Uri = Arraythree + ".jpeg";
-                    const desertRef = ref(storage, Uri);
-                    deleteObject(desertRef).then(() => {
-                        // File deleted successfully
+                    firebase.storage().refFromURL(ImageUri).delete().then(() => {
+                        console.log(ImageUri);
                         sw = true;
-                    }).catch((error) => {
-                        // Uh-oh, an error occurred!
-                        sw = false;
-                        console.log(error)
-                        // throw error(0);
-                    });
-                    console.log(Uri);
-                    sw = true;
+                    }).catch((e) => {
+                        console.log(e);
+                    })
                 })
             })
             Promise.all(Ad);
@@ -140,7 +137,7 @@ export default function MyAds() {
                     })
                     Promise.all(AdInFire , AdInUser);
                 })
-                
+
             }
         } catch (error) {
             console.log(error)
