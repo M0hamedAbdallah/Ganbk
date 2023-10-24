@@ -5,6 +5,7 @@ import Colors from '../../constants/Colors';
 import { useContext, useEffect, useState } from 'react';
 import WordsContext from '../../src/lang/wordsContext'
 import directionContext from '../../src/direction/directionContext';
+import { EventRegister } from 'react-native-event-listeners';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -47,6 +48,9 @@ export default function TabLayout() {
             title: Languages.MyAds,
             tabBarIcon: ({ color }) => <Image source={require('../../src/assets/speaker.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
             headerShown: false
+          }}
+          listeners={()=>{
+            EventRegister.emit('MyAdsReload', Math.random() * 1000);
           }}
         />
         <Tabs.Screen

@@ -9,10 +9,10 @@ import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { firebase } from "../../firebase/config/firebase-config";
 import { getStorage, ref } from "firebase/storage";
 import Modal from "react-native-modal";
+import { EventRegister } from "react-native-event-listeners";
 
 
 export default function MyAds() {
-    const storage = getStorage();
     const colorScheme = useColorScheme();
     const [load2, setLoad2] = useState(false);
     const [MyAds, setMyAds] = useState([]);
@@ -20,9 +20,7 @@ export default function MyAds() {
     const [valueData, setvalueData] = useState([]);
     const [deleteIt, setDeleteIt] = useState({});
     const [indexItem, setindexItem] = useState(-1);
-    const [value, setValue] = useState(false);
-    const [plus, setPlus] = useState(0);
-    const [plus1, setPlus1] = useState(0);
+    const [value, setValue] = useState(0);
     const Lungaues = useContext(WordsContext);
     const direction = useContext(directionContext);
     const Languages = useContext(WordsContext);
@@ -47,6 +45,19 @@ export default function MyAds() {
         }
     }
 
+    const ReLoad = async (v) => {
+        setValue(v + 1);
+    }
+
+    useEffect(() => {
+        const listener = EventRegister.addEventListener('MyAdsReload', (data) => {
+            ReLoad(data);
+        })
+        ReLoad(Math.random() * 1000)
+        return () => {
+            EventRegister.removeEventListener('MyAdsReload');
+        }
+    }, [])
 
     useEffect(() => {
         setvalueData([]);
@@ -58,7 +69,7 @@ export default function MyAds() {
                 setMyAds((data.MyAds));
             })
             setTimeout(() => {
-                setValue(!value);
+                setValue(value + 1);
             }, 0);
         }
         if (auth?.currentUser) {
@@ -135,7 +146,7 @@ export default function MyAds() {
                         setLoad2(false);
                         setValue(value + 1);
                     })
-                    Promise.all(AdInFire , AdInUser);
+                    Promise.all(AdInFire, AdInUser);
                 })
 
             }

@@ -47,7 +47,20 @@ export default function Support() {
 
         setMessage("");
     }
-    
+
+
+    useEffect(() => {
+        const lon = async () => {
+            const def = doc(db, "Users", auth?.currentUser?.uid);
+            const dataDef = await getDoc(def);
+            if (dataDef.data() != undefined) {
+                setStart(dataDef.data().ChatAdmin);
+            }
+
+        }
+        lon();
+        setAppIsReady(true);
+    }, [])
 
     useEffect(() => {
         const load = async () => {
@@ -61,22 +74,11 @@ export default function Support() {
         setPlus(
             load()
         );
-        setAppIsReady(true);
         return load;
     }, [value])
 
 
-    useEffect(() => {
-        const lon = async () => {
-            const def = doc(db, "Users", auth?.currentUser?.uid);
-            const dataDef = await getDoc(def);
-            if (dataDef.data() != undefined) {
-                setStart(dataDef.data().ChatAdmin);
-            }
 
-        }
-        lon();
-    }, [])
 
     const Chat = async () => {
         if (auth?.currentUser) {
@@ -85,6 +87,10 @@ export default function Support() {
                 ChatAdmin: true
             })
         }
+    }
+
+    if (!appIsReady) {
+        return null
     }
 
     return (
@@ -105,37 +111,45 @@ export default function Support() {
                 )}
                 {console.log(sendedMessage)}
                 <View style={{ flex: 1, alignItems: 'center' }}>
-                    <ScrollView style={{ height: "100%" }}>
-                        {
-                            sendedMessage?.map((value, index) =>
+                    {(!start) ? (
+                        <>
+                        </>
+                    ) : (
+                        <>
+                            <ScrollView style={{ height: "100%" }}>
+                                {
+                                    sendedMessage?.map((value, index) =>
 
-                                (!(value?.doc?.uid === auth?.currentUser?.uid)) ? (
-                                    <View style={{ width: "100%", alignItems: "center", flexDirection: direction.direction }} key={index}>
-                                        <View style={{ width: "15%", alignItems: 'center', justifyContent: 'center' }}>
-                                            <Image source={{ uri: value?.doc?.PhotoURL }} style={{ width: 40, height: 40, borderRadius: 50 }} />
-                                        </View>
-                                        <View style={{ width: "85%", padding: 10, alignItems: direction.start }}>
-                                            <Text style={{ color: 'white', backgroundColor: '#535353', padding: 10, borderRadius: 8 }}>
-                                                {value?.doc?.message}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                ) : (
-                                    <View style={{ width: "100%", alignItems: "center", flexDirection: direction.direction }} key={index}>
-                                        <View style={{ width: "85%", padding: 10, alignItems: direction.end }}>
-                                            <Text style={{ color: 'white', backgroundColor: '#d43131', padding: 10, borderRadius: 8 }}>
-                                                {value?.doc?.message}
-                                            </Text>
-                                        </View>
-                                        <View style={{ width: "15%", alignItems: 'center', justifyContent: 'center' }}>
-                                            <Image source={{ uri: auth?.currentUser?.photoURL }} style={{ width: 40, height: 40, borderRadius: 50 }} />
-                                        </View>
-                                    </View>
-                                )
-                            )
+                                        (!(value?.doc?.uid === auth?.currentUser?.uid)) ? (
+                                            <View style={{ width: "100%", alignItems: "center", flexDirection: direction.direction }} key={index}>
+                                                <View style={{ width: "15%", alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Image source={{ uri: value?.doc?.PhotoURL }} style={{ width: 40, height: 40, borderRadius: 50 }} />
+                                                </View>
+                                                <View style={{ width: "85%", padding: 10, alignItems: direction.start }}>
+                                                    <Text style={{ color: 'white', backgroundColor: '#535353', padding: 10, borderRadius: 8 }}>
+                                                        {value?.doc?.message}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        ) : (
+                                            <View style={{ width: "100%", alignItems: "center", flexDirection: direction.direction }} key={index}>
+                                                <View style={{ width: "85%", padding: 10, alignItems: direction.end }}>
+                                                    <Text style={{ color: 'white', backgroundColor: '#d43131', padding: 10, borderRadius: 8 }}>
+                                                        {value?.doc?.message}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ width: "15%", alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Image source={{ uri: auth?.currentUser?.photoURL }} style={{ width: 40, height: 40, borderRadius: 50 }} />
+                                                </View>
+                                            </View>
+                                        )
+                                    )
 
-                        }
-                    </ScrollView>
+                                }
+                            </ScrollView>
+                        </>
+                    )}
+
                 </View>
                 {(!start) ? (
                     <>
