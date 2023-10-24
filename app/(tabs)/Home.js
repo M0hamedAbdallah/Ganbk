@@ -128,6 +128,7 @@ export default function Home() {
                         </TouchableOpacity>
                         <TouchableOpacity style={{ width: "35%", height: 45, alignItems: 'center', justifyContent: "space-evenly", flexDirection: direction.direction }}
                             onPress={() => {
+                                router.push('/Support')
                             }}
                         >
                             <Image source={require('../../src/assets/commentsQuestion.png')} style={{ width: 20, height: 20 }} />
