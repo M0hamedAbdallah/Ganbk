@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import WordsContext from '../../src/lang/wordsContext'
 import directionContext from '../../src/direction/directionContext';
 import { EventRegister } from 'react-native-event-listeners';
+import auth from '../../firebase/config/firebase-config';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -50,7 +51,10 @@ export default function TabLayout() {
             headerShown: false
           }}
           listeners={()=>{
-            EventRegister.emit('MyAdsReload', Math.random() * 1000);
+            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
+            if(!auth?.currentUser){
+              router.push("/Login")
+            }
           }}
         />
         <Tabs.Screen
@@ -71,6 +75,12 @@ export default function TabLayout() {
             title: Languages.chat,
             tabBarIcon: ({ color }) => <Image source={require('../../src/assets/chat.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
             headerShown: false
+          }}
+          listeners={()=>{
+            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
+            if(!auth?.currentUser){
+              router.push("/Login")
+            }
           }}
         />
         <Tabs.Screen

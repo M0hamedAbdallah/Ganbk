@@ -14,6 +14,7 @@ import { EventRegister } from "react-native-event-listeners";
 
 export default function MyAds() {
     const colorScheme = useColorScheme();
+    const [count, setcount] = useState(0);
     const [load2, setLoad2] = useState(false);
     const [MyAds, setMyAds] = useState([]);
     const [MyAdsDetails, setMyAdsDetails] = useState([]);
@@ -76,7 +77,7 @@ export default function MyAds() {
             login()
         }
         Promise.all(login);
-    }, [value])
+    }, [count])
 
 
 
@@ -92,64 +93,59 @@ export default function MyAds() {
             setMyAdsDetails(valueData);
         }
         login();
-        Promise.all(login);
-    }, [value])
+    }, [count])
 
     const DeleteTheAds = async (dataSended) => {
-        let sw = false;
         try {
-            const Ad = (dataSended?.Photo)?.map(async (ImageUri) => {
-                const Sended = await new Promise((resolve, reject) => {
-                    firebase.storage().refFromURL(ImageUri).delete().then(() => {
-                        console.log(ImageUri);
-                        sw = true;
+            const Ad = (dataSended?.Photo)?.map(async (ImageUri, index) => {
+                const Sended = await new Promise(async (resolve, reject) => {
+                    firebase.storage().refFromURL(ImageUri).delete().then(async () => {
+                        if (index == (dataSended?.Photo)?.length - 1) {
+                            console.log(ImageUri, index);
+                            const theAdsD = MyAds[indexItem];
+                            const UserRef = doc(db, theAdsD?.from, "0");
+                            const docSnap = await getDoc(UserRef);
+                            if (docSnap.data() != undefined) {
+                                const num = parseInt(docSnap.data().number);
+                                const array = docSnap.data().DataList;
+                                const arrayDeleted = docSnap.data().Deleted;
+                                const UserRef1 = doc(db, theAdsD?.from, theAdsD?.num);
+                                arrayDeleted.push(theAdsD?.num);
+                                arrayDeleted.sort((a, b) => a - b);
+                                array.splice(parseInt(theAdsD?.num), 1);
+                                await updateDoc(UserRef, {
+                                    number: (num - 1),
+                                    DataList: array,
+                                    Deleted: arrayDeleted
+                                })
+                                await deleteDoc(UserRef1);
+                            }
+                            const UserRef2 = doc(db, "Users", auth?.currentUser?.uid);
+                            const docSnap2 = await getDoc(UserRef2);
+                            const data = docSnap2.data();
+                            const NewData = data.MyAds;
+                            const NewData1 = NewData.filter((value) => {
+                                console.log(value.num);
+                                console.log(theAdsD?.num);
+                                console.log(value.from);
+                                console.log(theAdsD?.from);
+                                return ((value.num != theAdsD?.num) || (value.from != theAdsD?.from));
+                            })
+                            console.log(NewData1);
+                            await updateDoc(UserRef2, {
+                                MyAds: NewData1
+                            }).then(() => {
+                                setIsModalVisible(!isModalVisible);
+                                setLoad2(false);
+                                setValue(value + 1);
+                            })
+                        }
                     }).catch((e) => {
                         console.log(e);
                     })
                 })
             })
             Promise.all(Ad);
-            if (sw) {
-                const theAdsD = MyAds[indexItem];
-                const AdInFire = await new Promise(async (resolve, reject) => {
-                    const UserRef = doc(db, theAdsD?.from, "0");
-                    const docSnap = await getDoc(UserRef);
-                    if (docSnap.data() != undefined) {
-                        const num = parseInt(docSnap.data().number);
-                        const array = docSnap.data().DataList;
-                        const arrayDeleted = docSnap.data().Deleted;
-                        const UserRef1 = doc(db, theAdsD?.from, theAdsD?.num);
-                        arrayDeleted.push(theAdsD?.num);
-                        arrayDeleted.sort((a, b) => a - b);
-                        array.splice(parseInt(theAdsD?.num), 1);
-                        await updateDoc(UserRef, {
-                            number: (num - 1),
-                            DataList: array,
-                            Deleted: arrayDeleted
-                        })
-                        await deleteDoc(UserRef1);
-                    }
-                    const AdInUser = await new Promise(async (res, rej) => {
-                        const UserRef = doc(db, "Users", auth?.currentUser?.uid);
-                        const docSnap = await getDoc(UserRef);
-                        const data = docSnap.data();
-                        const NewData = data.MyAds;
-                        const NewData1 = NewData.filter((value) => {
-                            console.log(value.num);
-                            console.log(theAdsD?.num);
-                            return value.num != theAdsD?.num && value.from != theAdsD?.from;
-                        })
-                        await updateDoc(UserRef, {
-                            MyAds: NewData1
-                        })
-                        setIsModalVisible(!isModalVisible);
-                        setLoad2(false);
-                        setValue(value + 1);
-                    })
-                    Promise.all(AdInFire, AdInUser);
-                })
-
-            }
         } catch (error) {
             console.log(error)
         }
@@ -163,10 +159,19 @@ export default function MyAds() {
                 </View>
                 <View style={{ width: "100%", flexDirection: 'row' }}>
                     <View style={{ width: "100%", alignItems: 'center', justifyContent: 'center' }}>
-                        <ReactView style={{ height: 50 }}>
-                            <Text style={{ width: "100%", fontSize: 15, fontWeight: "bold" }}>
-                                My Ads
-                            </Text>
+                        <ReactView style={{ height: 50, flexDirection: direction.direction, width: "90%", justifyContent: "space-between" , alignItems:"center"}}>
+                            <TouchableOpacity onPress={() => {
+                                if (count != null) {
+                                    setcount(count - 1);
+                                }
+                            }}>
+                                <Image source={require("../../src/assets/reload.png")} style={{ width: 25, height: 25 }} tintColor={(colorScheme == 'dark') ? 'white' : 'black'} />
+                            </TouchableOpacity>
+                            <View style={{ width: "20%", }}>
+                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                                    My Ads
+                                </Text>
+                            </View>
                         </ReactView>
                     </View>
                 </View>

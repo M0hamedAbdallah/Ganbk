@@ -105,11 +105,12 @@ const index = () => {
     }
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1 }}
-            keyboardVerticalOffset={90}
-        >
+        // <KeyboardAvoidingView
+        //     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        //     style={{ flex: 1 }}
+        //     keyboardVerticalOffset={90}
+        // >
+        <>
             <SafeAreaView />
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <>
@@ -161,7 +162,8 @@ const index = () => {
                     </View>
                 </>
             </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+        </>
+        // </KeyboardAvoidingView>
     )
 }
 

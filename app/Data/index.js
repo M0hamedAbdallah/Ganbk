@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ImageEdit } from "../../components/Themed";
-import { Image, ScrollView, useColorScheme, View as ReactView, Linking } from "react-native";
+import { Image, ScrollView, useColorScheme, View as ReactView, Linking, ActivityIndicator } from "react-native";
 import { EventRegister } from "react-native-event-listeners";
 import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
@@ -10,6 +10,7 @@ import { addDoc, collection, doc, getDoc, serverTimestamp, setDoc } from "fireba
 import auth, { db, firebase } from "../../firebase/config/firebase-config";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect, router } from "expo-router";
+import Modal from "react-native-modal";
 
 export default function Data() {
     const Languages = useContext(WordsContext);
@@ -19,6 +20,7 @@ export default function Data() {
     const [DataTemp, setDataTemp] = useState([]);
     const [bool, setbool] = useState(false);
     const [user, setUser] = useState();
+    const [isModalVisible, setIsModalVisible] = useState(false);
     useEffect(() => {
         // console.log(Data.uid);
         const DAtaSet = async () => {
@@ -80,8 +82,9 @@ export default function Data() {
     const Chat = async () => {
         if (auth?.currentUser) {
             if (auth?.currentUser?.uid == Data?.uid) {
-                console.log('Cant Chat with your self');
+                alert('Cant Chat with your self');
             } else {
+                setIsModalVisible(true)
                 console.log('Chat Now');
                 console.log(auth?.currentUser?.uid)
                 console.log(Data?.uid)
@@ -107,9 +110,13 @@ export default function Data() {
                     show: false,
                     chatGroup: auth?.currentUser?.uid + Data?.uid,
                     createAt: firebase.firestore.FieldValue.serverTimestamp(),
+                }).then(async () => {
+                    setIsModalVisible(false);
+                    await AsyncStorage.setItem("@ChatGroup", JSON.stringify({ chatGroup: auth?.currentUser?.uid + Data?.uid, Image: auth?.currentUser?.photoURL, Id: auth?.currentUser?.uid + Data?.uid }))
+                        .then(() => router.push("/ChatUser"));
                 })
-                router.replace('/Chat');
-                router.back();
+                // router.replace('/Chat');
+                // router.back();
             }
         } else {
             router.push('/Login');
@@ -117,281 +124,289 @@ export default function Data() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: (color == 'dark') ? 'black' : 'white' }}>
-            <ScrollView style={{ width: "100%" }}>
-                <DataVeiw />
-                <View style={{ width: "100%", alignItems: 'center', marginTop: 15 }}>
-                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10, alignItems: direction.start }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                            {Languages.EGP} {parseFloat(Data.Price).toLocaleString(Languages.lang)}
-                        </Text>
-                    </View>
-                </View>
-                <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
-                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10, alignItems: direction.start }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                            {Data.Adtitle}
-                        </Text>
-                    </View>
-                </View>
-                <View style={{ width: "100%", alignItems: 'center', marginTop: 10, flexDirection: direction.direction, justifyContent: 'space-evenly' }}>
-                    <View style={{ width: "47%", marginBottom: 5, marginTop: 10, flexDirection: direction.direction }}>
-                        <View style={{ width: '20%', justifyContent: 'center', alignItems: direction.start }}>
-                            <ImageEdit source={require('../../src/assets/marker.png')} style={{ width: 20, height: 20 }} />
+        <>
+            <Modal isVisible={isModalVisible}>
+                <ReactView style={{ width:"100%",height:"100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator size={50} color={'#ff3a3a'} />
+                </ReactView>
+            </Modal>
+            <SafeAreaView style={{ flex: 1, alignItems: 'center', backgroundColor: (color == 'dark') ? 'black' : 'white' }}>
+                <ScrollView style={{ width: "100%" }}>
+                    <DataVeiw />
+                    <View style={{ width: "100%", alignItems: 'center', marginTop: 15 }}>
+                        <View style={{ width: "90%", marginBottom: 5, marginTop: 10, alignItems: direction.start }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                {Languages.EGP} {parseFloat(Data.Price).toLocaleString(Languages.lang)}
+                            </Text>
                         </View>
-                        <View style={{ width: '80%', }}>
+                    </View>
+                    <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
+                        <View style={{ width: "90%", marginBottom: 5, marginTop: 10, alignItems: direction.start }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                {Data.Adtitle}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{ width: "100%", alignItems: 'center', marginTop: 10, flexDirection: direction.direction, justifyContent: 'space-evenly' }}>
+                        <View style={{ width: "47%", marginBottom: 5, marginTop: 10, flexDirection: direction.direction }}>
+                            <View style={{ width: '20%', justifyContent: 'center', alignItems: direction.start }}>
+                                <ImageEdit source={require('../../src/assets/marker.png')} style={{ width: 20, height: 20 }} />
+                            </View>
+                            <View style={{ width: '80%', }}>
+                                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                    {Data.Location}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={{ width: "40%", marginBottom: 5, marginTop: 10, flexDirection: direction.direction, justifyContent: Languages.end }}>
                             <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                {Data.Location}
+                                {Data.Date}
                             </Text>
                         </View>
                     </View>
-                    <View style={{ width: "40%", marginBottom: 5, marginTop: 10, flexDirection: direction.direction, justifyContent: Languages.end }}>
-                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                            {Data.Date}
-                        </Text>
+                    <View style={{ width: "100%", alignItems: "center", marginTop: 10 }} lightColor="#eee" darkColor="#404040">
+                        <ReactView style={{ width: "90%", marginTop: 15 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                {Languages.Details}
+                            </Text>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.Type}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {((Languages[Data.Type])?.toLowerCase())?.charAt(0).toUpperCase() + ((Languages[Data.Type])?.toLowerCase())?.slice(1)}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.Area}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {parseInt(Data.Area)?.toLocaleString(Languages.lang)}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.Bedrooms}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {parseInt(Data.Bedrooms)?.toLocaleString(Languages.lang)}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.Bathrooms}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {parseInt(Data.Bathrooms)?.toLocaleString(Languages.lang)}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.Level}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {parseInt(Data.Level).toLocaleString(Languages.lang)}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.Furnished}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages[Data.Furnished]}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.PaymentOption}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages[Data.PaymentOption]}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.DeliveryDate}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Data.DeliveryDate}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
+                        <ReactView style={{ width: "90%", marginTop: 15, marginBottom: 15, flexDirection: direction.direction }}>
+                            <ReactView style={{ width: "50%" }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages.DeliveryTerm}:
+                                </Text>
+                            </ReactView>
+                            <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>
+                                    {Languages[Data.DeliveryTerm]}
+                                </Text>
+                            </ReactView>
+                        </ReactView>
                     </View>
-                </View>
-                <View style={{ width: "100%", alignItems: "center", marginTop: 10 }} lightColor="#eee" darkColor="#404040">
-                    <ReactView style={{ width: "90%", marginTop: 15 }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                            {Languages.Details}
-                        </Text>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.Type}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {((Languages[Data.Type])?.toLowerCase())?.charAt(0).toUpperCase() + ((Languages[Data.Type])?.toLowerCase())?.slice(1)}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.Area}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {parseInt(Data.Area)?.toLocaleString(Languages.lang)}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.Bedrooms}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {parseInt(Data.Bedrooms)?.toLocaleString(Languages.lang)}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.Bathrooms}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {parseInt(Data.Bathrooms)?.toLocaleString(Languages.lang)}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.Level}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {parseInt(Data.Level).toLocaleString(Languages.lang)}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.Furnished}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages[Data.Furnished]}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.PaymentOption}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages[Data.PaymentOption]}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.DeliveryDate}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Data.DeliveryDate}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                    <ReactView style={{ width: "90%", marginTop: 15, marginBottom: 15, flexDirection: direction.direction }}>
-                        <ReactView style={{ width: "50%" }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages.DeliveryTerm}:
-                            </Text>
-                        </ReactView>
-                        <ReactView style={{ width: "50%", flexDirection: direction.direction }}>
-                            <Text style={{ fontSize: 16, fontWeight: '600' }}>
-                                {Languages[Data.DeliveryTerm]}
-                            </Text>
-                        </ReactView>
-                    </ReactView>
-                </View>
-                {
-                    (!bool) ?
-                        (<>
-                            <View style={{ width: "100%", alignItems: 'center', marginTop: 10, height: 300 }}>
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                                        {Languages.Description}
-                                    </Text>
-                                </View>
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Data.Describewhatyouareselling}
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={{ width: "100%", alignItems: 'center', marginBottom: 5, marginTop: 10 }}>
-                                <TouchableOpacity style={{ width: "90%", marginBottom: 5, marginTop: 10 }} onPress={() => {
-                                    setbool(!bool);
-                                }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'red' }}>
-                                        Read More
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                        )
-                        :
-                        (<>
-                            <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                                        {Languages.Description}
-                                    </Text>
-                                </View>
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Data.Describewhatyouareselling}
-                                    </Text>
-                                </View>
-                            </View>
-                            <View style={{ width: "100%", alignItems: 'center', marginBottom: 5, marginTop: 10 }}>
-                                <TouchableOpacity style={{ width: "90%", marginBottom: 5, marginTop: 10 }} onPress={() => {
-                                    setbool(!bool);
-                                }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'red' }}>
-                                        Read Less
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                        )
-                }
-                <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
-                    <View style={{ width: "90%", height: 1, backgroundColor: 'black' }} />
-                    <View style={{ width: "90%", marginBottom: 5, marginTop: 20 }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                            {Languages.Amenities}
-                        </Text>
-                    </View>
-                    <View style={{ flexDirection: direction.direction, paddingHorizontal: 20, marginBottom: 20, flexWrap: 'wrap' }}>
-
-                        {
-                            (Data.Amenities)?.map((item, index) => {
-                                return (
-                                    <View key={index} style={[{ paddingHorizontal: 20, paddingVertical: 5, borderRadius: 5, marginRight: 10, marginTop: 10, borderColor: (color == 'dark') ? "white" : "black", borderWidth: 1 }]}>
-                                        <Text style={[{ fontSize: 15, fontWeight: 'bold' }]}>{item}</Text>
+                    {
+                        (!bool) ?
+                            (<>
+                                <View style={{ width: "100%", alignItems: 'center', marginTop: 10, height: 300 }}>
+                                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                            {Languages.Description}
+                                        </Text>
                                     </View>
-                                )
-                            })
-                        }
+                                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            {Data.Describewhatyouareselling}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={{ width: "100%", alignItems: 'center', marginBottom: 5, marginTop: 10 }}>
+                                    <TouchableOpacity style={{ width: "90%", marginBottom: 5, marginTop: 10 }} onPress={() => {
+                                        setbool(!bool);
+                                    }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'red' }}>
+                                            Read More
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                            )
+                            :
+                            (<>
+                                <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
+                                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                            {Languages.Description}
+                                        </Text>
+                                    </View>
+                                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            {Data.Describewhatyouareselling}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={{ width: "100%", alignItems: 'center', marginBottom: 5, marginTop: 10 }}>
+                                    <TouchableOpacity style={{ width: "90%", marginBottom: 5, marginTop: 10 }} onPress={() => {
+                                        setbool(!bool);
+                                    }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'red' }}>
+                                            Read Less
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                            )
+                    }
+                    <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
+                        <View style={{ width: "90%", height: 1, backgroundColor: 'black' }} />
+                        <View style={{ width: "90%", marginBottom: 5, marginTop: 20 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                {Languages.Amenities}
+                            </Text>
+                        </View>
+                        <View style={{ flexDirection: direction.direction, paddingHorizontal: 20, marginBottom: 20, flexWrap: 'wrap' }}>
 
+                            {
+                                (Data.Amenities)?.map((item, index) => {
+                                    return (
+                                        <View key={index} style={[{ paddingHorizontal: 20, paddingVertical: 5, borderRadius: 5, marginRight: 10, marginTop: 10, borderColor: (color == 'dark') ? "white" : "black", borderWidth: 1 }]}>
+                                            <Text style={[{ fontSize: 15, fontWeight: 'bold' }]}>{item}</Text>
+                                        </View>
+                                    )
+                                })
+                            }
+
+                        </View>
+                    </View>
+                    {
+                        (user) ?
+                            (
+                                <View style={{ width: "100%", alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+                                    <View style={{ width: "90%", height: 1, backgroundColor: 'black' }} />
+                                    <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            {Languages.Publisher}
+                                        </Text>
+                                    </View>
+                                    <View style={{ width: "80%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            {user.firstName}
+                                        </Text>
+                                    </View>
+                                    <View style={{ width: "80%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            {Data.phone}
+                                        </Text>
+                                    </View>
+                                    <View style={{ width: "80%", marginBottom: 5, marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                            {user.BirthDate}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )
+                            :
+                            (null)
+                    }
+                </ScrollView >
+
+                <View style={{ width: "100%", borderTopColor: 'black', borderTopWidth: 1, paddingTop: 10, paddingBottom: 10, alignItems: 'center' }}>
+                    <View style={{ flexDirection: direction.direction, justifyContent: "space-between", width: "90%" }}>
+                        <TouchableOpacity style={{ flexDirection: 'row-reverse', width: "45%", height: 50, backgroundColor: 'red', alignItems: "center", justifyContent: 'center', borderRadius: 5 }} onPress={() => {
+                            Linking.openURL(`tel:${Data?.phone}`)
+                        }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
+                                {Languages.Call}
+                            </Text>
+                            <ImageEdit style={{ width: 20, height: 20, marginRight: 10 }} source={require('../../src/assets/phoneCall.png')} tintColor={'white'} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row-reverse', width: "45%", height: 50, backgroundColor: '#555555', alignItems: 'center', justifyContent: 'center', borderRadius: 5, borderColor: 'red', borderWidth: 1, }}
+                            onPress={() => {
+                                Chat();
+                            }}
+                        >
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
+                                {Languages.Chat}
+                            </Text>
+                            <ImageEdit style={{ width: 20, height: 20, marginRight: 10 }} source={require('../../src/assets/chatCall.png')} tintColor={'red'} />
+                        </TouchableOpacity>
                     </View>
                 </View>
-                {
-                    (user) ?
-                        (
-                            <View style={{ width: "100%", alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                                <View style={{ width: "90%", height: 1, backgroundColor: 'black' }} />
-                                <View style={{ width: "90%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Languages.Publisher}
-                                    </Text>
-                                </View>
-                                <View style={{ width: "80%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {user.firstName}
-                                    </Text>
-                                </View>
-                                <View style={{ width: "80%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {Data.phone}
-                                    </Text>
-                                </View>
-                                <View style={{ width: "80%", marginBottom: 5, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                                        {user.BirthDate}
-                                    </Text>
-                                </View>
-                            </View>
-                        )
-                        :
-                        (null)
-                }
-            </ScrollView >
-            <View style={{ width: "100%", borderTopColor: 'black', borderTopWidth: 1, paddingTop: 10, paddingBottom: 10, alignItems: 'center' }}>
-                <View style={{ flexDirection: direction.direction, justifyContent: "space-between", width: "90%" }}>
-                    <TouchableOpacity style={{ flexDirection: 'row-reverse', width: "45%", height: 50, backgroundColor: 'red', alignItems: "center", justifyContent: 'center', borderRadius: 5 }} onPress={() => {
-                        Linking.openURL(`tel:${Data?.phone}`)
-                    }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
-                            {Languages.Call}
-                        </Text>
-                        <ImageEdit style={{ width: 20, height: 20, marginRight: 10 }} source={require('../../src/assets/phoneCall.png')} tintColor={'white'} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: 'row-reverse', width: "45%", height: 50, backgroundColor: '#555555', alignItems: 'center', justifyContent: 'center', borderRadius: 5, borderColor: 'red', borderWidth: 1, }}
-                        onPress={() => {
-                            Chat();
-                        }}
-                    >
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
-                            {Languages.Chat}
-                        </Text>
-                        <ImageEdit style={{ width: 20, height: 20, marginRight: 10 }} source={require('../../src/assets/chatCall.png')} tintColor={'red'} />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </>
     )
 }

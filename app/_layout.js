@@ -168,14 +168,21 @@ export default function RootLayout() {
             <Stack.Screen name="Login" options={{
               headerLeft: () => {
                 if (i18n.t('lang') === 'en') {
-                  return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
+                  return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {
+                    router.replace("/Home");
+                    router.back();
+
+                  }}>
                     <Image source={require('../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
                   </TouchableOpacity>
                 }
               },
               headerRight: () => {
                 if (i18n.t('lang') === 'ar') {
-                  return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
+                  return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {
+                    router.replace("/Home");
+                    router.back()
+                  }}>
                     <Image source={require('../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                   </TouchableOpacity>
                 }
