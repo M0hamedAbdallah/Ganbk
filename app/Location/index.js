@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ImageEdit } from "../../components/Themed";
-// import * as  Location from 'expo-location';
+import * as  Location from 'expo-location';
 import WordsContext from '../../src/lang/wordsContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
