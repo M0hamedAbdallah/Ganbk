@@ -50,7 +50,7 @@ export default function TabLayout() {
             headerShown: false
           }}
           listeners={()=>{
-            EventRegister.emit('MyAdsReload', Math.random() * 1000);
+            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
           }}
         />
         <Tabs.Screen

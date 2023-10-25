@@ -1,4 +1,4 @@
-import { Image, Keyboard, View as ReactView, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native'
+import { Image, Keyboard, View as ReactView, StyleSheet, TextInput, TouchableWithoutFeedback, useColorScheme } from 'react-native'
 import { View, Text, ScrollView, TouchableOpacity } from "../../components/Themed";
 import React, { memo, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -16,6 +16,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
 export default function Support() {
     const [start, setStart] = useState(false);
+    const color = useColorScheme();
     const direction = useContext(directionContext);
     const Languages = useContext(WordsContext);
     const [message, setMessage] = useState('');
@@ -85,7 +86,17 @@ export default function Support() {
             const def = doc(db, "Users", auth?.currentUser?.uid);
             await updateDoc(def, {
                 ChatAdmin: true
-            })
+            }).then(() => {
+                firebase.firestore().collection('AdminChats').doc("Admin" + auth?.currentUser?.uid).set({
+                    Name: auth?.currentUser?.displayName,
+                    Photo: auth?.currentUser?.photoURL,
+                    uid: auth?.currentUser?.uid,
+                    phono: auth?.currentUser?.phoneNumber,
+                })
+                setvalue(value + 1);
+
+            });
+            setStart(true);
         }
     }
 
@@ -123,7 +134,7 @@ export default function Support() {
                                         (!(value?.doc?.uid === auth?.currentUser?.uid)) ? (
                                             <View style={{ width: "100%", alignItems: "center", flexDirection: direction.direction }} key={index}>
                                                 <View style={{ width: "15%", alignItems: 'center', justifyContent: 'center' }}>
-                                                    <Image source={{ uri: value?.doc?.PhotoURL }} style={{ width: 40, height: 40, borderRadius: 50 }} />
+                                                    <Image source={(color=='light')?(require("../../src/assets/Ganbk.png")):(require("../../src/assets/GanbkDark.png"))} style={{ width: 40, height: 40, borderRadius: 50 ,resizeMode:'center'}} />
                                                 </View>
                                                 <View style={{ width: "85%", padding: 10, alignItems: direction.start }}>
                                                     <Text style={{ color: 'white', backgroundColor: '#535353', padding: 10, borderRadius: 8 }}>

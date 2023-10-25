@@ -37,7 +37,7 @@ function Boxs(prames) {
                 if (docSnap.data() != undefined) {
                     const num = docSnap.data().number;
                     const array = docSnap.data().DataList;
-                    for (let index = num; index > ((num - 4 < 0) ? 1 : (num - 4)); index--) {
+                    for (let index = num; index >= ((num - 4 < 0) ? 1 : (num - 4)); index--) {
                         const value = array[index];
                         const UserRefNew = doc(db, prames.value, value);
                         const docSnap = await getDoc(UserRefNew);
@@ -52,7 +52,7 @@ function Boxs(prames) {
                 if (docSnap.data() != undefined) {
                     const num = docSnap.data().number;
                     const array = docSnap.data().DataList;
-                    for (let index = num; index > ((num - 4 < 0) ? 1 : (num - 4)); index--) {
+                    for (let index = num; index >= ((num - 4 < 0) ? 1 : (num - 4)); index--) {
                         const value = array[index];
                         const UserRefNew = doc(db, prames.value, value);
                         const docSnap = await getDoc(UserRefNew);

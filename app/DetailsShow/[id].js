@@ -41,7 +41,7 @@ export default function TheData() {
                 if (docSnap.data() != undefined) {
                     const num = docSnap.data().number;
                     const array = docSnap.data().DataList;
-                    for (let index = num; index > 1; index--) {
+                    for (let index = num; index >= 1; index--) {
                         const value = array[index];
                         const UserRefNew = doc(db, id, value);
                         const docSnap = await getDoc(UserRefNew);
@@ -56,7 +56,7 @@ export default function TheData() {
                 if (docSnap.data() != undefined) {
                     const num = docSnap.data().number;
                     const array = docSnap.data().DataList;
-                    for (let index = num; index > 1; index--) {
+                    for (let index = num; index >= 1; index--) {
                         const value = array[index];
                         const UserRefNew = doc(db, id, value);
                         const docSnap = await getDoc(UserRefNew);
