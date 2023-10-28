@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useState, useEffect } from 'react'
-import { View , Text} from "../../components/Themed";
+import { View, Text } from "../../components/Themed";
 import { StyleSheet, Image, TouchableOpacity, TextInput, useColorScheme, Pressable, Platform } from "react-native";
 import auth from "../../firebase/config/firebase-config";
 import { Redirect, router } from "expo-router";
@@ -9,7 +9,7 @@ import { signOut, onAuthStateChanged, updateProfile, updatePhoneNumber } from "f
 import WordsContext from "../../src/lang/wordsContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config/firebase-config";
-import DateTimePicker from "@react-native-community/datetimepicker";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 
 
 export default function index() {
@@ -33,8 +33,8 @@ export default function index() {
         console.log(docSnap.data());
         setUserBase(docSnap.data());
         setName(user.displayName)
-        setPhone((docSnap.data().phone)?docSnap.data().phone:'')
-        setBirth((docSnap.data().BirthDate)?docSnap.data().BirthDate:'')
+        setPhone((docSnap.data().phone) ? docSnap.data().phone : '')
+        setBirth((docSnap.data().BirthDate) ? docSnap.data().BirthDate : '')
         if (init) setInit(false)
     }
 
@@ -44,9 +44,9 @@ export default function index() {
     }, []);
 
 
-    const save = async()=>{
+    const save = async () => {
         const UserRef = doc(db, "Users", user.uid);
-        await updateDoc(UserRef,{
+        await updateDoc(UserRef, {
             firstName: Name,
             phone: Phone,
             BirthDate: Birth,
@@ -110,7 +110,7 @@ export default function index() {
     }
     return (
         <View style={styles.container}>
-            <View style={{ width: "100%", height: "80%" ,marginTop:30}}>
+            <View style={{ width: "100%", height: "80%", marginTop: 30 }}>
                 <View style={{ width: "100%", alignItems: 'center' }}>
                     <View style={{ width: "90%" }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -141,36 +141,38 @@ export default function index() {
                             {Languages.email}
                         </Text>
                     </View>
-                    <View style={{ width: "90%", height: 50, borderRadius: 5,borderColor:(color=='light')?'black':'white', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ width: "90%", height: 50, borderRadius: 5, borderColor: (color == 'light') ? 'black' : 'white', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 15 }}>
                             {user.email}
                         </Text>
                     </View>
                 </View>
-                <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
+                <TouchableOpacity onPress={()=>{
+                    router.push("/OTP")
+                }} style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                     <View style={{ width: "90%" }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
                             {Languages.phone}
                         </Text>
                     </View>
-                    <View style={{ width: "90%", borderRadius: 6 }}>
-                        <TextInput style={{
+                    <View style={{
+                        width: "90%", height: 45, borderRadius: 6, alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 5,
+                        borderColor: 'gray',
+                        borderWidth: 2,
+                    }}>
+                        <Text style={{
                             width: "100%",
-                            height: 45,
                             paddingLeft: 10,
                             paddingRight: 10,
-                            borderColor: 'gray',
-                            borderRadius: 5,
-                            borderWidth: 2,
-                            alignItems: 'center',
-                            justifyContent: 'center',
                             color: (color == 'dark') ? 'white' : 'black'
                         }}
-                            value={Phone}
-                            onChangeText={setPhone}
-                        />
+                        >
+                            {Phone}
+                        </Text>
                     </View>
-                </View>
+                </TouchableOpacity>
                 <View style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                     <View style={{ width: "90%" }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
