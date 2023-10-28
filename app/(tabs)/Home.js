@@ -188,13 +188,15 @@ export default function Home() {
                                     {Languages.ApartmentsDuplexforSale}
                                 </Text>
                             </View>
-                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "DuplexForSale")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
                                 <Text style={styles.text}>
                                     {Languages.SeeAll}
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
-                        <Boxs value={"DuplexForSale"}/>
+                        <Boxs value={"DuplexForSale"} />
                     </View>
                     <View style={{
                         width: "100%",
@@ -211,175 +213,191 @@ export default function Home() {
                                     {Languages.ApartmentsDuplexforRent}
                                 </Text>
                             </View>
-                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "DuplexForRent")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
                                 <Text style={styles.text}>
                                     {Languages.SeeAll}
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
-                        <Boxs value={"DuplexForRent"}/>
+                        <Boxs value={"DuplexForRent"} />
                     </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.VillasForSale}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.VillasForSale}
+                                </Text>
                             </View>
-                            <Boxs value={"VillasForSale"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "VillasForSale")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"VillasForSale"} />
+                    </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.VillasForRent}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.VillasForRent}
+                                </Text>
                             </View>
-                            <Boxs value={"VillasForRent"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "VillasForRent")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"VillasForRent"} />
+                    </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.VacationHomesforSale}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.VacationHomesforSale}
+                                </Text>
                             </View>
-                            <Boxs value={"HomesForSale"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "HomesForSale")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"HomesForSale"} />
+                    </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.VacationHomesforRent}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.VacationHomesforRent}
+                                </Text>
                             </View>
-                            <Boxs value={"HomesForRent"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "HomesForRent")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"HomesForRent"} />
+                    </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.CommercialforSale}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.CommercialforSale}
+                                </Text>
                             </View>
-                            <Boxs value={"CommercialForSale"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "CommercialForSale")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"CommercialForSale"} />
+                    </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.CommercialforRent}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.CommercialforRent}
+                                </Text>
                             </View>
-                            <Boxs value={"CommercialForRent"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "CommercialForRent")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"CommercialForRent"} />
+                    </View>
+                    <View style={{
+                        width: "100%",
+                        marginTop: 10,
+                        paddingBottom: 20
+                    }}>
                         <View style={{
                             width: "100%",
-                            marginTop: 10,
-                            paddingBottom: 20
+                            flexDirection: direction.direction,
+                            justifyContent: 'space-around'
                         }}>
-                            <View style={{
-                                width: "100%",
-                                flexDirection: direction.direction,
-                                justifyContent: 'space-around'
-                            }}>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
-                                    <Text style={[styles.text, { fontSize: 20 }]}>
-                                        {Languages.BuildingsLands}
-                                    </Text>
-                                </View>
-                                <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
-                                    <Text style={styles.text}>
-                                        {Languages.SeeAll}
-                                    </Text>
-                                </View>
+                            <View style={{ width: '45%', justifyContent: 'center', alignItems: direction.start }}>
+                                <Text style={[styles.text, { fontSize: 20 }]}>
+                                    {Languages.BuildingsLands}
+                                </Text>
                             </View>
-                            <Boxs value={"BuildingsLands"}/>
+                            <TouchableOpacity onPress={()=>{
+                                router.push("/DetailsShow/" + "BuildingsLands")
+                            }} style={{ width: '45%', justifyContent: 'center', alignItems: direction.end }}>
+                                <Text style={styles.text}>
+                                    {Languages.SeeAll}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
+                        <Boxs value={"BuildingsLands"} />
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
