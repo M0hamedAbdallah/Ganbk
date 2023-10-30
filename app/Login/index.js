@@ -5,12 +5,13 @@ import { StyleSheet, Image, useColorScheme } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "../../firebase/config/firebase-config";
 import { router } from "expo-router";
-import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { FacebookAuthProvider, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
 import { db } from "../../firebase/config/firebase-config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { EventRegister } from "react-native-event-listeners";
+import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 
 function setteing() {
     const colorScheme = useColorScheme();
@@ -29,7 +30,43 @@ function setteing() {
 
             const { idToken } = await GoogleSignin.signIn();
             const googleCredential = GoogleAuthProvider.credential(idToken);
-            const userInfo = signInWithCredential(auth, googleCredential);
+            const userInfo = await signInWithCredential(auth, googleCredential);
+            await userInfo.then(async (user) => {
+                const UserRef = doc(db, "Users", user.user.uid);
+                const docSnap = await getDoc(UserRef);
+                if (docSnap.data() == undefined) {
+                    await setDoc(UserRef, {
+                        firstName: user["_tokenResponse"].firstName,
+                        email: user.user.email,
+                        ImageUser: user.user.photoURL,
+                        phone: '',
+                        BirthDate: '',
+                        Love: [],
+                        MyAds: [],
+                        date: Date.now()
+                    });
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
+                });
+            EventRegister.emit('ReLoad', Math.random() * 1000);
+            router.replace('/Home');
+            router.back();
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function onFaceBookButtonPress() {
+        try {
+            await LoginManager.logInWithPermissions(["public_profile", "email"]);
+            const data = await AccessToken.getCurrentAccessToken();
+            if(!data){
+                return;
+            }
+            const facebookCredential = FacebookAuthProvider.credential(data?.accessToken);
+            const userInfo = await signInWithCredential(auth, facebookCredential);
             await userInfo.then(async (user) => {
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
@@ -109,7 +146,9 @@ function setteing() {
                 </TouchableOpacity>
 
 
-                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040">
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={async ()=>{
+                    await onFaceBookButtonPress();
+                }}>
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
                         <Image
                             source={require("../../src/assets/facebook.png")}

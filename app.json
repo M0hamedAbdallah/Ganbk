@@ -29,7 +29,14 @@
       "expo-router",
       "expo-localization",
       "expo-build-properties",
-      "react-native-fbsdk-next"
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "1301263823905290",
+          "clientToken": "319911d52c8ac6d4d49f7aff5573254d",
+          "displayName": "Ganbk"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
