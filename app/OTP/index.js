@@ -1,58 +1,93 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Button, Image, TextInput, useColorScheme ,StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext, useReducer, useRef } from 'react';
+import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator } from 'react-native';
 // import auth from '@react-native-firebase/auth';
-import { Text, View ,TouchableOpacity} from '../../components/Themed';
+import auth, { db, firebase } from '../../firebase/config/firebase-config';
+import { Text, View, TouchableOpacity } from '../../components/Themed';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
+import { router } from 'expo-router';
+import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { EventRegister } from 'react-native-event-listeners';
+import Modal from "react-native-modal";
 
 export default function PhoneSignIn() {
     // If null, no SMS has been sent
-    const [confirm, setConfirm] = useState(null);
     const [Phone, setPhone] = useState("");
+    const [v, setV] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const colorScheme = useColorScheme();
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
 
 
-    // verification code (OTP - One-Time-Passcode)
-    const [code, setCode] = useState('');
+    const sendnumber1 = async () => {
+        firebase.firestore().collection("NumbersPhones").onSnapshot(async ({ docs }) => {
+            docs.map((value) => {
+                if (value.id == Phone) {
+                    setV(false);
+                    alert("الرقم موجود بالفعل");
+                    setIsModalVisible(!isModalVisible);
+                    console.log(value.id, Phone)
+                }
+            })
+        })
+    }
 
-    // Handle login
-    //   function onAuthStateChanged(user) {
-    //     if (user) {
-    //       console.log(user)
+    const sendnumber2 = async () => {
+        try {
+            const UserRef = doc(db, "Users", auth?.currentUser?.uid);
+            await updateDoc(UserRef, {
+                phone: Phone,
+            });
+            const doo = collection(db, '/NumbersPhones');
+            const docv = doc(db, "NumbersPhones", Phone);
+            await setDoc(docv, {}).then(() => {
+                alert("تم");
+                router.back();
+                EventRegister.emit('Back', true);
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
-    //       return(
-    //         <>
-    //         <View> 
-    //             <Text>
-    //                 you sign in
-    //             </Text>
-    //         </View>
-    //         </>
-    //       )
-    //     }
-    //   }
+    const sendnumber = async () => {
+        setV(!v);
+        setIsModalVisible(!isModalVisible);
+        await sendnumber1().then(async() => {
+            if(v){
+                await sendnumber2().then(()=>{
+                    setIsModalVisible(!isModalVisible);
+                });
+            }
+        })
+    }
 
-    //   useEffect(() => {
-    //     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    //     return subscriber; // unsubscribe on unmount
-    //   }, []);
-
-    //   // Handle the button press
-    //   async function signInWithPhoneNumber(phoneNumber) {
-    //     const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-    //     setConfirm(confirmation);
-    //   }
-
-    //   async function confirmCode() {
-    //     try {
-    //       await confirm.confirm(code);
-    //     } catch (error) {
-    //       console.log('Invalid code.');
-    //     }
-    //   }
-
+    const CheckPhone = (num) => {
+        let val = true;
+        if (Phone == "") {
+            alert("الرجاء ادخال رقم الهاتف");
+            val = false;
+            return false;
+        }
+        if (num.length != 11) {
+            alert("رقم الهاتف غير صحيح");
+            val = false;
+            return false;
+        }
+        if (((num[0] + num[1] + num[2]) != "010") &&
+            ((num[0] + num[1] + num[2]) != "011") &&
+            ((num[0] + num[1] + num[2]) != "012") &&
+            ((num[0] + num[1] + num[2]) != "015")) {
+            console.log((num[0] + num[1] + num[2]));
+            alert("رقم الهاتف غير صحيح");
+            val = false;
+            return false;
+        }
+        if (val) {
+            return true;
+        }
+    }
 
     function ImageLogo() {
         if (colorScheme == 'light') {
@@ -72,8 +107,13 @@ export default function PhoneSignIn() {
         }
     }
 
-    if (!confirm) {
-        return (
+    return (
+        <>
+            <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator size={50} color={'#ff3a3a'} />
+                </View>
+            </Modal>
             <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
@@ -89,6 +129,7 @@ export default function PhoneSignIn() {
                             <TextInput style={{
                                 width: "100%",
                                 height: 45,
+                                fontSize: 18,
                                 paddingLeft: 10,
                                 paddingRight: 10,
                                 borderColor: 'gray',
@@ -105,24 +146,23 @@ export default function PhoneSignIn() {
                     </View>
                     <View style={{ width: "100%", height: "20%", alignItems: 'center' }}>
                         <TouchableOpacity style={styles.ButtonContainer} onPress={() => {
-                            // save();
+                            const val = CheckPhone(Phone);
+                            if (val) {
+                                sendnumber();
+                            }
+                            console.log(val)
+                            console.log(Phone.length)
                         }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: "white" }}>
-                                {Languages.Save}
+                                {Languages.Send}
                             </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-        );
-    }
-
-    return (
-        <>
-            <TextInput value={code} style={{ color: 'white' }} onChangeText={text => setCode(text)} />
-            <Button title="Confirm Code" onPress={() => confirmCode()} />
         </>
     );
+
 }
 
 

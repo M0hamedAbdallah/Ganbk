@@ -82,7 +82,7 @@ export default function Data() {
     const Chat = async () => {
         if (auth?.currentUser) {
             if (auth?.currentUser?.uid == Data?.uid) {
-                alert('Cant Chat with your self');
+                alert(Languages.message2);
             } else {
                 setIsModalVisible(true)
                 console.log('Chat Now');

@@ -9,6 +9,7 @@ import { signOut, onAuthStateChanged, updateProfile, updatePhoneNumber } from "f
 import WordsContext from "../../src/lang/wordsContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config/firebase-config";
+import { EventRegister } from "react-native-event-listeners";
 // import DateTimePicker from "@react-native-community/datetimepicker";
 
 
@@ -101,6 +102,17 @@ export default function index() {
         return (day + '/' + month + '/' + year);
     }
 
+    useEffect(() => {
+        const listener = EventRegister.addEventListener('Back', (data) => {
+            if(data){
+                router.back();
+            }
+        })
+        return () => {
+            EventRegister.removeEventListener('Back');
+        }
+    }, [])
+
     if (init) return null;
 
     if (!user) {
@@ -147,8 +159,11 @@ export default function index() {
                         </Text>
                     </View>
                 </View>
-                <TouchableOpacity onPress={()=>{
-                    router.push("/OTP")
+                <TouchableOpacity onPress={() => {
+                    if (Phone != '' || Phone != null) {
+
+                    }
+                    router.push("/OTP");
                 }} style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                     <View style={{ width: "90%" }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
