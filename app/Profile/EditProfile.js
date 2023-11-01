@@ -10,7 +10,7 @@ import WordsContext from "../../src/lang/wordsContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config/firebase-config";
 import { EventRegister } from "react-native-event-listeners";
-// import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 
 export default function index() {
@@ -161,9 +161,8 @@ export default function index() {
                 </View>
                 <TouchableOpacity onPress={() => {
                     if (Phone != '' || Phone != null) {
-
+                        router.push("/OTP");
                     }
-                    router.push("/OTP");
                 }} style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>
                     <View style={{ width: "90%" }}>
                         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>

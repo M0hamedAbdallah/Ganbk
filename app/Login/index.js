@@ -30,7 +30,7 @@ function setteing() {
 
             const { idToken } = await GoogleSignin.signIn();
             const googleCredential = GoogleAuthProvider.credential(idToken);
-            const userInfo = await signInWithCredential(auth, googleCredential);
+            const userInfo =  signInWithCredential(auth, googleCredential);
             await userInfo.then(async (user) => {
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
@@ -66,7 +66,7 @@ function setteing() {
                 return;
             }
             const facebookCredential = FacebookAuthProvider.credential(data?.accessToken);
-            const userInfo = await signInWithCredential(auth, facebookCredential);
+            const userInfo = signInWithCredential(auth, facebookCredential);
             await userInfo.then(async (user) => {
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
@@ -87,6 +87,15 @@ function setteing() {
                     console.log(err);
                 });
             EventRegister.emit('ReLoad', Math.random() * 1000);
+            router.replace('/Home');
+            router.back();
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function onPhoneButtonPress() {
+        try {
             router.replace('/Home');
             router.back();
         } catch (e) {

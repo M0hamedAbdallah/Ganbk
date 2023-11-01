@@ -1,78 +1,104 @@
-import React, { useState, useEffect, useContext, useReducer, useRef } from 'react';
-import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator } from 'react-native';
-// import auth from '@react-native-firebase/auth';
-import auth, { db, firebase } from '../../firebase/config/firebase-config';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { Text, View, TouchableOpacity } from '../../components/Themed';
+// import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import { firebaseConfig, firebase, db, auth } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { router } from 'expo-router';
-import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { EventRegister } from 'react-native-event-listeners';
 import Modal from "react-native-modal";
-
-export default function PhoneSignIn() {
-    // If null, no SMS has been sent
-    const [Phone, setPhone] = useState("");
-    const [v, setV] = useState(true);
+/*
+    make verification to number phone in expo react native
+*/
+export default function PhoneVerification() {
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [codeNumber, setCodeNumber] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isSending, setIsSending] = useState(false);
     const colorScheme = useColorScheme();
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
+    const [verificationId, setVerificationId] = useState("");
+    const recaptchaVerifier = useRef(null);
+
+    const handleSendCode = async () => {
+        try {
+            const phoneProvider = new firebase.auth.PhoneAuthProvider();
+            const verificationId = await phoneProvider.verifyPhoneNumber(
+                "+2" + phoneNumber,
+                recaptchaVerifier.current
+            ).then((verificationIdSend) => {
+                console.log(verificationIdSend, "");
+                setVerificationId(verificationIdSend);
+                setIsSending(true);
+                setIsModalVisible(false);
+                Alert.alert('Verification code has been sent to your phone.');
+            });
+            console.log(verificationId);
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Failed to send verification code.');
+            setIsModalVisible(false);
+        }
+    };
+
+    const handleVerifyCode = async (verificationCode) => {
+        try {
+            console.log(verificationId);
+            console.log(verificationCode);
+            const user = firebase.auth().currentUser;
+            const credential = firebase.auth.PhoneAuthProvider.credential(
+                verificationId,
+                verificationCode
+            )
+            await firebase.auth().currentUser.updatePhoneNumber(credential).then(async () => {
+                const UserRef = doc(db, "Users", firebase.auth().currentUser.uid);
+                await updateDoc(UserRef, {
+                    phone: phoneNumber,
+                });
+                const docv = doc(db, "NumbersPhones", phoneNumber);
+                await setDoc(docv, {}).then(() => {
+                    Alert.alert('Phone number updated successfully.');
+                    setIsModalVisible(false);
+                    router.back();
+                    EventRegister.emit('Back', true);
+                });
+            });
+        } catch (error) {
+            console.log(error);
+            setIsModalVisible(false);
+            Alert.alert('Failed to update phone number.');
+        }
+    };
 
 
     const sendnumber1 = async () => {
-        firebase.firestore().collection("NumbersPhones").onSnapshot(async ({ docs }) => {
-            docs.map((value) => {
-                if (value.id == Phone) {
-                    setV(false);
-                    alert("الرقم موجود بالفعل");
-                    setIsModalVisible(!isModalVisible);
-                    console.log(value.id, Phone)
-                }
-            })
-        })
-    }
-
-    const sendnumber2 = async () => {
-        try {
-            const UserRef = doc(db, "Users", auth?.currentUser?.uid);
-            await updateDoc(UserRef, {
-                phone: Phone,
-            });
-            const doo = collection(db, '/NumbersPhones');
-            const docv = doc(db, "NumbersPhones", Phone);
-            await setDoc(docv, {}).then(() => {
-                alert("تم");
-                router.back();
-                EventRegister.emit('Back', true);
-            });
-        } catch (e) {
-            console.log(e);
+        const phoneNumberExists = await firebase.firestore().collection("NumbersPhones").doc(phoneNumber).get();
+        if (phoneNumberExists.exists) {
+            alert("الرقم موجود بالفعل");
+            setIsModalVisible(false);
+            return false;
+        } else {
+            handleSendCode();
         }
     }
 
-    const sendnumber = async () => {
-        setV(!v);
-        setIsModalVisible(!isModalVisible);
-        await sendnumber1().then(async() => {
-            if(v){
-                await sendnumber2().then(()=>{
-                    setIsModalVisible(!isModalVisible);
-                });
-            }
-        })
-    }
+
 
     const CheckPhone = (num) => {
         let val = true;
-        if (Phone == "") {
+        if (phoneNumber == "") {
             alert("الرجاء ادخال رقم الهاتف");
             val = false;
+            setIsModalVisible(false);
             return false;
         }
         if (num.length != 11) {
             alert("رقم الهاتف غير صحيح");
             val = false;
+            setIsModalVisible(false);
             return false;
         }
         if (((num[0] + num[1] + num[2]) != "010") &&
@@ -82,11 +108,14 @@ export default function PhoneSignIn() {
             console.log((num[0] + num[1] + num[2]));
             alert("رقم الهاتف غير صحيح");
             val = false;
+            setIsModalVisible(false);
             return false;
         }
         if (val) {
+            setIsModalVisible(false);
             return true;
         }
+        setIsModalVisible(false);
     }
 
     function ImageLogo() {
@@ -107,14 +136,24 @@ export default function PhoneSignIn() {
         }
     }
 
-    return (
-        <>
-            <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
-                <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
-                    <ActivityIndicator size={50} color={'#ff3a3a'} />
-                </View>
-            </Modal>
+    if (!isSending) {
+        return (
             <View style={{ flex: 1 }}>
+                <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                    <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                        <ActivityIndicator size={50} color={'#ff3a3a'} />
+                    </View>
+                </Modal>
+                <FirebaseRecaptchaVerifierModal
+                    style={{
+                        alignItems: 'center',
+                        justifyContent: "center",
+                        flex: 1,
+                        backgroundColor: "black"
+                    }}
+                    ref={recaptchaVerifier}
+                    firebaseConfig={firebaseConfig}
+                />
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
                 </View>
@@ -139,19 +178,19 @@ export default function PhoneSignIn() {
                                 justifyContent: 'center',
                                 color: (colorScheme == 'dark') ? 'white' : 'black'
                             }}
-                                value={Phone}
-                                onChangeText={setPhone}
+                                keyboardType='numeric'
+                                value={phoneNumber}
+                                onChangeText={setPhoneNumber}
                             />
                         </View>
                     </View>
                     <View style={{ width: "100%", height: "20%", alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.ButtonContainer} onPress={() => {
-                            const val = CheckPhone(Phone);
+                        <TouchableOpacity style={styles.ButtonContainer} onPress={async () => {
+                            setIsModalVisible(true);
+                            const val = CheckPhone(phoneNumber);
                             if (val) {
-                                sendnumber();
+                                await sendnumber1();
                             }
-                            console.log(val)
-                            console.log(Phone.length)
                         }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: "white" }}>
                                 {Languages.Send}
@@ -160,8 +199,67 @@ export default function PhoneSignIn() {
                     </View>
                 </View>
             </View>
-        </>
-    );
+        );
+    } else {
+        return (
+            <View style={{ flex: 1 }}>
+                <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                    <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                        <ActivityIndicator size={50} color={'#ff3a3a'} />
+                    </View>
+                </Modal>
+                <FirebaseRecaptchaVerifierModal
+                    ref={recaptchaVerifier}
+                    firebaseConfig={firebaseConfig}
+                />
+                <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
+                    <ImageLogo />
+                </View>
+                <View style={{ width: "100%", height: "80%", marginTop: 30 }}>
+                    <View style={{ width: "100%", alignItems: 'center' }}>
+                        <View style={{ width: "90%" }}>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                                {Languages.sendOTP}
+                            </Text>
+                        </View>
+                        <View style={{ width: "90%", borderRadius: 6 }}>
+                            <TextInput style={{
+                                width: "100%",
+                                height: 45,
+                                fontSize: 18,
+                                paddingLeft: 10,
+                                paddingRight: 10,
+                                borderColor: 'gray',
+                                borderRadius: 5,
+                                borderWidth: 2,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: (colorScheme == 'dark') ? 'white' : 'black'
+                            }}
+                                keyboardType='numeric'
+                                value={codeNumber}
+                                onChangeText={setCodeNumber}
+                            />
+                        </View>
+                    </View>
+                    <View style={{ width: "100%", height: "20%", alignItems: 'center' }}>
+                        <TouchableOpacity style={styles.ButtonContainer} onPress={async () => {
+                            if (codeNumber == "") {
+                                alert("الرجاء ادخال رمز التحقق");
+                            } else {
+                                setIsModalVisible(true);
+                                await handleVerifyCode(codeNumber);
+                            }
+                        }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: "white" }}>
+                                {Languages.Conf}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        );
+    }
 
 }
 

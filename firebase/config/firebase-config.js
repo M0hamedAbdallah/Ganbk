@@ -31,4 +31,4 @@ const auth = initializeAuth(app, {
 export default auth;
 const db = getFirestore(app);
 const storage = getStorage(app);
-export { firebase, db, storage };
+export { firebase, db, storage , firebaseConfig};
