@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { Text, View, TouchableOpacity } from '../../components/Themed';
-// import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import FirebaseRecaptchaVerifierModal from '../../src/src/FirebaseRecaptchaVerifierModal';
 import { firebaseConfig, firebase, db, auth } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
