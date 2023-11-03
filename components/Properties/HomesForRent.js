@@ -508,16 +508,46 @@ export default function VillasForSale({ id, from }) {
             <Stack.Screen options={{
                 headerLeft: () => {
                     if (Languages.lang === 'en') {
-                        return <T style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                            <Image source={require('../../src/assets/arrow-left.png')} tintColor={(color == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
-                        </T>
+                        if (!I18nManager.isRTL) {
+                            return <T style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back();
+
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                            </T>
+                        }
+                    } else {
+                        if (I18nManager.isRTL) {
+                            return <T style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back();
+
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                            </T>
+                        }
                     }
                 },
                 headerRight: () => {
                     if (Languages.lang === 'ar') {
-                        return <T style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                            <Image source={require('../../src/assets/arrow-left.png')} tintColor={(color == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
-                        </T>
+                        if (!I18nManager.isRTL) {
+                            return <T style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back()
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                            </T>
+                        }
+                    } else {
+                        if (I18nManager.isRTL) {
+                            return <T style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back()
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
+                            </T>
+                        }
                     }
                 },
                 headerTitle: () => {
@@ -527,7 +557,7 @@ export default function VillasForSale({ id, from }) {
                         </Text>
                     </V>
                 },
-                headerBackVisible: (I18nManager.isRTL) ? true : false
+                headerBackVisible: (I18nManager.isRTL) ? false : false
             }} />
 
             <KeyboardAvoidingView

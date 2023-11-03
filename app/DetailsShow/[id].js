@@ -112,16 +112,46 @@ export default function TheData() {
             <Stack.Screen  options={{
                 headerLeft: () => {
                     if (Languages.lang === 'en') {
-                        return <Touch style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                            <Image source={require('../../src/assets/arrow-left.png')} tintColor={(color == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
-                        </Touch>
+                        if (!I18nManager.isRTL) {
+                            return <Touch style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back();
+
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                            </Touch>
+                        }
+                    } else {
+                        if (I18nManager.isRTL) {
+                            return <Touch style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back();
+
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                            </Touch>
+                        }
                     }
                 },
                 headerRight: () => {
                     if (Languages.lang === 'ar') {
-                        return <Touch style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                            <Image source={require('../../src/assets/arrow-left.png')} tintColor={(color == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
-                        </Touch>
+                        if (!I18nManager.isRTL) {
+                            return <Touch style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back()
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                            </Touch>
+                        }
+                    } else {
+                        if (I18nManager.isRTL) {
+                            return <Touch style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back()
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
+                            </Touch>
+                        }
                     }
                 },
                 headerTitle: () => {
@@ -131,7 +161,7 @@ export default function TheData() {
                         </Text>
                     </ReactView>
                 },
-                headerBackVisible: (I18nManager.isRTL)?true:false
+                headerBackVisible: (I18nManager.isRTL)?false:false
             }} />
             <ScrollView style={{
                 width: "100%",

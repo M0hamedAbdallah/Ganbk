@@ -20,26 +20,56 @@ const StackLayout = () => {
             <Stack.Screen name="index" options={{
                 headerLeft: () => {
                     if (Languages.lang === 'en') {
-                        return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                            <Image source={require('../../src/assets/arrow-left.png')} tintColor={(colorScheme == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
-                        </TouchableOpacity>
+                        if (!I18nManager.isRTL) {
+                            return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back();
+
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                            </TouchableOpacity>
+                        }
+                    } else {
+                        if (I18nManager.isRTL) {
+                            return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back();
+
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                            </TouchableOpacity>
+                        }
                     }
                 },
                 headerRight: () => {
                     if (Languages.lang === 'ar') {
-                        return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => router.back()}>
-                            <Image source={require('../../src/assets/arrow-left.png')} tintColor={(colorScheme == 'dark') ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
-                        </TouchableOpacity>
+                        if (!I18nManager.isRTL) {
+                            return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back()
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                            </TouchableOpacity>
+                        }
+                    } else {
+                        if (I18nManager.isRTL) {
+                            return <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {
+                                router.replace("/Home");
+                                router.back()
+                            }}>
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
+                            </TouchableOpacity>
+                        }
                     }
                 },
                 headerTitle: () => {
                     return <View style={{ width: "85%", marginLeft: 23 }}>
                         <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                            OTP
+                            {Languages.OTP}
                         </Text>
                     </View>
                 },
-                headerBackVisible: (I18nManager.isRTL)?true:false
+                headerBackVisible: (I18nManager.isRTL)?false:false
             }} />
         </Stack>
     )

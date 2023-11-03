@@ -9,6 +9,7 @@ import { router } from 'expo-router';
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { EventRegister } from 'react-native-event-listeners';
 import Modal from "react-native-modal";
+import CustomRecaptchaVerifier from './CustomRecaptchaVerifier';
 /*
     make verification to number phone in expo react native
 */
@@ -23,20 +24,45 @@ export default function PhoneVerification() {
     const [verificationId, setVerificationId] = useState("");
     const recaptchaVerifier = useRef(null);
 
+
+    async function verify(phone) {
+        try {
+            const confirmationResult = await firebase.auth().signInWithPhoneNumber(
+                // Replace with your phone number
+                "+20" + phone ,
+                this.applicationVerifier
+            );
+            return confirmationResult;
+        } catch (error) {
+            console.error('Error sending verification code:', error);
+            throw error;
+        }
+    }
+
     const handleSendCode = async () => {
         try {
-            const phoneProvider = new firebase.auth.PhoneAuthProvider();
-            const verificationId = await phoneProvider.verifyPhoneNumber(
-                "+2" + phoneNumber,
-                recaptchaVerifier.current
-            ).then((verificationIdSend) => {
-                console.log(verificationIdSend, "");
-                setVerificationId(verificationIdSend);
-                setIsSending(true);
-                setIsModalVisible(false);
-                Alert.alert('Verification code has been sent to your phone.');
-            });
-            console.log(verificationId);
+            // const phoneProvider = new firebase.auth.PhoneAuthProvider();
+            // const verificationId = await phoneProvider.verifyPhoneNumber(
+            //     "+2" + phoneNumber,
+            //     recaptchaVerifier.current
+            // ).then((verificationIdSend) => {
+            //     console.log(verificationIdSend, "");
+            //     setVerificationId(verificationIdSend);
+            //     setIsSending(true);
+            //     setIsModalVisible(false);
+            //     Alert.alert('Verification code has been sent to your phone.');
+            // });
+            // console.log(verificationId);
+
+            const customVerifier = new CustomRecaptchaVerifier('recaptcha-container');
+            customVerifier.verify(phoneNumber)
+                .then((result) => {
+                    console.log(result);
+                    setVerificationId(result);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         } catch (error) {
             console.log(error);
             Alert.alert('Failed to send verification code.');
