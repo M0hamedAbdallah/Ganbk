@@ -177,7 +177,9 @@ function setteing() {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040">
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={()=>{
+                    router.push('/Login/PhoneSignIn');
+                }}>
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
                         <Image
                             source={require("../../src/assets/phone.png")}

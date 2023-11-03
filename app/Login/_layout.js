@@ -18,6 +18,9 @@ const Login = () => {
             <Stack.Screen name="index" options={{headerShown:false,
             headerShown:false
             }}/>
+            <Stack.Screen name="PhoneSignIn" options={{headerShown:false,
+            headerShown:false
+            }}/>
         </Stack>
     )
 }
