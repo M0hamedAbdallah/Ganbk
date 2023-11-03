@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { Text, View, TouchableOpacity } from '../../components/Themed';
-import FirebaseRecaptchaVerifierModal from '../../src/src/FirebaseRecaptchaVerifierModal';
-import { firebaseConfig, firebase, db, auth } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
+// import FirebaseRecaptchaVerifierModal from '../../src/src/FirebaseRecaptchaVerifierModal';
+import { firebaseConfig, firebase, db } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { router } from 'expo-router';
-import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { EventRegister } from 'react-native-event-listeners';
+import auth from '@react-native-firebase/auth';
 import Modal from "react-native-modal";
-import CustomRecaptchaVerifier from './CustomRecaptchaVerifier';
 /*
     make verification to number phone in expo react native
 */
@@ -29,7 +29,7 @@ export default function PhoneVerification() {
         try {
             const confirmationResult = await firebase.auth().signInWithPhoneNumber(
                 // Replace with your phone number
-                "+20" + phone ,
+                "+20" + phone,
                 this.applicationVerifier
             );
             return confirmationResult;
@@ -54,15 +54,8 @@ export default function PhoneVerification() {
             // });
             // console.log(verificationId);
 
-            const customVerifier = new CustomRecaptchaVerifier('recaptcha-container');
-            customVerifier.verify(phoneNumber)
-                .then((result) => {
-                    console.log(result);
-                    setVerificationId(result);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            await verifyPhoneNumber("+2" + phoneNumber);
+
         } catch (error) {
             console.log(error);
             Alert.alert('Failed to send verification code.');
@@ -70,6 +63,17 @@ export default function PhoneVerification() {
         }
     };
 
+    async function verifyPhoneNumber(phoneNumber) {
+        console.log(auth().currentUser);
+        const confirmation = await auth().verifyPhoneNumber(phoneNumber).then((confirmation) => {
+            setVerificationId(confirmation.verificationId);
+            console.log(confirmation.verificationId);
+            setIsSending(true);
+            setIsModalVisible(false);
+            Alert.alert('Verification code has been sent to your phone.');
+        });
+        // setConfirm(confirmation);
+    }
     const handleVerifyCode = async (verificationCode) => {
         try {
             console.log(verificationId);
@@ -170,7 +174,7 @@ export default function PhoneVerification() {
                         <ActivityIndicator size={50} color={'#ff3a3a'} />
                     </View>
                 </Modal>
-                <FirebaseRecaptchaVerifierModal
+                {/* <FirebaseRecaptchaVerifierModal
                     style={{
                         alignItems: 'center',
                         justifyContent: "center",
@@ -179,7 +183,7 @@ export default function PhoneVerification() {
                     }}
                     ref={recaptchaVerifier}
                     firebaseConfig={firebaseConfig}
-                />
+                /> */}
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
                 </View>
@@ -234,10 +238,6 @@ export default function PhoneVerification() {
                         <ActivityIndicator size={50} color={'#ff3a3a'} />
                     </View>
                 </Modal>
-                <FirebaseRecaptchaVerifierModal
-                    ref={recaptchaVerifier}
-                    firebaseConfig={firebaseConfig}
-                />
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
                 </View>

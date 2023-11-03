@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { I18n } from "i18n-js";
 import { EventRegister } from 'react-native-event-listeners';
 import auth from "../firebase/config/firebase-config.js";
+import auth2 from '@react-native-firebase/auth';
 // import messaging from '@react-native-firebase/messaging';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -37,6 +38,17 @@ export default function RootLayout() {
       }
     })
     return () => check();
+  })
+
+  useEffect(()=>{
+    auth2().onAuthStateChanged(async (user) => {
+      if (user) {
+        // alert(JSON.stringify(user));
+        
+      } else {
+        // alert('not sign in');
+      }
+    })
   })
 
   useEffect(() => {

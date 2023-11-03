@@ -87,15 +87,15 @@ function Boxs(prames) {
         }, 8000)
         if (val) {
             return (
-                <View style={{ width: "100%", height:100 ,alignItems: 'center', justifyContent: 'center' }} >
+                <View style={{ width: "100%", height: 100, alignItems: 'center', justifyContent: 'center' }} >
                     <ActivityIndicator size={40} color={'#cc4949'} />
                 </View>
             )
         }
         else {
             return (
-                <View style={{ width: "100%",height:100, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontSize: 20,fontFamily:"bold", color: 'red', alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ width: "100%", height: 100, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ fontSize: 20, fontFamily: "bold", color: 'red', alignItems: 'center', justifyContent: 'center' }}>
                         No Thing in this moment
                     </Text>
                 </View>
@@ -155,25 +155,37 @@ function Boxs(prames) {
                                             <Text style={styles.markstext}>{(value.Adtitle)}</Text>
                                         </View>
                                         <View style={{ flexDirection: direction.direction, alignItems: "center", width: '95%', height: "15%" }}>
-                                            <View style={{ flexDirection: Languages.direction, justifyContent: 'space-between', alignItems: "center", }}>
-                                                <Image style={{ width: 15, height: 15 }} source={require('../../src/assets/bedempty.png')} tintColor={(color == "light") ? "black" : 'white'} />
-                                                <Text style={{ marginLeft: 5, marginRight: 5, fontWeight: "bold" }}>
-                                                    {parseInt(value.Bedrooms).toLocaleString(Languages.lang)}
-                                                </Text>
-                                            </View>
-                                            <View style={{ flexDirection: Languages.direction, justifyContent: 'space-between', alignItems: "center", marginRight: 5, marginLeft: 5 }}>
-                                                <Image style={{ width: 15, height: 15 }} source={require('../../src/assets/Bathroom.png')} tintColor={(color == "light") ? "black" : 'white'} />
-                                                <Text style={{ marginLeft: 5, marginRight: 5, fontWeight: "bold" }}>
-                                                    {parseInt(value.Bathrooms).toLocaleString(Languages.lang)}
-                                                </Text>
-                                            </View>
-                                            <View style={{ flexDirection: Languages.direction, justifyContent: 'space-between', alignItems: "center" }}>
-                                                <Image style={{ width: 15, height: 15 }} source={require('../../src/assets/area.png')} tintColor={(color == "light") ? "black" : 'white'} />
-                                                <Text style={{ marginLeft: 5, marginRight: 5, fontWeight: "bold" }}>
-                                                    {parseInt(value.Area).toLocaleString(Languages.lang)}
-                                                </Text>
-                                                <Image style={{ width: 18, height: 18, }} source={require('../../src/assets/m2.png')} tintColor={(color == "light") ? "black" : 'white'} />
-                                            </View>
+                                            {
+                                                (value.Bedrooms != undefined) ? (
+                                                    <View style={{ flexDirection: Languages.direction, justifyContent: 'space-between', alignItems: "center", }}>
+                                                        <Image style={{ width: 15, height: 15 }} source={require('../../src/assets/bedempty.png')} tintColor={(color == "light") ? "black" : 'white'} />
+                                                        <Text style={{ marginLeft: 5, marginRight: 5, fontWeight: "bold" }}>
+                                                            {parseInt(value.Bedrooms).toLocaleString(Languages.lang)}
+                                                        </Text>
+                                                    </View>
+                                                ) : (<></>)
+                                            }
+                                            {
+                                                (value.Bathrooms != undefined) ? (
+                                                    <View style={{ flexDirection: Languages.direction, justifyContent: 'space-between', alignItems: "center", marginRight: 5, marginLeft: 5 }}>
+                                                        <Image style={{ width: 15, height: 15 }} source={require('../../src/assets/Bathroom.png')} tintColor={(color == "light") ? "black" : 'white'} />
+                                                        <Text style={{ marginLeft: 5, marginRight: 5, fontWeight: "bold" }}>
+                                                            {parseInt(value.Bathrooms).toLocaleString(Languages.lang)}
+                                                        </Text>
+                                                    </View>
+                                                ) : (<></>)
+                                            }
+                                            {
+                                                (value.Area != undefined) ? (
+                                                    <View style={{ flexDirection: Languages.direction, justifyContent: 'space-between', alignItems: "center" }}>
+                                                        <Image style={{ width: 15, height: 15 }} source={require('../../src/assets/area.png')} tintColor={(color == "light") ? "black" : 'white'} />
+                                                        <Text style={{ marginLeft: 5, marginRight: 5, fontWeight: "bold" }}>
+                                                            {parseInt(value.Area).toLocaleString(Languages.lang)}
+                                                        </Text>
+                                                        <Image style={{ width: 18, height: 18, }} source={require('../../src/assets/m2.png')} tintColor={(color == "light") ? "black" : 'white'} />
+                                                    </View>
+                                                ) : (<></>)
+                                            }
                                         </View>
                                         <View style={{ marginTop: 8, width: "95%", height: "20%" }}>
                                             <Text style={[styles.markstext, { fontSize: 13, textDecorationStyle: 'dotted', width: "100%", height: 35, maxHeight: 35 }]}>{(value.Location)}</Text>

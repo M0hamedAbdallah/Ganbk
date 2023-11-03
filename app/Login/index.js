@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity } from "../../components/Themed";
 import { StyleSheet, Image, useColorScheme } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "../../firebase/config/firebase-config";
+import auth2 from '@react-native-firebase/auth';
 import { router } from "expo-router";
 import { FacebookAuthProvider, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import WordsContext from "../../src/lang/wordsContext";
@@ -27,10 +28,12 @@ function setteing() {
 
     async function onGoogleButtonPress() {
         try {
-
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const { idToken } = await GoogleSignin.signIn();
             const googleCredential = GoogleAuthProvider.credential(idToken);
-            const userInfo =  signInWithCredential(auth, googleCredential);
+            const googleCredential2 = auth2.GoogleAuthProvider.credential(idToken);
+            const userInfo = signInWithCredential(auth, googleCredential);
+            auth2().signInWithCredential(googleCredential2);
             await userInfo.then(async (user) => {
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
@@ -62,11 +65,13 @@ function setteing() {
         try {
             await LoginManager.logInWithPermissions(["public_profile", "email"]);
             const data = await AccessToken.getCurrentAccessToken();
-            if(!data){
+            if (!data) {
                 return;
             }
             const facebookCredential = FacebookAuthProvider.credential(data?.accessToken);
+            const facebookCredential2 = auth2.FacebookAuthProvider.credential(data?.accessToken);
             const userInfo = signInWithCredential(auth, facebookCredential);
+            auth2().signInWithCredential(facebookCredential2);
             await userInfo.then(async (user) => {
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
@@ -155,7 +160,7 @@ function setteing() {
                 </TouchableOpacity>
 
 
-                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={async ()=>{
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={async () => {
                     await onFaceBookButtonPress();
                 }}>
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >

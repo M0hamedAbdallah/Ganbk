@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { StyleSheet, Image, TouchableOpacity, useColorScheme } from "react-native";
 import { View, Text } from "../../components/Themed";
 import auth from "../../firebase/config/firebase-config";
+import auth2 from "@react-native-firebase/auth";
 import { Redirect, router, useNavigation } from "expo-router";
 import * as Google from '@react-native-google-signin/google-signin'
 import { signOut } from "firebase/auth";
@@ -22,12 +23,13 @@ export default function index() {
 
     const signOut_ = async () => {
         try {
-            await Google.GoogleSignin.revokeAccess();
             await signOut(auth);
+            await auth2().signOut();
             setUser(null);
             EventRegister.emit('ReLoad', Math.random()*1000);
             router.replace('/Home');
             router.back();
+            await Google.GoogleSignin.revokeAccess();
             return (
                 <Redirect href={'/Home'} />
             );

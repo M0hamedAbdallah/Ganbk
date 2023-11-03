@@ -65,7 +65,7 @@ const StackLayout = () => {
                 headerTitle: () => {
                     return <View style={{ width: "85%", marginLeft: 23 }}>
                         <Text style={{ fontSize: 23, fontWeight: 'bold' }}>
-                            {Languages.OTP}
+                            {Languages.sendOTP}
                         </Text>
                     </View>
                 },
