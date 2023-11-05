@@ -56,11 +56,12 @@
 // }
 
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { TextInput, Button, StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { TouchableOpacity } from '../../components/Themed';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
+import { View, Text, } from '../../components/Themed';
 import Modal from "react-native-modal";
 
 export default function PhoneSignIn() {
@@ -69,7 +70,7 @@ export default function PhoneSignIn() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isSending, setIsSending] = useState(false);
-    const [confirm, setConfirm] = useState(null);
+    const [confirm, setConfirm] = useState(false);
     const [code, setCode] = useState('');
     const [verificationId, setVerificationId] = useState(null);
     const colorScheme = useColorScheme();
@@ -164,50 +165,86 @@ export default function PhoneSignIn() {
         }
     }
 
+    const handleOtpVerification = async () => {
+
+    }
+
+    if (!confirm) {
+        return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                        <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                            <ActivityIndicator size={50} color={'#ff3a3a'} />
+                        </View>
+                    </Modal>
+                    <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
+                        <ImageLogo />
+                    </View>
+                    <Text style={styles.label}>{Languages.name}</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setName}
+                        value={name}
+                    />
+
+                    <Text style={styles.label}>{Languages.email}</Text>
+                    <TextInput
+                        keyboardType='email-address'
+                        style={styles.input}
+                        onChangeText={setEmail}
+                        value={email}
+                    />
+
+                    <Text style={styles.label}>{Languages.phone}</Text>
+                    <TextInput
+                        keyboardType='numeric'
+                        style={styles.input}
+                        onChangeText={setPhoneNumber}
+                        value={phoneNumber}
+                    />
+
+                    <TouchableOpacity style={styles.button} onPress={handlePhoneVerification}>
+                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
+                            {Languages.Sign}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </TouchableWithoutFeedback>
+        );
+    }
+
+
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-            <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
-                <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
-                    <ActivityIndicator size={50} color={'#ff3a3a'} />
-                </View>
-            </Modal>
+                <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                    <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                        <ActivityIndicator size={50} color={'#ff3a3a'} />
+                    </View>
+                </Modal>
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
                 </View>
-                <Text style={styles.label}>{Languages.name}</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={setName}
-                    value={name}
-                />
 
-                <Text style={styles.label}>{Languages.email}</Text>
-                <TextInput
-                    keyboardType='email-address'
-                    style={styles.input}
-                    onChangeText={setEmail}
-                    value={email}
-                />
-
-                <Text style={styles.label}>{Languages.phone}</Text>
+                <Text style={styles.label}>{Languages.sendOTP}</Text>
                 <TextInput
                     keyboardType='numeric'
                     style={styles.input}
-                    onChangeText={setPhoneNumber}
-                    value={phoneNumber}
+                    onChangeText={setCode}
+                    value={code}
                 />
 
-                <TouchableOpacity style={styles.button} onPress={handlePhoneVerification}>
+                <TouchableOpacity style={styles.button} onPress={handleOtpVerification}>
                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
-                        {Languages.Sign}
+                        {Languages.Conf}
                     </Text>
                 </TouchableOpacity>
-
-                {/* Add a way to verify the code here */}
             </View>
         </TouchableWithoutFeedback>
     );
+
 }
 
 const styles = StyleSheet.create({

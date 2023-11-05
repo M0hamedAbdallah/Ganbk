@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { Text, View, TouchableOpacity } from '../../components/Themed';
-import { firebaseConfig, firebase, db } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
+import {  firebase, db } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { router } from 'expo-router';
@@ -27,19 +27,6 @@ export default function PhoneVerification() {
 
     const handleSendCode = async () => {
         try {
-            // const phoneProvider = new firebase.auth.PhoneAuthProvider();
-            // const verificationId = await phoneProvider.verifyPhoneNumber(
-            //     "+2" + phoneNumber,
-            //     recaptchaVerifier.current
-            // ).then((verificationIdSend) => {
-            //     console.log(verificationIdSend, "");
-            //     setVerificationId(verificationIdSend);
-            //     setIsSending(true);
-            //     setIsModalVisible(false);
-            //     Alert.alert('Verification code has been sent to your phone.');
-            // });
-            // console.log(verificationId);
-
             await verifyPhoneNumber("+2" + phoneNumber);
 
         } catch (error) {

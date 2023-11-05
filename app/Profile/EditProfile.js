@@ -160,7 +160,7 @@ export default function index() {
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => {
-                    if (Phone != '' && Phone != null) {
+                    if (Phone == '' && Phone == null) {
                         router.push("/OTP");
                     }
                 }} style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>

@@ -91,7 +91,7 @@ export default function Home() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: color == 'light' ? 'white' : 'black' }]}>
-            {/* <ScrollView style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={{
                     width: "100%",
                     alignItems: 'center'
@@ -399,7 +399,7 @@ export default function Home() {
                         <Boxs value={"BuildingsLands"} />
                     </View>
                 </View>
-            </ScrollView> */}
+            </ScrollView>
         </SafeAreaView>
     )
 }
