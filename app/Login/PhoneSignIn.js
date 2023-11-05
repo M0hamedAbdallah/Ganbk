@@ -56,16 +56,18 @@
 // }
 
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { TouchableOpacity } from '../../components/Themed';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
+import Modal from "react-native-modal";
 
 export default function PhoneSignIn() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
@@ -80,8 +82,11 @@ export default function PhoneSignIn() {
             console.log(confirmation.verificationId);
             setIsSending(true);
             Alert.alert('Verification code has been sent to your phone.');
+            setIsModalVisible(false);
         }).catch((error) => {
             alert("Try again later");
+            console.log(error);
+            setIsModalVisible(false);
         });
     }
 
@@ -122,6 +127,7 @@ export default function PhoneSignIn() {
         if (isValidName(name)) {
             if (isValidEmail(email)) {
                 if (CheckPhone(phoneNumber)) {
+                    setIsModalVisible(true);
                     await signInWithPhoneNumber("+2" + phoneNumber);
                 }
             } else {
@@ -161,6 +167,11 @@ export default function PhoneSignIn() {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
+            <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator size={50} color={'#ff3a3a'} />
+                </View>
+            </Modal>
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
                 </View>

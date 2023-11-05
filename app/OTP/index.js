@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Image, TextInput, useColorScheme, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { Text, View, TouchableOpacity } from '../../components/Themed';
-// import FirebaseRecaptchaVerifierModal from '../../src/src/FirebaseRecaptchaVerifierModal';
 import { firebaseConfig, firebase, db } from '../../firebase/config/firebase-config'; // Replace with your Firebase config
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
@@ -25,19 +24,6 @@ export default function PhoneVerification() {
     const recaptchaVerifier = useRef(null);
 
 
-    async function verify(phone) {
-        try {
-            const confirmationResult = await firebase.auth().signInWithPhoneNumber(
-                // Replace with your phone number
-                "+20" + phone,
-                this.applicationVerifier
-            );
-            return confirmationResult;
-        } catch (error) {
-            console.error('Error sending verification code:', error);
-            throw error;
-        }
-    }
 
     const handleSendCode = async () => {
         try {
@@ -174,16 +160,6 @@ export default function PhoneVerification() {
                         <ActivityIndicator size={50} color={'#ff3a3a'} />
                     </View>
                 </Modal>
-                {/* <FirebaseRecaptchaVerifierModal
-                    style={{
-                        alignItems: 'center',
-                        justifyContent: "center",
-                        flex: 1,
-                        backgroundColor: "black"
-                    }}
-                    ref={recaptchaVerifier}
-                    firebaseConfig={firebaseConfig}
-                /> */}
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
                 </View>
