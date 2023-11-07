@@ -176,6 +176,8 @@ const lang = {
         Conf: "تأكيد",
         sendOTP:"الرمز",
         message2:"لا يمكنك اجراء المحادثه مع نفسك",
+        register:"تسجيل",
+        
     },
     en: {
         lang: 'en',
@@ -353,6 +355,7 @@ const lang = {
         Conf: "Confirim",
         sendOTP:"The Code",
         message2:"Cant Chat with your self",
+        register:"Register",
     }
 }
 

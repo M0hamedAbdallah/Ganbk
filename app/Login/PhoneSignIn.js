@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { TextInput,  StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import auth2, { firebase } from '../../firebase/config/firebase-config';
+import auth2, { db, firebase } from '../../firebase/config/firebase-config';
 import { TouchableOpacity } from '../../components/Themed';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
@@ -9,6 +9,7 @@ import { View, Text, } from '../../components/Themed';
 import Modal from "react-native-modal";
 import { router } from 'expo-router';
 import { EventRegister } from 'react-native-event-listeners';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function PhoneSignIn() {
     const [name, setName] = useState('');
@@ -16,7 +17,7 @@ export default function PhoneSignIn() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isSending, setIsSending] = useState(false);
-    const [confirm, setConfirm] = useState(false);
+    const [register, setRegister] = useState(true);
     const [code, setCode] = useState('');
     const [verificationId, setVerificationId] = useState(null);
     const colorScheme = useColorScheme();
@@ -69,13 +70,33 @@ export default function PhoneSignIn() {
         }
     }
 
+    const sendnumber1 = async () => {
+        const phoneNumberExists = await firebase.firestore().collection("NumbersPhones").doc(phoneNumber).get();
+        if (phoneNumberExists.exists) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     const handlePhoneVerification = async () => {
         // TODO: Implement phone number verification using Firebase
         if (isValidName(name)) {
             if (isValidEmail(email)) {
                 if (CheckPhone(phoneNumber)) {
-                    setIsModalVisible(true);
-                    await signInWithPhoneNumber("+2" + phoneNumber);
+                    await firebase.auth().fetchSignInMethodsForEmail(email).then(async (providers) => {
+                        if (providers.length > 0) {
+                            alert("البريد الالكتروني موجود بالفعل");
+                        } else {
+                            const numExist = await sendnumber1();
+                            if (!(numExist)) {
+                                alert("الرقم موجود بالفعل");
+                            } else {
+                                setIsModalVisible(true);
+                                await signInWithPhoneNumber("+2" + phoneNumber);
+                            }
+                        }
+                    });
                 }
             } else {
                 alert("Email is not valid.");
@@ -86,6 +107,15 @@ export default function PhoneSignIn() {
 
 
     };
+
+    const handlePhoneVerification2 = async () => {
+        // TODO: Implement phone number verification using Firebase
+        if (CheckPhone(phoneNumber)) {
+            setIsModalVisible(true);
+            await signInWithPhoneNumber("+2" + phoneNumber);
+        }
+    }
+
 
     function isValidEmail(email) {
         // Check if the email is in a valid format.
@@ -120,14 +150,44 @@ export default function PhoneSignIn() {
                 code
             );
             await firebase.auth().signInWithCredential(credential).then(async () => {
-                await firebase.auth().currentUser.updateProfile({
-                    displayName: name,
-                    email: email
-                })
-                setIsModalVisible(false);
-                alert("تم التسجيل بنجاح");
-                router.back();
-                EventRegister.emit('Back2', true);
+                if (register) {
+
+
+                    await firebase.auth().currentUser.updateEmail(email);
+                    await firebase.auth().currentUser.updateProfile({
+                        displayName: name,
+                        photoURL: 'https://graph.facebook.com/770395948179219/picture',
+                    }).then(async () => {
+                        console.log(firebase.auth().currentUser.uid);
+                        console.log(name, email, phoneNumber);
+                        const UserRef = doc(db, "Users", firebase.auth().currentUser.uid);
+                        const docSnap = await getDoc(UserRef);
+                        if (docSnap.data() == undefined) {
+                            setDoc(UserRef, {
+                                firstName: name,
+                                email: email,
+                                ImageUser: 'https://graph.facebook.com/770395948179219/picture',
+                                phone: phoneNumber,
+                                BirthDate: '',
+                                Love: [],
+                                MyAds: [],
+                                date: Date.now()
+                            });
+                        }
+                        const docv = doc(db, "NumbersPhones", phoneNumber);
+                        await setDoc(docv, {}).then(() => {
+                            setIsModalVisible(false);
+                            alert("تم التسجيل بنجاح");
+                            router.back();
+                            EventRegister.emit('Back2', true);
+                        })
+                    })
+                } else {
+                    setIsModalVisible(false);
+                    alert("تم التسجيل بنجاح");
+                    router.back();
+                    EventRegister.emit('Back2', true);
+                }
             });
             // Handle successful sign in
             // ...
@@ -136,7 +196,97 @@ export default function PhoneSignIn() {
         }
     }
 
+
     if (!isSending) {
+        if (register) {
+            return (
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.container}>
+                        <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                            <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                                <ActivityIndicator size={50} color={'#ff3a3a'} />
+                            </View>
+                        </Modal>
+                        <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
+                            <ImageLogo />
+                        </View>
+                        <Text style={styles.label}>{Languages.name}</Text>
+                        <TextInput
+                            style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
+                            onChangeText={setName}
+                            value={name}
+                        />
+
+                        <Text style={styles.label}>{Languages.email}</Text>
+                        <TextInput
+                            keyboardType='email-address'
+                            style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
+                            onChangeText={setEmail}
+                            value={email}
+                        />
+
+                        <Text style={styles.label}>{Languages.phone}</Text>
+                        <TextInput
+                            keyboardType='numeric'
+                            style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
+                            onChangeText={setPhoneNumber}
+                            value={phoneNumber}
+                        />
+
+                        <TouchableOpacity style={styles.button} onPress={handlePhoneVerification}>
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
+                                {Languages.register}
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ marginTop: 20, alignItems: "center" }} onPress={() => {
+                            setRegister(false);
+                        }}>
+                            <Text style={{ color: '#ff3939', fontWeight: 'bold', fontSize: 18 }}>
+                                {Languages.Sign}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableWithoutFeedback>
+            );
+        } else {
+            return (
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.container}>
+                        <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                            <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                                <ActivityIndicator size={50} color={'#ff3a3a'} />
+                            </View>
+                        </Modal>
+                        <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
+                            <ImageLogo />
+                        </View>
+
+                        <Text style={styles.label}>{Languages.phone}</Text>
+                        <TextInput
+                            keyboardType='numeric'
+                            style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
+                            onChangeText={setPhoneNumber}
+                            value={phoneNumber}
+                        />
+
+                        <TouchableOpacity style={styles.button} onPress={handlePhoneVerification2}>
+                            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
+                                {Languages.Sign}
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{ marginTop: 20, alignItems: "center" }} onPress={() => {
+                            setRegister(true);
+                        }}>
+                            <Text style={{ color: '#ff3939', fontWeight: 'bold', fontSize: 18 }}>
+                                {Languages.register}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableWithoutFeedback>
+            )
+        }
+    } else {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
@@ -148,70 +298,24 @@ export default function PhoneSignIn() {
                     <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                         <ImageLogo />
                     </View>
-                    <Text style={styles.label}>{Languages.name}</Text>
-                    <TextInput
-                        style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
-                        onChangeText={setName}
-                        value={name}
-                    />
 
-                    <Text style={styles.label}>{Languages.email}</Text>
-                    <TextInput
-                        keyboardType='email-address'
-                        style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
-                        onChangeText={setEmail}
-                        value={email}
-                    />
-
-                    <Text style={styles.label}>{Languages.phone}</Text>
+                    <Text style={styles.label}>{Languages.sendOTP}</Text>
                     <TextInput
                         keyboardType='numeric'
                         style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
-                        onChangeText={setPhoneNumber}
-                        value={phoneNumber}
+                        onChangeText={setCode}
+                        value={code}
                     />
 
-                    <TouchableOpacity style={styles.button} onPress={handlePhoneVerification}>
+                    <TouchableOpacity style={styles.button} onPress={handleOtpVerification}>
                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
-                            {Languages.Sign}
+                            {Languages.Conf}
                         </Text>
                     </TouchableOpacity>
                 </View>
             </TouchableWithoutFeedback>
         );
     }
-
-
-
-    return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
-                <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
-                    <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
-                        <ActivityIndicator size={50} color={'#ff3a3a'} />
-                    </View>
-                </Modal>
-                <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
-                    <ImageLogo />
-                </View>
-
-                <Text style={styles.label}>{Languages.sendOTP}</Text>
-                <TextInput
-                    keyboardType='numeric'
-                    style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
-                    onChangeText={setCode}
-                    value={code}
-                />
-
-                <TouchableOpacity style={styles.button} onPress={handleOtpVerification}>
-                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>
-                        {Languages.Conf}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        </TouchableWithoutFeedback>
-    );
-
 }
 
 const styles = StyleSheet.create({
