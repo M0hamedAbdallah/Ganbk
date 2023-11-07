@@ -50,15 +50,6 @@ export default function MyAds() {
         setValue(v + 1);
     }
 
-    useEffect(() => {
-        const listener = EventRegister.addEventListener('MyAdsReload', (data) => {
-            ReLoad(data);
-        })
-        ReLoad(Math.random() * 1000)
-        return () => {
-            EventRegister.removeEventListener('MyAdsReload');
-        }
-    }, [])
 
     useEffect(() => {
         setvalueData([]);
@@ -79,7 +70,15 @@ export default function MyAds() {
         Promise.all(login);
     }, [count])
 
-
+    useEffect(() => {
+        const listener = EventRegister.addEventListener('ReLoad', (data) => {
+            ReLoad(data);
+        })
+        ReLoad(Math.random()*1000)
+        return () => {
+            EventRegister.removeEventListener('ReLoad');
+        }
+    }, [])
 
     useEffect(() => {
         const login = () => {
@@ -110,9 +109,15 @@ export default function MyAds() {
                                 const array = docSnap.data().DataList;
                                 const arrayDeleted = docSnap.data().Deleted;
                                 const UserRef1 = doc(db, theAdsD?.from, theAdsD?.num);
+                                console.log(array,"the array");
+                                console.log(arrayDeleted,"the arrayDeleted");
+                                console.log(theAdsD?.num,"the num");
                                 arrayDeleted.push(theAdsD?.num);
                                 arrayDeleted.sort((a, b) => a - b);
                                 array.splice(parseInt(theAdsD?.num), 1);
+                                console.log("---------------------");
+                                console.log(array,"the array");
+                                console.log(arrayDeleted,"the arrayDeleted");
                                 await updateDoc(UserRef, {
                                     number: (num - 1),
                                     DataList: array,

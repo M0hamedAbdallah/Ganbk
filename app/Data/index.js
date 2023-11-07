@@ -102,19 +102,25 @@ export default function Data() {
                     createAt: firebase.firestore.FieldValue.serverTimestamp(),
                 })
                 const v2 = doc(db, '/Users/' + Data?.uid + "/Chats", auth?.currentUser?.uid);
-                await setDoc(v2, {
-                    Message: "...",
-                    Name: auth?.currentUser?.displayName,
-                    Image: auth?.currentUser?.photoURL,
-                    toUser: auth?.currentUser?.uid,
-                    show: false,
-                    chatGroup: auth?.currentUser?.uid + Data?.uid,
-                    createAt: firebase.firestore.FieldValue.serverTimestamp(),
-                }).then(async () => {
-                    setIsModalVisible(false);
+                const data = await getDoc(v2);
+                if (data.exists()) {
+                    await setDoc(v2, {
+                        Message: "...",
+                        Name: auth?.currentUser?.displayName,
+                        Image: auth?.currentUser?.photoURL,
+                        toUser: auth?.currentUser?.uid,
+                        show: false,
+                        chatGroup: auth?.currentUser?.uid + Data?.uid,
+                        createAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    }).then(async () => {
+                        setIsModalVisible(false);
+                        await AsyncStorage.setItem("@ChatGroup", JSON.stringify({ chatGroup: auth?.currentUser?.uid + Data?.uid, Image: auth?.currentUser?.photoURL, Id: auth?.currentUser?.uid + Data?.uid }))
+                            .then(() => router.push("/ChatUser"));
+                    })
+                } else {
                     await AsyncStorage.setItem("@ChatGroup", JSON.stringify({ chatGroup: auth?.currentUser?.uid + Data?.uid, Image: auth?.currentUser?.photoURL, Id: auth?.currentUser?.uid + Data?.uid }))
                         .then(() => router.push("/ChatUser"));
-                })
+                }
                 // router.replace('/Chat');
                 // router.back();
             }
@@ -126,7 +132,7 @@ export default function Data() {
     return (
         <>
             <Modal isVisible={isModalVisible}>
-                <ReactView style={{ width:"100%",height:"100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                <ReactView style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
                     <ActivityIndicator size={50} color={'#ff3a3a'} />
                 </ReactView>
             </Modal>

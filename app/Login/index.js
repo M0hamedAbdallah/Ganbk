@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useState, memo } from 'react';
 import { View, Text, TouchableOpacity } from "../../components/Themed";
-import { StyleSheet, Image, useColorScheme } from "react-native";
+import { StyleSheet, Image, useColorScheme, ActivityIndicator } from "react-native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "../../firebase/config/firebase-config";
 import auth2 from '@react-native-firebase/auth';
@@ -13,11 +13,14 @@ import { db } from "../../firebase/config/firebase-config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { EventRegister } from "react-native-event-listeners";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
+import { useEffect } from "react";
+import Modal from "react-native-modal";
 
 function setteing() {
     const colorScheme = useColorScheme();
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [init, setInit] = useState(true);
     const [user, setUser] = useState();
 
@@ -51,13 +54,16 @@ function setteing() {
                 }
             })
                 .catch((err) => {
-                    console.log(err);
+                    alert("Try again later");
+                    setIsModalVisible(false);
                 });
             EventRegister.emit('ReLoad', Math.random() * 1000);
             router.replace('/Home');
             router.back();
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            alert("Try again later");
+            setIsModalVisible(false);
         }
     }
 
@@ -89,13 +95,16 @@ function setteing() {
                 }
             })
                 .catch((err) => {
-                    console.log(err);
+                    alert("Try again later");
+                    setIsModalVisible(false);
                 });
             EventRegister.emit('ReLoad', Math.random() * 1000);
             router.replace('/Home');
             router.back();
         } catch (e) {
-            console.log(e)
+            console.log(e);
+            alert("Try again later");
+            setIsModalVisible(false);
         }
     }
 
@@ -107,6 +116,18 @@ function setteing() {
             console.log(e)
         }
     }
+
+
+    useEffect(() => {
+        const listener = EventRegister.addEventListener('Back2', (data) => {
+            if (data) {
+                router.back();
+            }
+        })
+        return () => {
+            EventRegister.removeEventListener('Back2');
+        }
+    }, [])
 
     function ImageLogo() {
         if (colorScheme == 'light') {
@@ -131,6 +152,11 @@ function setteing() {
 
     return (
         <View style={styles.container}>
+            <Modal style={{ flex: 1 }} isVisible={isModalVisible}>
+                <View style={{ width: "100%", height: "100%", backgroundColor: 'gray', opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator size={50} color={'#ff3a3a'} />
+                </View>
+            </Modal>
             <View style={{ width: "100%", height: "80%", alignItems: "center", }}>
                 <View style={{ flexDirection: direction.direction, width: "100%", justifyContent: "space-evenly", marginTop: 50, alignItems: "center" }}>
                     <ImageLogo />
@@ -143,6 +169,7 @@ function setteing() {
                 </View>
 
                 <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} onPress={async () => {
+                    setIsModalVisible(true);
                     await onGoogleButtonPress();
                 }} lightColor="#eee" darkColor="#404040">
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
@@ -161,6 +188,7 @@ function setteing() {
 
 
                 <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={async () => {
+                    setIsModalVisible(true);
                     await onFaceBookButtonPress();
                 }}>
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >
@@ -177,7 +205,7 @@ function setteing() {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={()=>{
+                <TouchableOpacity style={[styles.itemContainer, { flexDirection: direction.direction }]} lightColor="#eee" darkColor="#404040" onPress={() => {
                     router.push('/Login/PhoneSignIn');
                 }}>
                     <View style={{ width: '30%', height: '100%', alignItems: "center", justifyContent: "center", backgroundColor: 'transparent' }} >

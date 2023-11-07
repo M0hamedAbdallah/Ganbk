@@ -116,6 +116,14 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => <Image source={require('../../src/assets/speaker.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
             headerShown: false
           }}
+          listeners={()=>{
+            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
+            if(!auth?.currentUser){
+              router.push("/Login")
+            }else{
+              console.log(auth?.currentUser)
+            }
+          }}
         />
         <Tabs.Screen
           name="Sell"
@@ -135,6 +143,12 @@ export default function TabLayout() {
             title: Languages.chat,
             tabBarIcon: ({ color }) => <Image source={require('../../src/assets/chat.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
             headerShown: false
+          }}
+          listeners={()=>{
+            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
+            if(!auth?.currentUser){
+              router.push("/Login")
+            }
           }}
         />
         <Tabs.Screen

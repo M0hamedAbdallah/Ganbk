@@ -115,10 +115,8 @@ export default function PhoneVerification() {
             return false;
         }
         if (val) {
-            setIsModalVisible(false);
             return true;
         }
-        setIsModalVisible(false);
     }
 
     function ImageLogo() {

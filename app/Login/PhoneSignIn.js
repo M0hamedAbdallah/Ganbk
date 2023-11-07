@@ -1,68 +1,14 @@
-// import React, { useState, useEffect } from 'react';
-// import { Button, TextInput } from 'react-native';
-// import auth from '@react-native-firebase/auth';
-// import { View } from '../../components/Themed';
-
-// export default function PhoneSignIn() {
-//     // If null, no SMS has been sent
-//     const [confirm, setConfirm] = useState(null);
-
-//     // verification code (OTP - One-Time-Passcode)
-//     const [code, setCode] = useState('');
-
-//     // Handle login
-//     function onAuthStateChanged(user) {
-//         if (user) {
-//             // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
-//             // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
-//             // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
-//             // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
-//         }
-//     }
-
-//     useEffect(() => {
-//         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-//         return subscriber; // unsubscribe on unmount
-//     }, []);
-
-//     // Handle the button press
-
-
-//     async function confirmCode() {
-//         try {
-//             await confirm.confirm(code);
-//         } catch (error) {
-//             console.log('Invalid code.');
-//         }
-//     }
-
-//     if (!confirm) {
-//         return (
-//             <View>
-//                 <Button
-//                     title="Phone Number Sign In"
-//                     onPress={() => signInWithPhoneNumber('+1 650-555-3434')}
-//                 />
-//             </View>
-//         );
-//     }
-
-//     return (
-//         <>
-//             <TextInput value={code} onChangeText={text => setCode(text)} />
-//             <Button title="Confirm Code" onPress={() => confirmCode()} />
-//         </>
-//     );
-// }
-
 import React, { useContext, useState } from 'react';
-import { TextInput, Button, StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { TextInput,  StyleSheet, useColorScheme, Image, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import auth2, { firebase } from '../../firebase/config/firebase-config';
 import { TouchableOpacity } from '../../components/Themed';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { View, Text, } from '../../components/Themed';
 import Modal from "react-native-modal";
+import { router } from 'expo-router';
+import { EventRegister } from 'react-native-event-listeners';
 
 export default function PhoneSignIn() {
     const [name, setName] = useState('');
@@ -78,11 +24,11 @@ export default function PhoneSignIn() {
     const direction = useContext(directionContext);
 
     async function signInWithPhoneNumber(Number) {
-        const confirmation = await auth().signInWithPhoneNumber(Number).then((confirmation) => {
-            setVerificationId(confirmation.verificationId);
-            console.log(confirmation.verificationId);
+        const confirmation = await auth().signInWithPhoneNumber(Number).then((confir) => {
+            setVerificationId(confir.verificationId);
+            console.log(confir.verificationId, "verificationId");
             setIsSending(true);
-            Alert.alert('Verification code has been sent to your phone.');
+            alert('Verification code has been sent to your phone.');
             setIsModalVisible(false);
         }).catch((error) => {
             alert("Try again later");
@@ -166,10 +112,31 @@ export default function PhoneSignIn() {
     }
 
     const handleOtpVerification = async () => {
-
+        //sgin with phone number by firebase with credentials
+        try {
+            // Sign in with phone number using credentials
+            const credential = firebase.auth.PhoneAuthProvider.credential(
+                verificationId,
+                code
+            );
+            await firebase.auth().signInWithCredential(credential).then(async () => {
+                await firebase.auth().currentUser.updateProfile({
+                    displayName: name,
+                    email: email
+                })
+                setIsModalVisible(false);
+                alert("تم التسجيل بنجاح");
+                router.back();
+                EventRegister.emit('Back2', true);
+            });
+            // Handle successful sign in
+            // ...
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    if (!confirm) {
+    if (!isSending) {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
@@ -183,7 +150,7 @@ export default function PhoneSignIn() {
                     </View>
                     <Text style={styles.label}>{Languages.name}</Text>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
                         onChangeText={setName}
                         value={name}
                     />
@@ -191,7 +158,7 @@ export default function PhoneSignIn() {
                     <Text style={styles.label}>{Languages.email}</Text>
                     <TextInput
                         keyboardType='email-address'
-                        style={styles.input}
+                        style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
                         onChangeText={setEmail}
                         value={email}
                     />
@@ -199,7 +166,7 @@ export default function PhoneSignIn() {
                     <Text style={styles.label}>{Languages.phone}</Text>
                     <TextInput
                         keyboardType='numeric'
-                        style={styles.input}
+                        style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
                         onChangeText={setPhoneNumber}
                         value={phoneNumber}
                     />
@@ -231,7 +198,7 @@ export default function PhoneSignIn() {
                 <Text style={styles.label}>{Languages.sendOTP}</Text>
                 <TextInput
                     keyboardType='numeric'
-                    style={styles.input}
+                    style={[styles.input, { color: (colorScheme == 'dark') ? "white" : "black" }]}
                     onChangeText={setCode}
                     value={code}
                 />
@@ -250,7 +217,6 @@ export default function PhoneSignIn() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         padding: 16,
     },
     label: {

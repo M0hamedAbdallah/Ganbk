@@ -56,23 +56,6 @@ export default function index() {
             displayName: Name,
             phoneNumber: Phone
         })
-        // await updatePhoneNumber(auth,{})
-        // FirebaseAuth.instance.verifyPhoneNumber(
-        //     phoneNumber: phoneNumber,
-        //     timeout: const Duration(minutes: 2),
-        //     verificationCompleted: (credential) async {
-        //       await (await FirebaseAuth.instance.currentUser()).updatePhoneNumber(credential);
-        //       // either this occurs or the user needs to manually enter the SMS code
-        //     },
-        //     verificationFailed: null,
-        //     codeSent: (verificationId, [forceResendingToken]) async {
-        //       String smsCode;
-        //       // get the SMS code from the user somehow (probably using a text field)
-        //       final AuthCredential credential =
-        //         PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: smsCode);
-        //       await (await FirebaseAuth.instance.currentUser()).updatePhoneNumber(credential);
-        //     },
-        //     codeAutoRetrievalTimeout: null);
         router.replace('/Home');
         router.back();
     }
@@ -160,7 +143,7 @@ export default function index() {
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => {
-                    if (Phone == '' && Phone == null) {
+                    if (Phone == "" || auth.currentUser.phoneNumber == "") {
                         router.push("/OTP");
                     }
                 }} style={{ width: "100%", alignItems: 'center', marginTop: 10 }}>

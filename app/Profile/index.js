@@ -55,7 +55,7 @@ export default function index() {
         <View style={styles.container}>
             <View style={{ width: "100%", height: "80%" }}>
                 <View style={{ alignItems: "center", justifyContent: "center", flexDirection: 'row' }}>
-                    <Image source={{ uri: user.photoURL }}
+                    <Image source={{ uri: user?.photoURL }}
                         style={{ height: 100, width: 100, borderRadius: 50, margin: 50 }}
                     />
                 </View>
@@ -91,7 +91,7 @@ export default function index() {
                     </View>
                     <View style={{ width: "90%", height: 50, borderRadius: 5,borderColor:(color=='light')?'black':'white', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 15 }}>
-                            {(userBase.phone == '')? Languages.Notfound : userBase.phone}
+                            {(userBase?.phone == '' || userBase?.phone == undefined)? Languages.Notfound : userBase?.phone}
                         </Text>
                     </View>
                 </View>
@@ -103,7 +103,7 @@ export default function index() {
                     </View>
                     <View style={{ width: "90%", height: 50, borderRadius: 5,borderColor:(color=='light')?'black':'white', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 15 }}>
-                            {(userBase.BirthDate == '')? Languages.Notfound : userBase.BirthDate}
+                            {(userBase?.BirthDate == '' || userBase?.BirthDate == undefined)? Languages.Notfound : userBase?.BirthDate}
                         </Text>
                     </View>
                 </View>
