@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "74922022574",
+    "project_id": "ganbk-faf4e",
+    "storage_bucket": "ganbk-faf4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74922022574:android:5b9b2fbd93a5c22b20ff3f",
+        "android_client_info": {
+          "package_name": "com.mohamedabdallah.Ganbk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74922022574-0d1cphlcll477b4ip74db3sib9ae3nde.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mohamedabdallah.Ganbk",
+            "certificate_hash": "1d8cc3a9ede07bf9f634cf8a5375fdc7decb2f1f"
+          }
+        },
+        {
+          "client_id": "74922022574-rpppeqqu21hdrch18bbck1nsp3d0l84f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mohamedabdallah.Ganbk",
+            "certificate_hash": "0d17bf9a0995191a8f0e11d93ce02e3a8fcb89a0"
+          }
+        },
+        {
+          "client_id": "74922022574-ar04ta2vlrtcu5fni62jiu19dpi82a14.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJWiXLliWhvMlLO8xIOgUDxYToOiBR6pk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74922022574-ar04ta2vlrtcu5fni62jiu19dpi82a14.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "74922022574-63rv92r91947f178atv3ts38mdqouc5n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mohamedabdallah.Ganbk"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
