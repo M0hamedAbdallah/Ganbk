@@ -10,13 +10,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAfOqWAitubvN2rTpD5MHsneZRczvZ6Kvo",
-  authDomain: "ganbk-faf4e.firebaseapp.com",
-  projectId: "ganbk-faf4e",
-  storageBucket: "ganbk-faf4e.appspot.com",
-  messagingSenderId: "74922022574",
-  appId: "1:74922022574:web:e48cfc52d9be4d0c20ff3f",
-  storageBucket: "gs://ganbk-faf4e.appspot.com"
+  
 };
 
 
