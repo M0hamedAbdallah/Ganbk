@@ -9,7 +9,7 @@ import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { firebase } from "../../firebase/config/firebase-config";
 import { getStorage, ref } from "firebase/storage";
 import Modal from "react-native-modal";
-import { EventRegister } from "react-native-event-listeners";
+import { EventRegister } from "../../src/utils/eventBus";
 
 
 export default function MyAds() {

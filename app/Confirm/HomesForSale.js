@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, } from "../../components/Themed";
 import WordsContext from "../../src/lang/wordsContext";
-import { ScrollView, SafeAreaView, StyleSheet, Image, FlatList, ImageBackground, useWindowDimensions, useColorScheme, ActivityIndicator } from "react-native";
+import { ScrollView, StyleSheet, Image, FlatList, ImageBackground, useWindowDimensions, useColorScheme, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SliderBox from '../../src/components/SliderBox.js';
 import directionContext from "../../src/direction/directionContext";
 import auth from "../../firebase/config/firebase-config";
 import { db, firebase, storage } from "../../firebase/config/firebase-config";
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { router } from "expo-router";
 

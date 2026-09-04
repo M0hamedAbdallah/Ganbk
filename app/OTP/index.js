@@ -6,7 +6,7 @@ import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
 import { router } from 'expo-router';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 import auth from '@react-native-firebase/auth';
 import Modal from "react-native-modal";
 /*

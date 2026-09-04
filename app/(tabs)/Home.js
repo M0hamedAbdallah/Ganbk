@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "../../components/Themed";
-import { TextInput, StyleSheet, Animated, Dimensions, Image, useColorScheme } from "react-native";
+import { TextInput, StyleSheet, Animated, useWindowDimensions, Image, useColorScheme } from "react-native";
 import Items from "../../src/components/Item";
 import Boxs from "../../src/components/boxs";
 import WordsContext from "../../src/lang/wordsContext";
 import { router } from "expo-router";
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 import directionContext from "../../src/direction/directionContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -29,7 +29,7 @@ export default function Home() {
     const [imageCount, setImageCount] = useState(0);
     const slideLeft = new Animated.Value(imageCount);
     const [location, setlocation] = useState('Egypt');
-    const { width } = Dimensions.get('screen');
+    const { width } = useWindowDimensions();
     const color = useColorScheme();
     const Languages = useContext(WordsContext);
     const direction = useContext(directionContext);
@@ -44,7 +44,7 @@ export default function Home() {
         }).start(() => {
             setImageCount(((imageCount + 1) % 3));
         });
-    },);
+    }, [imageCount]);
 
     useEffect(() => {
         const lis = EventRegister.addEventListener('Location', (data) => {
@@ -53,7 +53,7 @@ export default function Home() {
         return () => {
             EventRegister.removeEventListener('Location');
         }
-    },)
+    }, [])
 
 
     const getTransformStyle = (index) => {

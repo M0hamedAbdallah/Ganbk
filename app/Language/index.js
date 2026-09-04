@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WordsContext from "../../src/lang/wordsContext";
 import { useContext } from "react";
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 import { router } from "expo-router";
 import directionContext from "../../src/direction/directionContext";
 
@@ -37,11 +37,11 @@ export default function Page() {
 
     const get = async () => {
         try {
-            await AsyncStorage.getItem('@lang', (err, item) => {
-                if (item != null || item != undefined) {
-                    setlang(item)
-                }
-            });
+            // AsyncStorage v2 is promise-based; the callback form was removed
+            const item = await AsyncStorage.getItem('@lang');
+            if (item != null) {
+                setlang(item)
+            }
         } catch (error) {
             alert(error);
         }
@@ -49,7 +49,7 @@ export default function Page() {
 
     useEffect(() => {
         get();
-    })
+    }, [])
 
     function Language({ info }) {
         if (lang == info.language) {

@@ -8,7 +8,7 @@ import directionContext from '../../src/direction/directionContext';
 import { View, Text, } from '../../components/Themed';
 import Modal from "react-native-modal";
 import { router } from 'expo-router';
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function PhoneSignIn() {

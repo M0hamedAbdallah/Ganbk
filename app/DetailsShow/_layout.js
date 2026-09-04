@@ -11,7 +11,7 @@ const index = () => {
     const [appIsReady, setAppIsReady] = useState(false);
     useEffect(() => {
         setAppIsReady(true);
-    })
+    }, [])
     const { id } = useLocalSearchParams();
     if (!appIsReady) {
         return null;
@@ -28,7 +28,7 @@ const index = () => {
                                 router.back();
 
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={colorScheme == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
                             </TouchableOpacity>
                         }
                     } else {
@@ -38,7 +38,7 @@ const index = () => {
                                 router.back();
 
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={colorScheme == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                             </TouchableOpacity>
                         }
                     }
@@ -50,7 +50,7 @@ const index = () => {
                                 router.replace("/Home");
                                 router.back()
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={colorScheme == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                             </TouchableOpacity>
                         }
                     } else {
@@ -59,7 +59,7 @@ const index = () => {
                                 router.replace("/Home");
                                 router.back()
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={colorScheme == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
                             </TouchableOpacity>
                         }
                     }

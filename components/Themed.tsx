@@ -13,24 +13,24 @@ import {
 } from 'react-native';
 
 import Colors from '../constants/Colors';
-import React, { ForwardRefExoticComponent } from 'react';
+import React from 'react';
 
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText['props'];
-export type ViewProps = ThemeProps & DefaultView['props'];
-export type ScrollViewProps = ThemeProps & DefaultScrollView['props'];
-export type ImageProps = ThemeProps & DefaultImage['props'];
-export type TouchableOpacityProps = ThemeProps & DefaultTouchableOpacity['props'];
+export type TextProps = ThemeProps & React.ComponentProps<typeof DefaultText>;
+export type ViewProps = ThemeProps & React.ComponentProps<typeof DefaultView>;
+export type ScrollViewProps = ThemeProps & React.ComponentProps<typeof DefaultScrollView>;
+export type ImageProps = ThemeProps & React.ComponentProps<typeof DefaultImage>;
+export type TouchableOpacityProps = ThemeProps & React.ComponentProps<typeof DefaultTouchableOpacity>;
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: keyof typeof Colors.light & keyof typeof Colors.dark
 ) {
-  const theme = useColorScheme() ?? 'light';
+  const theme: 'light' | 'dark' = useColorScheme() === 'dark' ? 'dark' : 'light';
   const colorFromProps = props[theme];
 
   if (colorFromProps) {

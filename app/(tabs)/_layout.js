@@ -1,17 +1,26 @@
-
-import { Link, Tabs, router } from 'expo-router';
-import { Pressable, useColorScheme, Image } from 'react-native';
+import { Tabs, router } from 'expo-router';
+import { useColorScheme, Image } from 'react-native';
 import Colors from '../../constants/Colors';
 import { useContext, useEffect, useState } from 'react';
 import WordsContext from '../../src/lang/wordsContext'
 import directionContext from '../../src/direction/directionContext';
-import { EventRegister } from 'react-native-event-listeners';
 import auth from '../../firebase/config/firebase-config';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 
+// Proper tabPress listeners: the old code passed a plain function as
+// `listeners`, which React Navigation invoked during every render and thus
+// could navigate away at render time. Now the auth gate runs on tab press.
+const requireAuthListeners = () => ({
+  tabPress: (e) => {
+    if (!auth?.currentUser) {
+      e.preventDefault();
+      router.push("/Login");
+    }
+  },
+});
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -21,143 +30,80 @@ export default function TabLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
   useEffect(() => {
     setAppIsReady(true);
-  })
+  }, []);
 
   if (!appIsReady) {
     return null;
   }
+
+  const tabBarOptions = (
+    title,
+    icon
+  ) => ({
+    title,
+    tabBarIcon: ({ color }) => (
+      <Image source={icon} tintColor={color} style={{ width: 25, height: 25 }} />
+    ),
+    headerShown: false,
+  });
+
+  const screenOptions = {
+    tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+    tabBarLabelStyle: { fontWeight: "bold", fontSize: 10 },
+    tabBarStyle: { height: 60, paddingBottom: 10, position: "relative", bottom: 0 },
+  };
+
   if ((direction.lang == 'en')) {
     return (
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          tabBarLabelStyle: { fontWeight: "bold", fontSize: 10 },
-          tabBarStyle: { height: 60, paddingBottom: 10, position: "relative", bottom: 0 }
-        }}>
+      <Tabs screenOptions={screenOptions}>
         <Tabs.Screen
           name="Home"
-          options={{
-            title: Languages.home,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/home.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false,
-
-          }}
+          options={tabBarOptions(Languages.home, require('../../src/assets/home.png'))}
         />
         <Tabs.Screen
           name="MyAds"
-          options={{
-            title: Languages.MyAds,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/speaker.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
-          listeners={()=>{
-            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
-            if(!auth?.currentUser){
-              router.push("/Login")
-            }
-          }}
+          options={tabBarOptions(Languages.MyAds, require('../../src/assets/speaker.png'))}
+          listeners={requireAuthListeners}
         />
         <Tabs.Screen
           name="Sell"
-          options={{
-            title: Languages.sell,
-            tabBarIcon: ({ color }) => {
-              return (
-                <Image source={require('../../src/assets/add.png')} tintColor={color} style={{ width: 25, height: 25 }} />
-              )
-            },
-            headerShown: false
-          }}
+          options={tabBarOptions(Languages.sell, require('../../src/assets/add.png'))}
         />
         <Tabs.Screen
           name="Chat"
-          options={{
-            title: Languages.chat,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/chat.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
-          listeners={()=>{
-            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
-            if(!auth?.currentUser){
-              router.push("/Login")
-            }
-          }}
+          options={tabBarOptions(Languages.chat, require('../../src/assets/chat.png'))}
+          listeners={requireAuthListeners}
         />
         <Tabs.Screen
           name="Account"
-          options={{
-            title: Languages.Account,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/account.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
+          options={tabBarOptions(Languages.Account, require('../../src/assets/account.png'))}
         />
       </Tabs>
     );
   } else {
     return (
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          tabBarLabelStyle: { fontWeight: "bold", fontSize: 10 },
-          tabBarStyle: { height: 60, paddingBottom: 10, position: "relative", bottom: 0 }
-        }}>
+      <Tabs screenOptions={screenOptions}>
         <Tabs.Screen
           name="Account"
-          options={{
-            title: Languages.Account,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/account.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
+          options={tabBarOptions(Languages.Account, require('../../src/assets/account.png'))}
         />
         <Tabs.Screen
           name="MyAds"
-          options={{
-            title: Languages.MyAds,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/speaker.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
-          listeners={()=>{
-            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
-            if(!auth?.currentUser){
-              router.push("/Login")
-            }else{
-              console.log(auth?.currentUser)
-            }
-          }}
+          options={tabBarOptions(Languages.MyAds, require('../../src/assets/speaker.png'))}
+          listeners={requireAuthListeners}
         />
         <Tabs.Screen
           name="Sell"
-          options={{
-            title: Languages.sell,
-            tabBarIcon: ({ color }) => {
-              return (
-                <Image source={require('../../src/assets/add.png')} tintColor={color} style={{ width: 25, height: 25 }} />
-              )
-            },
-            headerShown: false
-          }}
+          options={tabBarOptions(Languages.sell, require('../../src/assets/add.png'))}
         />
         <Tabs.Screen
           name="Chat"
-          options={{
-            title: Languages.chat,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/chat.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
-          listeners={()=>{
-            // EventRegister.emit('MyAdsReload', Math.random() * 1000);
-            if(!auth?.currentUser){
-              router.push("/Login")
-            }
-          }}
+          options={tabBarOptions(Languages.chat, require('../../src/assets/chat.png'))}
+          listeners={requireAuthListeners}
         />
         <Tabs.Screen
           name="Home"
-          options={{
-            title: Languages.home,
-            tabBarIcon: ({ color }) => <Image source={require('../../src/assets/home.png')} tintColor={color} style={{ width: 25, height: 25 }} />,
-            headerShown: false
-          }}
+          options={tabBarOptions(Languages.home, require('../../src/assets/home.png'))}
         />
       </Tabs>
     );

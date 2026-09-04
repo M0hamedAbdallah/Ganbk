@@ -11,7 +11,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mohamedabdallah.Ganbk"
     },
     "android": {
       "googleServicesFile": "google-services.json",
@@ -29,8 +30,9 @@
     "plugins": [
       "expo-router",
       "expo-localization",
-      "@react-native-firebase/app", 
+      "@react-native-firebase/app",
       "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin",
       [
         "react-native-fbsdk-next",
         {
@@ -38,15 +40,20 @@
           "clientToken": "319911d52c8ac6d4d49f7aff5573254d",
           "displayName": "Ganbk"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
-      "router": {
-        "origin": false
-      },
       "eas": {
         "projectId": "975552a8-be0f-42d7-aa48-c91755a6c6c6"
       }

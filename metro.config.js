@@ -1,14 +1,7 @@
-// Learn more https://docs.expo.io/guides/customizing-metro
+// Learn more https://docs.expo.dev/guides/customizing-metro/
 const { getDefaultConfig } = require('expo/metro-config');
 
 /** @type {import('expo/metro-config').MetroConfig} */
-const config = getDefaultConfig(__dirname, {
-  // [Web-only]: Enables CSS support in Metro.
-  isCSSEnabled: true,
-});
-
-config.resolver.sourceExts.push(
-  'jsx', 'js', 'ts', 'tsx', 'json', 'svg', 'd.ts', 'mjs','cjs'
-)
+const config = getDefaultConfig(__dirname);
 
 module.exports = config;

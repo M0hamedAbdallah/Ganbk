@@ -9,7 +9,7 @@ const StackLayout = () => {
     const colorScheme = useColorScheme();
     useEffect(() => {
         setAppIsReady(true);
-    })
+    }, [])
 
     if (!appIsReady) {
         return null;

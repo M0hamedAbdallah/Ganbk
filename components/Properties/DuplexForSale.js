@@ -1,7 +1,8 @@
 import Checkbox from 'expo-checkbox';
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ImageEdit } from "../../components/Themed";
-import { Platform, Image, StyleSheet, useColorScheme, Animated, KeyboardAvoidingView, TextInput, SafeAreaView, ke, Alert, View as V, TouchableOpacity as T, I18nManager, Pressable } from 'react-native';
+import { Platform, Image, StyleSheet, useColorScheme, Animated, KeyboardAvoidingView, TextInput, ke, Alert, View as V, TouchableOpacity as T, I18nManager, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, router } from 'expo-router';
 import MultipleSelectList from '../../src/components/MultipleSelectList.js';
@@ -9,7 +10,7 @@ import SelectList from '../../src/components/SelectList.js';
 import lang from '../../src/lang/words';
 import WordsContext from '../../src/lang/wordsContext';
 import directionContext from '../../src/direction/directionContext';
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -145,7 +146,7 @@ export default function DuplexForSale({ id, from }) {
             } else {
 
                 const result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    mediaTypes: ['images'],
                     // allowsEditing: true,
                     aspect: [4, 3],
                     quality: 1,
@@ -184,7 +185,7 @@ export default function DuplexForSale({ id, from }) {
                 alert('permission to access media library is required');
             } else {
                 const result = await ImagePicker.launchCameraAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    mediaTypes: ['images'],
                     aspect: [4, 3],
                     quality: 1,
                     allowsMultipleSelection: true,
@@ -294,7 +295,7 @@ export default function DuplexForSale({ id, from }) {
         return () => {
             EventRegister.removeEventListener('Loc');
         }
-    },)
+    }, [])
 
     useEffect(() => {
         setTheProblem(theProblem);
@@ -575,7 +576,7 @@ export default function DuplexForSale({ id, from }) {
                                 router.back();
 
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
                             </T>
                         }
                     } else {
@@ -585,7 +586,7 @@ export default function DuplexForSale({ id, from }) {
                                 router.back();
 
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                             </T>
                         }
                     }
@@ -597,7 +598,7 @@ export default function DuplexForSale({ id, from }) {
                                 router.replace("/Home");
                                 router.back()
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                             </T>
                         }
                     } else {
@@ -606,7 +607,7 @@ export default function DuplexForSale({ id, from }) {
                                 router.replace("/Home");
                                 router.back()
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
                             </T>
                         }
                     }

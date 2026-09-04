@@ -8,7 +8,7 @@ import { Redirect, router, useNavigation } from "expo-router";
 import * as Google from '@react-native-google-signin/google-signin'
 import { signOut } from "firebase/auth";
 import WordsContext from "../../src/lang/wordsContext";
-import { EventRegister } from "react-native-event-listeners";
+import { EventRegister } from "../../src/utils/eventBus";
 import Modal from "react-native-modal";
 
 export default function index() {

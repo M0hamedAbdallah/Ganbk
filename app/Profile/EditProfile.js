@@ -9,7 +9,7 @@ import { signOut, onAuthStateChanged, updateProfile, updatePhoneNumber } from "f
 import WordsContext from "../../src/lang/wordsContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config/firebase-config";
-import { EventRegister } from "react-native-event-listeners";
+import { EventRegister } from "../../src/utils/eventBus";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 

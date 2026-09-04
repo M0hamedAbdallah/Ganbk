@@ -4,7 +4,7 @@ import * as  Location from 'expo-location';
 import WordsContext from '../../src/lang/wordsContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 import { firebase } from "../../firebase/config/firebase-config";
 import directionContext from '../../src/direction/directionContext';
 

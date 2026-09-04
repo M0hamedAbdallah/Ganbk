@@ -3,7 +3,7 @@ import CustomListItem from '../../src/components/CustomListItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState } from 'react'
 import auth, { firebase } from "../../firebase/config/firebase-config";
-import { EventRegister } from 'react-native-event-listeners';
+import { EventRegister } from '../../src/utils/eventBus';
 
 
 const Chat = () => {

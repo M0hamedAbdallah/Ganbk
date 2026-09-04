@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ImageEdit } from "../../components/Themed";
 import { Image, ScrollView, useColorScheme, View as ReactView, Linking, ActivityIndicator } from "react-native";
-import { EventRegister } from "react-native-event-listeners";
+import { EventRegister } from "../../src/utils/eventBus";
 import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
 import SliderBox from './SliderBox'

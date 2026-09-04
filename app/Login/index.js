@@ -2,16 +2,16 @@ import React, { useContext } from "react";
 import { useState, memo } from 'react';
 import { View, Text, TouchableOpacity } from "../../components/Themed";
 import { StyleSheet, Image, useColorScheme, ActivityIndicator } from "react-native";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { GoogleSignin, isSuccessResponse } from "@react-native-google-signin/google-signin";
 import auth from "../../firebase/config/firebase-config";
 import auth2 from '@react-native-firebase/auth';
 import { router } from "expo-router";
-import { FacebookAuthProvider, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { FacebookAuthProvider, GoogleAuthProvider, signInWithCredential, getAdditionalUserInfo } from "firebase/auth";
 import WordsContext from "../../src/lang/wordsContext";
 import directionContext from "../../src/direction/directionContext";
 import { db } from "../../firebase/config/firebase-config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { EventRegister } from "react-native-event-listeners";
+import { EventRegister } from "../../src/utils/eventBus";
 import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 import { useEffect } from "react";
 import Modal from "react-native-modal";
@@ -32,17 +32,25 @@ function setteing() {
     async function onGoogleButtonPress() {
         try {
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-            const { idToken } = await GoogleSignin.signIn();
+            // v13+ returns a response union instead of the user directly
+            const response = await GoogleSignin.signIn();
+            if (!isSuccessResponse(response)) {
+                // user cancelled the sign-in flow
+                setIsModalVisible(false);
+                return;
+            }
+            const { idToken } = response.data;
             const googleCredential = GoogleAuthProvider.credential(idToken);
             const googleCredential2 = auth2.GoogleAuthProvider.credential(idToken);
             const userInfo = signInWithCredential(auth, googleCredential);
             auth2().signInWithCredential(googleCredential2);
             await userInfo.then(async (user) => {
+                const profile = getAdditionalUserInfo(user)?.profile ?? {};
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
                 if (docSnap.data() == undefined) {
                     await setDoc(UserRef, {
-                        firstName: user["_tokenResponse"].firstName,
+                        firstName: profile.given_name ?? "",
                         email: user.user.email,
                         ImageUser: user.user.photoURL,
                         phone: '',
@@ -79,11 +87,12 @@ function setteing() {
             const userInfo = signInWithCredential(auth, facebookCredential);
             auth2().signInWithCredential(facebookCredential2);
             await userInfo.then(async (user) => {
+                const profile = getAdditionalUserInfo(user)?.profile ?? {};
                 const UserRef = doc(db, "Users", user.user.uid);
                 const docSnap = await getDoc(UserRef);
                 if (docSnap.data() == undefined) {
                     await setDoc(UserRef, {
-                        firstName: user["_tokenResponse"].firstName,
+                        firstName: profile.first_name ?? "",
                         email: user.user.email,
                         ImageUser: user.user.photoURL,
                         phone: '',

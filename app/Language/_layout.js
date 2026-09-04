@@ -5,7 +5,7 @@ const StackLayout = () => {
     const [appIsReady, setAppIsReady] = useState(false);
     useEffect(() => {
         setAppIsReady(true);
-    })
+    }, [])
 
     if (!appIsReady) {
         return null;

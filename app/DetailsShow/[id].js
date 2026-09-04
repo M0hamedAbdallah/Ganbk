@@ -118,7 +118,7 @@ export default function TheData() {
                                 router.back();
 
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23 }} />
                             </Touch>
                         }
                     } else {
@@ -128,7 +128,7 @@ export default function TheData() {
                                 router.back();
 
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                             </Touch>
                         }
                     }
@@ -140,7 +140,7 @@ export default function TheData() {
                                 router.replace("/Home");
                                 router.back()
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '180deg' }] }} />
                             </Touch>
                         }
                     } else {
@@ -149,7 +149,7 @@ export default function TheData() {
                                 router.replace("/Home");
                                 router.back()
                             }}>
-                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={useColorScheme() == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
+                                <Image source={require('../../src/assets/arrow-left.png')} tintColor={color == 'dark' ? 'white' : 'black'} style={{ width: 23, height: 23, transform: [{ rotate: '0deg' }] }} />
                             </Touch>
                         }
                     }
